@@ -103,6 +103,11 @@ const Index = () => {
                   Modelo de Dados
                 </Link>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link to="/fluxos" className={navigationMenuTriggerStyle()}>
+                  Fluxos n8n
+                </Link>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -230,6 +235,9 @@ const Index = () => {
               </Link>
               <Link to="/modelo-dados" className="text-gray-300 hover:text-white">
                 Modelo de Dados
+              </Link>
+              <Link to="/fluxos" className="text-gray-300 hover:text-white">
+                Fluxos n8n
               </Link>
               <Link to="/documentacao" className="text-gray-300 hover:text-white">
                 Documentação
