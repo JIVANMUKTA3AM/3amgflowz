@@ -13,6 +13,10 @@ import ModeloDados from "./pages/ModeloDados";
 import Documentacao from "./pages/Documentacao";
 import NotFound from "./pages/NotFound";
 import Fluxos from "./pages/Fluxos";
+import Profile from "./pages/Profile";
+import Organizations from "./pages/Organizations";
+import OrganizationMembers from "./pages/OrganizationMembers";
+import OrganizationSettings from "./pages/OrganizationSettings";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +31,10 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/organizations" element={<Organizations />} />
+            <Route path="/organizations/:id/members" element={<OrganizationMembers />} />
+            <Route path="/organizations/:id/settings" element={<OrganizationSettings />} />
             <Route path="/arquitetura" element={<Arquitetura />} />
             <Route path="/modelo-dados" element={<ModeloDados />} />
             <Route path="/documentacao" element={<Documentacao />} />

@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { User, LogOut, Settings } from "lucide-react";
+import { User, LogOut, Settings, Building } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 
 const UserMenu = () => {
@@ -90,6 +90,12 @@ const UserMenu = () => {
           <Link to="/profile" className="flex w-full cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             <span>Meu Perfil</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/organizations" className="flex w-full cursor-pointer">
+            <Building className="mr-2 h-4 w-4" />
+            <span>Minhas Organizações</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

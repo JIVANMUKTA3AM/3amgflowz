@@ -2,6 +2,8 @@
 import { Link } from "react-router-dom";
 import UserMenu from "@/components/UserMenu";
 import { useAuthContext } from "@/context/AuthContext";
+import { Button } from "./ui/button";
+import { Building, User } from "lucide-react";
 
 const Header = () => {
   const { isAuthenticated } = useAuthContext();
@@ -21,9 +23,17 @@ const Header = () => {
               </Link>
               <Link
                 to="/organizations"
-                className="text-sm font-medium hover:underline"
+                className="text-sm font-medium hover:underline flex items-center"
               >
+                <Building className="h-3.5 w-3.5 mr-1" />
                 Organizações
+              </Link>
+              <Link
+                to="/profile"
+                className="text-sm font-medium hover:underline flex items-center"
+              >
+                <User className="h-3.5 w-3.5 mr-1" />
+                Meu Perfil
               </Link>
               <Link
                 to="/documentation"
@@ -35,7 +45,16 @@ const Header = () => {
           )}
         </div>
         
-        <UserMenu />
+        <div className="flex items-center gap-2">
+          {!isAuthenticated && (
+            <Link to="/auth">
+              <Button variant="default" size="sm">
+                Entrar
+              </Button>
+            </Link>
+          )}
+          <UserMenu />
+        </div>
       </div>
     </header>
   );
