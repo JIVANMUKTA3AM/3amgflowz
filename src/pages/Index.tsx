@@ -1,86 +1,103 @@
 
-import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import WebhookConfig from "@/components/WebhookConfig";
-import WorkflowCards from "@/components/WorkflowCards";
+import { useAuthContext } from "@/context/AuthContext";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated, user, isLoading } = useAuthContext();
 
-  const handleWorkflowTrigger = async (workflowType: string) => {
-    if (!webhookUrl) {
-      toast({
-        title: "URL do webhook necessário",
-        description: "Por favor, insira a URL do seu webhook do n8n",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "no-cors",
-        body: JSON.stringify({
-          workflow_type: workflowType,
-          timestamp: new Date().toISOString(),
-          source: window.location.origin,
-        }),
-      });
-
-      toast({
-        title: "Workflow iniciado",
-        description: `O workflow "${workflowType}" foi iniciado no n8n.`,
-      });
-    } catch (error) {
-      console.error("Erro ao iniciar workflow:", error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível iniciar o workflow. Verifique a URL e tente novamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header com Navigation */}
-      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
-
-      {/* Conteúdo Principal */}
-      <main className="container mx-auto px-4">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-4 text-center">Sistema de Integração n8n</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-center">
-            Plataforma de automação de fluxos de trabalho com integração n8n para processamento de dados,
-            notificações e conexão com APIs externas.
-          </p>
-        </div>
-
-        {/* Configuração do Webhook */}
-        <WebhookConfig webhookUrl={webhookUrl} setWebhookUrl={setWebhookUrl} />
-
-        {/* Cards de Fluxos */}
-        <WorkflowCards 
-          handleWorkflowTrigger={handleWorkflowTrigger} 
-          isLoading={isLoading} 
-          webhookUrl={webhookUrl} 
-        />
+      <main className="container mx-auto px-4 py-8">
+        {isAuthenticated ? (
+          <AuthenticatedDashboard user={user} />
+        ) : (
+          <AnonymousLanding />
+        )}
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };
+
+const AnonymousLanding = () => (
+  <div className="max-w-3xl mx-auto text-center py-12">
+    <h1 className="text-4xl font-bold mb-4">
+      Sistema de Gerenciamento SaaS
+    </h1>
+    <p className="text-xl text-gray-600 mb-8">
+      Gerencie organizações, usuários e recursos com facilidade em nossa plataforma integrada.
+    </p>
+    <div className="flex justify-center gap-4">
+      <Link to="/auth">
+        <Button size="lg">Começar agora</Button>
+      </Link>
+      <Link to="/documentacao">
+        <Button variant="outline" size="lg">
+          Documentação
+        </Button>
+      </Link>
+    </div>
+  </div>
+);
+
+const AuthenticatedDashboard = ({ user }: { user: any }) => (
+  <div>
+    <h1 className="text-3xl font-bold mb-6">
+      Olá, {user?.user_metadata?.full_name || "Usuário"}!
+    </h1>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <DashboardCard
+        title="Minhas Organizações"
+        description="Gerencie suas organizações e equipes"
+        linkTo="/organizations"
+        linkText="Ver Organizações"
+      />
+      <DashboardCard
+        title="Meu Perfil"
+        description="Atualize suas informações pessoais"
+        linkTo="/profile"
+        linkText="Editar Perfil"
+      />
+      <DashboardCard
+        title="Documentação"
+        description="Veja guias e recursos de ajuda"
+        linkTo="/documentacao"
+        linkText="Ver Documentação"
+      />
+    </div>
+  </div>
+);
+
+const DashboardCard = ({
+  title,
+  description,
+  linkTo,
+  linkText,
+}: {
+  title: string;
+  description: string;
+  linkTo: string;
+  linkText: string;
+}) => (
+  <div className="bg-white rounded-lg shadow p-6 flex flex-col justify-between">
+    <div>
+      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <p className="text-gray-600 mb-4">{description}</p>
+    </div>
+    <Link to={linkTo}>
+      <Button variant="outline" className="w-full">
+        {linkText}
+      </Button>
+    </Link>
+  </div>
+);
 
 export default Index;
