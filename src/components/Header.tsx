@@ -1,60 +1,70 @@
 
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
-import UserMenu from "@/components/UserMenu";
-import { useAuthContext } from "@/context/AuthContext";
-import { Button } from "./ui/button";
-import { Building, User } from "lucide-react";
 
-const Header = () => {
-  const { isAuthenticated } = useAuthContext();
+type HeaderProps = {
+  handleWorkflowTrigger: (workflowType: string) => Promise<void>;
+  isLoading: boolean;
+}
 
+const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
   return (
-    <header className="border-b">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="flex items-center space-x-8">
-          <Link to="/" className="font-bold text-xl">
-            SaaS Manager
-          </Link>
-          
-          {isAuthenticated && (
-            <nav className="hidden md:flex space-x-4">
-              <Link to="/" className="text-sm font-medium hover:underline">
-                Dashboard
+    <header className="bg-white shadow-sm py-4 mb-6">
+      <div className="container mx-auto flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-800">Sistema de Automação</h1>
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger>Workflows</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="grid w-[400px] gap-3 p-4">
+                  <div className="p-2">
+                    <h3 className="font-medium mb-1 text-sm">Workflows Disponíveis</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Selecione um tipo de workflow para executar
+                    </p>
+                  </div>
+                  <button 
+                    onClick={() => handleWorkflowTrigger("processamento_dados")}
+                    className={navigationMenuTriggerStyle() + " w-full justify-start"}
+                    disabled={isLoading}
+                  >
+                    Processamento de Dados
+                  </button>
+                  <button 
+                    onClick={() => handleWorkflowTrigger("notificacao")}
+                    className={navigationMenuTriggerStyle() + " w-full justify-start"}
+                    disabled={isLoading}
+                  >
+                    Sistema de Notificação
+                  </button>
+                  <button 
+                    onClick={() => handleWorkflowTrigger("integracao")}
+                    className={navigationMenuTriggerStyle() + " w-full justify-start"}
+                    disabled={isLoading}
+                  >
+                    Integração com APIs
+                  </button>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link to="/arquitetura" className={navigationMenuTriggerStyle()}>
+                Arquitetura
               </Link>
-              <Link
-                to="/organizations"
-                className="text-sm font-medium hover:underline flex items-center"
-              >
-                <Building className="h-3.5 w-3.5 mr-1" />
-                Organizações
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link to="/modelo-dados" className={navigationMenuTriggerStyle()}>
+                Modelo de Dados
               </Link>
-              <Link
-                to="/profile"
-                className="text-sm font-medium hover:underline flex items-center"
-              >
-                <User className="h-3.5 w-3.5 mr-1" />
-                Meu Perfil
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link to="/fluxos" className={navigationMenuTriggerStyle()}>
+                Fluxos n8n
               </Link>
-              <Link
-                to="/documentation"
-                className="text-sm font-medium hover:underline"
-              >
-                Documentação
-              </Link>
-            </nav>
-          )}
-        </div>
-        
-        <div className="flex items-center gap-2">
-          {!isAuthenticated && (
-            <Link to="/auth">
-              <Button variant="default" size="sm">
-                Entrar
-              </Button>
-            </Link>
-          )}
-          <UserMenu />
-        </div>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       </div>
     </header>
   );
