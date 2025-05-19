@@ -38,7 +38,16 @@ const PagamentoMetodo = () => {
     if (!clientSecret) return;
     
     const loadStripe = async () => {
-      const stripeJs = await import('https://js.stripe.com/v3/');
+      if (!window.Stripe) {
+        console.error("Stripe.js não foi carregado");
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar a biblioteca de pagamento",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       const stripeInstance = window.Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
       setStripe(stripeInstance);
       
@@ -201,11 +210,6 @@ const PagamentoMetodo = () => {
     window.open(boletoUrl, '_blank');
   };
 
-  // Voltar para a página de faturas
-  const goBack = () => {
-    navigate('/pagamentos');
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -302,7 +306,7 @@ const PagamentoMetodo = () => {
             <Button 
               variant={isPaid ? "default" : "outline"} 
               className="w-full" 
-              onClick={goBack}
+              onClick={() => navigate('/pagamentos')}
             >
               {isPaid ? 'Voltar para Faturas' : 'Cancelar'}
             </Button>
