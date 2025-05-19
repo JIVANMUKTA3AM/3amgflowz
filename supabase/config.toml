@@ -1,0 +1,19 @@
+
+project_id = "llssfiurupclhpiaozug"
+
+[api]
+# Configuração padrão da API
+
+[db]
+# Configuração padrão do banco de dados
+
+[functions]
+# Configuração das Edge Functions
+[functions.process-payment]
+verify_jwt = true
+
+[functions.verify-payment]
+verify_jwt = true
+
+[realtime]
+# Configuração do Realtime
