@@ -15,5 +15,8 @@ verify_jwt = true
 [functions.verify-payment]
 verify_jwt = true
 
+[functions.webhook-stripe]
+verify_jwt = false
+
 [realtime]
 # Configuração do Realtime
