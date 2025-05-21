@@ -68,12 +68,16 @@ const Index = () => {
         </div>
 
         {/* Resumo dos Agentes */}
-        <div className="mb-8">
-          <AgentesResumo />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="md:col-span-1">
+            <AgentesResumo />
+          </div>
+          
+          {/* Configuração do Webhook */}
+          <div className="md:col-span-2">
+            <WebhookConfig webhookUrl={webhookUrl} setWebhookUrl={setWebhookUrl} />
+          </div>
         </div>
-
-        {/* Configuração do Webhook */}
-        <WebhookConfig webhookUrl={webhookUrl} setWebhookUrl={setWebhookUrl} />
 
         {/* Cards de Fluxos */}
         <WorkflowCards 
