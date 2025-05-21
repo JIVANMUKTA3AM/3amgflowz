@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WebhookConfig from "@/components/WebhookConfig";
 import WorkflowCards from "@/components/WorkflowCards";
+import AgentesResumo from "@/components/AgentesResumo";
 
 const Index = () => {
   const [webhookUrl, setWebhookUrl] = useState("");
@@ -64,6 +65,11 @@ const Index = () => {
             Plataforma de automação de fluxos de trabalho com integração n8n para processamento de dados,
             notificações e conexão com APIs externas.
           </p>
+        </div>
+
+        {/* Resumo dos Agentes */}
+        <div className="mb-8">
+          <AgentesResumo />
         </div>
 
         {/* Configuração do Webhook */}

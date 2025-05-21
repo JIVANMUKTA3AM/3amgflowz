@@ -78,34 +78,93 @@ serve(async (req) => {
 
       logStep("Processando pagamento confirmado", { email: customerEmail });
 
-      // Atualizar o plano do usuário para 'pro'
-      const { data, error } = await supabaseAdmin
-        .from('profiles')
-        .update({ plan: 'pro', updated_at: new Date().toISOString() })
-        .eq('id', (
-          await supabaseAdmin
-            .from('auth.users')
-            .select('id')
-            .eq('email', customerEmail)
-            .single()
-        ).data?.id);
+      // Obter o ID do usuário a partir do email
+      const { data: userData, error: userError } = await supabaseAdmin
+        .from('auth.users')
+        .select('id')
+        .eq('email', customerEmail)
+        .single();
       
-      if (error) {
-        logStep("Erro ao atualizar perfil do usuário", { error: error.message });
+      if (userError || !userData) {
+        logStep("Erro ao buscar usuário pelo email", { error: userError?.message });
+        return new Response(JSON.stringify({ 
+          status: "error", 
+          message: "Usuário não encontrado" 
+        }), { 
+          status: 400, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        });
+      }
+      
+      const userId = userData.id;
+
+      // Atualizar o plano do usuário para 'pro'
+      const { error: updateError } = await supabaseAdmin
+        .from('profiles')
+        .update({ 
+          plan: 'pro', 
+          updated_at: new Date().toISOString(),
+          agent_settings: { onboarding_completed: true, checkout_completed: true }
+        })
+        .eq('id', userId);
+      
+      if (updateError) {
+        logStep("Erro ao atualizar perfil do usuário", { error: updateError.message });
         return new Response(JSON.stringify({ 
           status: "error", 
           message: "Erro ao atualizar perfil", 
-          details: error.message 
+          details: updateError.message 
         }), { 
           status: 500, 
           headers: { ...corsHeaders, "Content-Type": "application/json" } 
         });
       }
 
-      logStep("Perfil atualizado com sucesso", { email: customerEmail, plan: 'pro' });
+      // Obter detalhes dos agentes disponíveis
+      const { data: agentsData, error: agentsError } = await supabaseAdmin
+        .from('agents')
+        .select('type')
+        .order('base_price');
+        
+      if (agentsError) {
+        logStep("Erro ao buscar agentes", { error: agentsError.message });
+        return new Response(JSON.stringify({ 
+          status: "error", 
+          message: "Erro ao buscar agentes", 
+          details: agentsError.message 
+        }), { 
+          status: 500, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        });
+      }
+
+      // Ativar todos os agentes para o usuário (plano pro)
+      const userAgents = agentsData.map(agent => ({
+        user_id: userId,
+        agent_type: agent.type,
+        is_active: true
+      }));
+
+      const { error: insertError } = await supabaseAdmin
+        .from('user_agents')
+        .upsert(userAgents);
+        
+      if (insertError) {
+        logStep("Erro ao ativar agentes para o usuário", { error: insertError.message });
+        return new Response(JSON.stringify({ 
+          status: "error", 
+          message: "Erro ao ativar agentes", 
+          details: insertError.message 
+        }), { 
+          status: 500, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        });
+      }
+
+      logStep("Perfil e agentes atualizados com sucesso", { email: customerEmail, plan: 'pro' });
       return new Response(JSON.stringify({ 
         status: "success", 
-        message: "Plano atualizado para pro" 
+        message: "Plano atualizado para pro e agentes ativados" 
       }), { 
         status: 200, 
         headers: { ...corsHeaders, "Content-Type": "application/json" } 

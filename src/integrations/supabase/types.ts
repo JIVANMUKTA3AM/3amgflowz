@@ -24,6 +24,39 @@ export type Database = {
         }
         Relationships: []
       }
+      agents: {
+        Row: {
+          base_price: number
+          created_at: string
+          description: string
+          features: Json
+          id: string
+          name: string
+          type: Database["public"]["Enums"]["agent_type"]
+          updated_at: string
+        }
+        Insert: {
+          base_price: number
+          created_at?: string
+          description: string
+          features: Json
+          id?: string
+          name: string
+          type: Database["public"]["Enums"]["agent_type"]
+          updated_at?: string
+        }
+        Update: {
+          base_price?: number
+          created_at?: string
+          description?: string
+          features?: Json
+          id?: string
+          name?: string
+          type?: Database["public"]["Enums"]["agent_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           amount: number
@@ -144,6 +177,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          agent_settings: Json | null
           created_at: string
           id: string
           plan: Database["public"]["Enums"]["subscription_plan"]
@@ -151,6 +185,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          agent_settings?: Json | null
           created_at?: string
           id: string
           plan?: Database["public"]["Enums"]["subscription_plan"]
@@ -158,11 +193,39 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          agent_settings?: Json | null
           created_at?: string
           id?: string
           plan?: Database["public"]["Enums"]["subscription_plan"]
           role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_agents: {
+        Row: {
+          agent_type: Database["public"]["Enums"]["agent_type"]
+          created_at: string
+          id: string
+          is_active: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_type: Database["public"]["Enums"]["agent_type"]
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_type?: Database["public"]["Enums"]["agent_type"]
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -186,6 +249,7 @@ export type Database = {
       }
     }
     Enums: {
+      agent_type: "atendimento" | "comercial" | "suporte_tecnico"
       membership_role: "owner" | "admin" | "member" | "viewer"
       subscription_plan: "free" | "pro" | "enterprise"
       user_role: "admin" | "user" | "viewer"
@@ -304,6 +368,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      agent_type: ["atendimento", "comercial", "suporte_tecnico"],
       membership_role: ["owner", "admin", "member", "viewer"],
       subscription_plan: ["free", "pro", "enterprise"],
       user_role: ["admin", "user", "viewer"],
