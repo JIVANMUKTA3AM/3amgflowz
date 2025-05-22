@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import WebhookConfig from "@/components/WebhookConfig";
 import WorkflowCards from "@/components/WorkflowCards";
 import AgentesResumo from "@/components/AgentesResumo";
+import AgentServiceStatus from "@/components/AgentServiceStatus";
 
 const Index = () => {
   const [webhookUrl, setWebhookUrl] = useState("");
@@ -67,14 +68,18 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Resumo dos Agentes */}
+        {/* Resumo dos Agentes e Status de Serviços */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="md:col-span-1">
             <AgentesResumo />
           </div>
           
+          <div className="md:col-span-1">
+            <AgentServiceStatus />
+          </div>
+          
           {/* Configuração do Webhook */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-1">
             <WebhookConfig webhookUrl={webhookUrl} setWebhookUrl={setWebhookUrl} />
           </div>
         </div>
