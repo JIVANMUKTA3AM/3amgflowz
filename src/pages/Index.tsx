@@ -4,9 +4,11 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WebhookConfig from "@/components/WebhookConfig";
+import WebhookSpecificConfig from "@/components/WebhookSpecificConfig";
 import WorkflowCards from "@/components/WorkflowCards";
 import AgentesResumo from "@/components/AgentesResumo";
 import AgentServiceStatus from "@/components/AgentServiceStatus";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   const [webhookUrl, setWebhookUrl] = useState("");
@@ -69,19 +71,27 @@ const Index = () => {
         </div>
 
         {/* Resumo dos Agentes e Status de Serviços */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="md:col-span-1">
-            <AgentesResumo />
-          </div>
-          
-          <div className="md:col-span-1">
-            <AgentServiceStatus />
-          </div>
-          
-          {/* Configuração do Webhook */}
-          <div className="md:col-span-1">
-            <WebhookConfig webhookUrl={webhookUrl} setWebhookUrl={setWebhookUrl} />
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <AgentesResumo />
+          <AgentServiceStatus />
+        </div>
+
+        {/* Configuração de Webhooks com Tabs */}
+        <div className="mb-8">
+          <Tabs defaultValue="global" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="global">Webhook Global</TabsTrigger>
+              <TabsTrigger value="specific">Webhooks por Agente</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="global" className="mt-6">
+              <WebhookConfig webhookUrl={webhookUrl} setWebhookUrl={setWebhookUrl} />
+            </TabsContent>
+            
+            <TabsContent value="specific" className="mt-6">
+              <WebhookSpecificConfig />
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Cards de Fluxos */}

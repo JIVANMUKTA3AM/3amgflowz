@@ -128,7 +128,7 @@ const IntegrationCard = ({ integration, existingConfig, onStatusChange }: Integr
             <Input
               id={`${integration.agentType}-${field.name}`}
               type={field.type}
-              value={config[field.name as keyof IntegrationConfig] || ""}
+              value={(config[field.name as keyof IntegrationConfig] as string) || ""}
               onChange={(e) => handleInputChange(field.name, e.target.value)}
               placeholder={`Digite ${field.label.toLowerCase()}`}
               required={field.required}
