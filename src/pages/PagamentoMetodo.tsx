@@ -1,4 +1,3 @@
-
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import PixPayment from "@/components/payment/PixPayment";
 import BoletoPayment from "@/components/payment/BoletoPayment";
 import { usePaymentVerification } from "@/hooks/usePaymentVerification";
 import { useStripeIntegration } from "@/hooks/useStripeIntegration";
+import { useWorkflow } from "@/hooks/useWorkflow";
 
 // Para carregar o Stripe.js dinamicamente
 declare global {
@@ -39,6 +39,9 @@ const PagamentoMetodo = () => {
     boletoUrl
   } = useStripeIntegration({ clientSecret, method });
 
+  // Hook para workflow
+  const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
+
   // Renderizar o conteúdo do método de pagamento
   const renderPaymentMethod = () => {
     if (isPaid) return null;
@@ -54,9 +57,10 @@ const PagamentoMetodo = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-      <main className="flex-grow container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gray-50">
+      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
+      
+      <main className="container mx-auto px-4 py-8">
         <Card className="max-w-lg mx-auto">
           <CardHeader>
             <CardTitle>
@@ -89,6 +93,7 @@ const PagamentoMetodo = () => {
           </CardFooter>
         </Card>
       </main>
+
       <Footer />
     </div>
   );

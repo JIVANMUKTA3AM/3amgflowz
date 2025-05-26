@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import Footer from "@/components/Footer";
 import InvoicesTable from "@/components/payment/InvoicesTable";
 import PaymentModal from "@/components/payment/PaymentModal";
 import { useInvoices } from "@/hooks/useInvoices";
+import { useWorkflow } from "@/hooks/useWorkflow";
 
 const Pagamentos = () => {
   const [searchParams] = useSearchParams();
@@ -22,6 +22,7 @@ const Pagamentos = () => {
     processPayment,
     setIsPaymentModalOpen
   } = useInvoices();
+  const { handleWorkflowTrigger, isLoading } = useWorkflow();
 
   // Verificar parâmetros de URL para pagamentos bem-sucedidos
   useEffect(() => {
@@ -37,9 +38,10 @@ const Pagamentos = () => {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Header />
-      <main className="flex-grow container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-gray-50">
+      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
+      
+      <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Minhas Faturas</h1>
           <p className="text-gray-600">

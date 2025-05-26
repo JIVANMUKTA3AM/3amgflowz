@@ -34,10 +34,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     // Configurar listener de mudanças de auth primeiro
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Verificar assinatura após mudança de auth
+        if (session?.user && event === 'SIGNED_IN') {
+          try {
+            await supabase.functions.invoke('check-subscription');
+          } catch (error) {
+            console.error('Erro ao verificar assinatura:', error);
+          }
+        }
       }
     );
 
