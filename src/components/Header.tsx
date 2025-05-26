@@ -1,105 +1,121 @@
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MenuIcon, MessagesSquare, Settings, Code, LayoutDashboard, FileText, Database, Package } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Zap, Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import UserMenu from "./UserMenu";
 
 type HeaderProps = {
-  handleWorkflowTrigger?: (workflowType: string) => Promise<void>;
-  isLoading?: boolean;
-}
+  handleWorkflowTrigger: (workflowType: string) => Promise<void>;
+  isLoading: boolean;
+};
 
 const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
-  const [open, setOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   const navItems = [
-    { label: "Dashboard", href: "/", icon: <LayoutDashboard className="w-4 h-4 mr-2" /> },
-    { label: "Fluxos", href: "/fluxos", icon: <Code className="w-4 h-4 mr-2" /> },
-    { label: "Agentes", href: "/agentes", icon: <MessagesSquare className="w-4 h-4 mr-2" /> },
-    { label: "Integrações", href: "/integracoes", icon: <Package className="w-4 h-4 mr-2" /> },
-    { label: "Pagamentos", href: "/pagamentos", icon: <Settings className="w-4 h-4 mr-2" /> },
-    { label: "Arquitetura", href: "/arquitetura", icon: <Database className="w-4 h-4 mr-2" /> },
-    { label: "Modelo de Dados", href: "/modelo-dados", icon: <Database className="w-4 h-4 mr-2" /> },
-    { label: "Documentação", href: "/documentacao", icon: <FileText className="w-4 h-4 mr-2" /> },
+    { path: "/", label: "Home" },
+    { path: "/agentes", label: "Agentes" },
+    { path: "/integracoes", label: "Integrações" },
+    { path: "/fluxos", label: "Fluxos" },
+    { path: "/pagamentos", label: "Pagamentos" },
+    { path: "/arquitetura", label: "Arquitetura" },
+    { path: "/documentacao", label: "Documentação" },
   ];
 
-  const handleNavItemClick = () => {
-    setOpen(false);
+  const isActiveLink = (path: string) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
   };
 
   return (
-    <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo e Título */}
-          <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-gray-900">
-              n8n Connect
-            </Link>
+    <header className="bg-white shadow-sm border-b">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <Zap className="h-8 w-8 text-blue-600" />
+            <span className="text-xl font-bold text-gray-900">n8n System</span>
           </div>
 
-          {/* Menu Desktop */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            {navItems.map((item, index) => (
+            {navItems.map((item) => (
               <Link
-                key={index}
-                to={item.href}
-                className="text-gray-600 hover:text-blue-600 font-medium transition-colors"
+                key={item.path}
+                to={item.path}
+                className={`text-sm font-medium transition-colors hover:text-blue-600 ${
+                  isActiveLink(item.path)
+                    ? "text-blue-600 border-b-2 border-blue-600 pb-1"
+                    : "text-gray-600"
+                }`}
               >
                 {item.label}
               </Link>
             ))}
           </nav>
 
-          {/* Menu Mobile */}
-          <div className="md:hidden">
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <MenuIcon className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left">
-                <nav className="flex flex-col space-y-4 mt-8">
-                  {navItems.map((item, index) => (
-                    <Link
-                      key={index}
-                      to={item.href}
-                      className="flex items-center py-2 px-3 rounded-md hover:bg-gray-100"
-                      onClick={handleNavItemClick}
-                    >
-                      {item.icon}
-                      {item.label}
-                    </Link>
-                  ))}
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
+          {/* Right side - User Menu and Quick Action */}
+          <div className="flex items-center space-x-4">
+            <Button
+              onClick={() => handleWorkflowTrigger("test")}
+              disabled={isLoading}
+              size="sm"
+              className="hidden md:inline-flex"
+            >
+              {isLoading ? "Processando..." : "Teste Rápido"}
+            </Button>
+            
+            <UserMenu />
 
-          {/* Botões de Ação (se presentes) */}
-          {handleWorkflowTrigger && (
-            <div className="hidden md:flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleWorkflowTrigger("processamento_dados")}
-                disabled={isLoading}
-              >
-                Processar Dados
-              </Button>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => handleWorkflowTrigger("notificacao")}
-                disabled={isLoading}
-              >
-                Enviar Notificação
-              </Button>
-            </div>
-          )}
+            {/* Mobile menu button */}
+            <button
+              className="md:hidden p-2"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6 text-gray-600" />
+              ) : (
+                <Menu className="h-6 w-6 text-gray-600" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden py-4 border-t">
+            <nav className="flex flex-col space-y-3">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`text-sm font-medium transition-colors hover:text-blue-600 px-2 py-1 ${
+                    isActiveLink(item.path)
+                      ? "text-blue-600 bg-blue-50 rounded"
+                      : "text-gray-600"
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <Button
+                onClick={() => {
+                  handleWorkflowTrigger("test");
+                  setIsMobileMenuOpen(false);
+                }}
+                disabled={isLoading}
+                size="sm"
+                className="mt-4 w-full"
+              >
+                {isLoading ? "Processando..." : "Teste Rápido"}
+              </Button>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );

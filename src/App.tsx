@@ -4,7 +4,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import Arquitetura from "./pages/Arquitetura";
 import ModeloDados from "./pages/ModeloDados";
 import Documentacao from "./pages/Documentacao";
@@ -20,23 +23,61 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/arquitetura" element={<Arquitetura />} />
-          <Route path="/modelo-dados" element={<ModeloDados />} />
-          <Route path="/documentacao" element={<Documentacao />} />
-          <Route path="/fluxos" element={<Fluxos />} />
-          <Route path="/pagamentos" element={<Pagamentos />} />
-          <Route path="/pagamentos/metodo" element={<PagamentoMetodo />} />
-          <Route path="/agentes" element={<Agentes />} />
-          <Route path="/integracoes" element={<Integracoes />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            } />
+            <Route path="/arquitetura" element={
+              <ProtectedRoute>
+                <Arquitetura />
+              </ProtectedRoute>
+            } />
+            <Route path="/modelo-dados" element={
+              <ProtectedRoute>
+                <ModeloDados />
+              </ProtectedRoute>
+            } />
+            <Route path="/documentacao" element={
+              <ProtectedRoute>
+                <Documentacao />
+              </ProtectedRoute>
+            } />
+            <Route path="/fluxos" element={
+              <ProtectedRoute>
+                <Fluxos />
+              </ProtectedRoute>
+            } />
+            <Route path="/pagamentos" element={
+              <ProtectedRoute>
+                <Pagamentos />
+              </ProtectedRoute>
+            } />
+            <Route path="/pagamentos/metodo" element={
+              <ProtectedRoute>
+                <PagamentoMetodo />
+              </ProtectedRoute>
+            } />
+            <Route path="/agentes" element={
+              <ProtectedRoute>
+                <Agentes />
+              </ProtectedRoute>
+            } />
+            <Route path="/integracoes" element={
+              <ProtectedRoute>
+                <Integracoes />
+              </ProtectedRoute>
+            } />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
