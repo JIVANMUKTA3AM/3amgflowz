@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +15,7 @@ const Pagamentos = () => {
     invoices,
     selectedInvoice,
     isPaymentModalOpen,
-    isLoading,
+    isLoading: isPaymentLoading,
     isLoadingInvoices,
     loadInvoices,
     verifyPayment,
@@ -22,7 +23,7 @@ const Pagamentos = () => {
     processPayment,
     setIsPaymentModalOpen
   } = useInvoices();
-  const { handleWorkflowTrigger, isLoading } = useWorkflow();
+  const { handleWorkflowTrigger, isLoading: isWorkflowLoading } = useWorkflow();
 
   // Verificar parâmetros de URL para pagamentos bem-sucedidos
   useEffect(() => {
@@ -39,7 +40,7 @@ const Pagamentos = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
+      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isWorkflowLoading} />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -71,7 +72,7 @@ const Pagamentos = () => {
           onOpenChange={setIsPaymentModalOpen}
           invoice={selectedInvoice}
           onProcessPayment={processPayment}
-          isLoading={isLoading}
+          isLoading={isPaymentLoading}
         />
       </main>
       <Footer />
