@@ -63,7 +63,7 @@ const Index = () => {
       {/* Conteúdo Principal */}
       <main className="container mx-auto px-4">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-4 text-center">Sistema de Integração n8n</h2>
+          <h2 className="text-3xl font-bold mb-4 text-center">3AMG - Sistema de Automação</h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-center">
             Plataforma de automação de fluxos de trabalho com integração n8n para processamento de dados,
             notificações e conexão com APIs externas.

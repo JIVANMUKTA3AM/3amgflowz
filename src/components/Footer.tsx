@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <h3 className="text-xl font-bold mb-2">Sistema de Automação n8n</h3>
+            <h3 className="text-xl font-bold mb-2">3AMG</h3>
             <p className="text-gray-400">Integração e automação de fluxos de trabalho</p>
           </div>
           <div className="flex space-x-4">
@@ -26,7 +26,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 border-t border-gray-700 pt-6 text-center text-gray-400 text-sm">
-          © {new Date().getFullYear()} Sistema de Automação. Todos os direitos reservados.
+          © {new Date().getFullYear()} 3AMG. Todos os direitos reservados.
         </div>
       </div>
     </footer>

@@ -37,7 +37,7 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <Zap className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">n8n System</span>
+            <span className="text-xl font-bold text-gray-900">3AMG</span>
           </div>
 
           {/* Desktop Navigation */}
