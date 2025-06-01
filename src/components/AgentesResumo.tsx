@@ -23,6 +23,20 @@ const AgentesResumo = () => {
   const [activeCount, setActiveCount] = useState(0);
   const navigate = useNavigate();
 
+  // Função para mapear os nomes dos agentes
+  const getAgentDisplayName = (type: string) => {
+    switch (type) {
+      case 'atendimento':
+        return 'Agente de Atendimento';
+      case 'comercial':
+        return 'Agente Comercial';
+      case 'suporte_tecnico':
+        return 'Agente de Suporte Técnico';
+      default:
+        return type;
+    }
+  };
+
   useEffect(() => {
     const loadAgentsStatus = async () => {
       try {
@@ -105,7 +119,7 @@ const AgentesResumo = () => {
 
       toast({
         title: isActivating ? "Agente ativado" : "Agente desativado",
-        description: `${agent.name} foi ${isActivating ? "ativado" : "desativado"} com sucesso.`,
+        description: `${getAgentDisplayName(agent.type)} foi ${isActivating ? "ativado" : "desativado"} com sucesso.`,
       });
     } catch (error) {
       console.error("Erro ao alterar status do agente:", error);
@@ -154,7 +168,7 @@ const AgentesResumo = () => {
                     variant={agent.is_active ? "default" : "outline"} 
                     className="w-2 h-2 p-0 rounded-full"
                   />
-                  <span>{agent.name.split(" ")[1]}</span>
+                  <span>{getAgentDisplayName(agent.type)}</span>
                 </div>
                 <Switch
                   id={`agent-switch-mini-${agent.id}`}
