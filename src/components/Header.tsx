@@ -16,6 +16,7 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
 
   const navItems = [
     { path: "/", label: "Home" },
+    { path: "/dashboard", label: "Dashboard" },
     { path: "/agentes", label: "Agentes" },
     { path: "/integracoes", label: "Integrações" },
     { path: "/fluxos", label: "Fluxos" },
