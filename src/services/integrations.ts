@@ -7,13 +7,19 @@ export type IntegrationConfig = {
   apiKey?: string;
   webhookUrl?: string;
   accountId?: string;
+  clientId?: string;
+  clientSecret?: string;
+  spreadsheetId?: string;
+  workspaceId?: string;
+  channelId?: string;
+  botToken?: string;
   isConnected: boolean;
 };
 
 export type AgentIntegration = {
   agentType: "atendimento" | "comercial" | "suporte_tecnico";
   serviceName: string;
-  serviceType: "whatsapp" | "crm" | "ticket";
+  serviceType: "google_sheets" | "crm" | "slack";
   description: string;
   isConnected: boolean;
   configFields: Array<{
@@ -21,43 +27,113 @@ export type AgentIntegration = {
     label: string;
     type: "text" | "password" | "url";
     required: boolean;
+    placeholder?: string;
   }>;
 };
 
 export const agentIntegrations: AgentIntegration[] = [
   {
     agentType: "atendimento",
-    serviceName: "WhatsApp Business",
-    serviceType: "whatsapp",
-    description: "Integre seu Agente de Atendimento com o WhatsApp Business para responder mensagens automaticamente.",
+    serviceName: "Google Sheets",
+    serviceType: "google_sheets",
+    description: "Integre o Agente de Atendimento com Google Sheets para registrar automaticamente todas as interações e criar relatórios de atendimento.",
     isConnected: false,
     configFields: [
-      { name: "apiKey", label: "API Key", type: "password", required: true },
-      { name: "accountId", label: "ID da Conta", type: "text", required: true },
-      { name: "webhookUrl", label: "URL do Webhook", type: "url", required: true }
+      { 
+        name: "clientId", 
+        label: "Client ID", 
+        type: "text", 
+        required: true,
+        placeholder: "seu-client-id.googleusercontent.com"
+      },
+      { 
+        name: "clientSecret", 
+        label: "Client Secret", 
+        type: "password", 
+        required: true,
+        placeholder: "GOCSPX-xxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      { 
+        name: "spreadsheetId", 
+        label: "ID da Planilha", 
+        type: "text", 
+        required: true,
+        placeholder: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+      },
+      { 
+        name: "webhookUrl", 
+        label: "URL do Webhook n8n", 
+        type: "url", 
+        required: true,
+        placeholder: "https://seu-n8n.com/webhook/google-sheets"
+      }
     ]
   },
   {
     agentType: "comercial",
     serviceName: "CRM Vendas",
     serviceType: "crm",
-    description: "Conecte seu Agente Comercial ao CRM para automatizar o processo de vendas e acompanhamento de leads.",
+    description: "Conecte o Agente Comercial ao seu CRM para automatizar o processo de vendas, criar leads e acompanhar oportunidades de negócio.",
     isConnected: false,
     configFields: [
-      { name: "apiKey", label: "API Key", type: "password", required: true },
-      { name: "webhookUrl", label: "URL do Webhook", type: "url", required: true }
+      { 
+        name: "apiKey", 
+        label: "API Key do CRM", 
+        type: "password", 
+        required: true,
+        placeholder: "sk_live_xxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      { 
+        name: "accountId", 
+        label: "ID da Conta", 
+        type: "text", 
+        required: true,
+        placeholder: "acc_1234567890"
+      },
+      { 
+        name: "webhookUrl", 
+        label: "URL do Webhook n8n", 
+        type: "url", 
+        required: true,
+        placeholder: "https://seu-n8n.com/webhook/crm"
+      }
     ]
   },
   {
     agentType: "suporte_tecnico",
-    serviceName: "Sistema de Tickets",
-    serviceType: "ticket",
-    description: "Integre seu Agente de Suporte Técnico com o sistema de tickets para resolução automática de problemas.",
+    serviceName: "Slack",
+    serviceType: "slack",
+    description: "Integre o Agente de Suporte Técnico com Slack para notificações automáticas de tickets e comunicação em tempo real com a equipe.",
     isConnected: false,
     configFields: [
-      { name: "apiKey", label: "API Key", type: "password", required: true },
-      { name: "accountId", label: "ID da Conta", type: "text", required: true },
-      { name: "webhookUrl", label: "URL do Webhook", type: "url", required: true }
+      { 
+        name: "botToken", 
+        label: "Bot Token", 
+        type: "password", 
+        required: true,
+        placeholder: "xoxb-xxxxxxxxxxxxxxx-xxxxxxxxxxxxxxx"
+      },
+      { 
+        name: "workspaceId", 
+        label: "ID do Workspace", 
+        type: "text", 
+        required: true,
+        placeholder: "T1234567890"
+      },
+      { 
+        name: "channelId", 
+        label: "ID do Canal", 
+        type: "text", 
+        required: true,
+        placeholder: "C1234567890"
+      },
+      { 
+        name: "webhookUrl", 
+        label: "URL do Webhook n8n", 
+        type: "url", 
+        required: true,
+        placeholder: "https://seu-n8n.com/webhook/slack"
+      }
     ]
   }
 ];
@@ -110,16 +186,37 @@ export async function getIntegrationConfig(agentType: string): Promise<Integrati
 
 // Testar conexão com o serviço externo
 export async function testIntegrationConnection(serviceType: string, config: IntegrationConfig): Promise<boolean> {
-  // Esta é uma função simulada para testar a conexão
-  // Em um cenário real, você faria uma chamada para o serviço externo
-  
   try {
-    // Simulação de uma chamada a API externa
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Simulação de uma chamada a API externa baseada no tipo de serviço
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Simular sucesso se tiver apiKey e webhookUrl
-    if (config.apiKey && config.webhookUrl) {
-      return true;
+    switch (serviceType) {
+      case 'google_sheets':
+        // Simular validação do Google Sheets
+        if (config.clientId && config.clientSecret && config.spreadsheetId) {
+          console.log("Testando conexão com Google Sheets...");
+          return true;
+        }
+        break;
+        
+      case 'crm':
+        // Simular validação do CRM
+        if (config.apiKey && config.accountId) {
+          console.log("Testando conexão com CRM...");
+          return true;
+        }
+        break;
+        
+      case 'slack':
+        // Simular validação do Slack
+        if (config.botToken && config.workspaceId && config.channelId) {
+          console.log("Testando conexão com Slack...");
+          return true;
+        }
+        break;
+        
+      default:
+        return false;
     }
     
     return false;

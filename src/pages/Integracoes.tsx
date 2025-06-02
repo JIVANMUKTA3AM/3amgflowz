@@ -1,9 +1,47 @@
+
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useWorkflow } from "@/hooks/useWorkflow";
+import IntegrationCard from "@/components/IntegrationCard";
+import WebhookSpecificConfig from "@/components/WebhookSpecificConfig";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { agentIntegrations, getIntegrationConfig, IntegrationConfig } from "@/services/integrations";
 
 const Integracoes = () => {
   const { handleWorkflowTrigger, isLoading } = useWorkflow();
+  const [integrationConfigs, setIntegrationConfigs] = useState<Record<string, IntegrationConfig | null>>({});
+  const [isLoadingConfigs, setIsLoadingConfigs] = useState(true);
+
+  useEffect(() => {
+    loadIntegrationConfigs();
+  }, []);
+
+  const loadIntegrationConfigs = async () => {
+    setIsLoadingConfigs(true);
+    try {
+      const configs: Record<string, IntegrationConfig | null> = {};
+      
+      for (const integration of agentIntegrations) {
+        const config = await getIntegrationConfig(integration.agentType);
+        configs[integration.agentType] = config;
+      }
+      
+      setIntegrationConfigs(configs);
+    } catch (error) {
+      console.error("Erro ao carregar configurações:", error);
+    } finally {
+      setIsLoadingConfigs(false);
+    }
+  };
+
+  const handleStatusChange = (agentType: string, connected: boolean) => {
+    setIntegrationConfigs(prev => ({
+      ...prev,
+      [agentType]: prev[agentType] ? { ...prev[agentType]!, isConnected: connected } : null
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -16,51 +54,41 @@ const Integracoes = () => {
             Integrações
           </h1>
           <p className="text-xl text-gray-600">
-            Conecte suas ferramentas favoritas e automatize seus fluxos de trabalho.
+            Conecte seus agentes com Google Sheets, CRM e Slack para automatizar seus fluxos de trabalho.
           </p>
         </div>
 
-        {/* Integrações Disponíveis */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Exemplo de Integração */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Google Sheets
-            </h2>
-            <p className="text-gray-600">
-              Sincronize dados entre suas planilhas e outros aplicativos.
-            </p>
-            <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Conectar
-            </button>
-          </div>
-
-          {/* Exemplo de Integração */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Slack
-            </h2>
-            <p className="text-gray-600">
-              Receba notificações e atualizações diretamente no seu canal do Slack.
-            </p>
-            <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Conectar
-            </button>
-          </div>
-
-          {/* Exemplo de Integração */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Salesforce
-            </h2>
-            <p className="text-gray-600">
-              Integre seus dados de CRM para uma visão completa do seu negócio.
-            </p>
-            <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Conectar
-            </button>
-          </div>
-        </div>
+        <Tabs defaultValue="services" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="services">Serviços Externos</TabsTrigger>
+            <TabsTrigger value="webhooks">Webhooks n8n</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="services" className="mt-6">
+            <div className="grid grid-cols-1 gap-6">
+              {isLoadingConfigs ? (
+                <Card>
+                  <CardContent className="flex justify-center py-6">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  </CardContent>
+                </Card>
+              ) : (
+                agentIntegrations.map((integration) => (
+                  <IntegrationCard
+                    key={integration.agentType}
+                    integration={integration}
+                    existingConfig={integrationConfigs[integration.agentType]}
+                    onStatusChange={(connected) => handleStatusChange(integration.agentType, connected)}
+                  />
+                ))
+              )}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="webhooks" className="mt-6">
+            <WebhookSpecificConfig />
+          </TabsContent>
+        </Tabs>
       </main>
 
       <Footer />
