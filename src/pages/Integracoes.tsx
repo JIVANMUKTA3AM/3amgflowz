@@ -44,24 +44,30 @@ const Integracoes = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
       
-      <main className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+      {/* Hero Section */}
+      <section className="bg-gradient-3amg text-white py-12">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold mb-4">
             Integrações
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl opacity-90">
             Conecte seus agentes com Google Sheets, CRM e Slack para automatizar seus fluxos de trabalho.
           </p>
         </div>
+      </section>
 
+      <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="services" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="services">Serviços Externos</TabsTrigger>
-            <TabsTrigger value="webhooks">Webhooks n8n</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 bg-white border border-gray-200">
+            <TabsTrigger value="services" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+              Serviços Externos
+            </TabsTrigger>
+            <TabsTrigger value="webhooks" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+              Webhooks n8n
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="services" className="mt-6">
@@ -69,7 +75,7 @@ const Integracoes = () => {
               {isLoadingConfigs ? (
                 <Card>
                   <CardContent className="flex justify-center py-6">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-3amg-purple"></div>
                   </CardContent>
                 </Card>
               ) : (

@@ -14,19 +14,22 @@ const Dashboard = () => {
   const { handleWorkflowTrigger, isLoading } = useWorkflow();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+      {/* Hero Section */}
+      <section className="bg-gradient-3amg text-white py-12">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold mb-4">
             Dashboard de Monitoramento
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-xl opacity-90">
             Acompanhe a performance dos seus agentes em tempo real e monitore métricas importantes.
           </p>
         </div>
-
+      </section>
+      
+      <main className="container mx-auto px-4 py-8">
         {/* Métricas Principais */}
         <div className="mb-8">
           <DashboardMetrics />
@@ -34,10 +37,16 @@ const Dashboard = () => {
 
         {/* Tabs para diferentes visualizações */}
         <Tabs defaultValue="performance" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="performance">Performance</TabsTrigger>
-            <TabsTrigger value="activity">Atividade</TabsTrigger>
-            <TabsTrigger value="alerts">Alertas</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 bg-white border border-gray-200">
+            <TabsTrigger value="performance" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+              Performance
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+              Atividade
+            </TabsTrigger>
+            <TabsTrigger value="alerts" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+              Alertas
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="performance" className="mt-6">

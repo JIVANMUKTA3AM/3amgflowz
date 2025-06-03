@@ -32,13 +32,15 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo with new styling */}
           <div className="flex items-center space-x-2">
-            <Zap className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">3AMG</span>
+            <div className="w-10 h-10 bg-gradient-3amg rounded-full flex items-center justify-center">
+              <Zap className="h-6 w-6 text-white" />
+            </div>
+            <span className="text-2xl font-bold bg-gradient-3amg bg-clip-text text-transparent">3AMG</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -47,9 +49,9 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-sm font-medium transition-colors hover:text-blue-600 ${
+                className={`text-sm font-medium transition-all duration-200 hover:text-3amg-purple ${
                   isActiveLink(item.path)
-                    ? "text-blue-600 border-b-2 border-blue-600 pb-1"
+                    ? "text-3amg-purple border-b-2 border-3amg-purple pb-1"
                     : "text-gray-600"
                 }`}
               >
@@ -64,7 +66,7 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
               onClick={() => handleWorkflowTrigger("test")}
               disabled={isLoading}
               size="sm"
-              className="hidden md:inline-flex"
+              className="hidden md:inline-flex bg-gradient-3amg hover:bg-gradient-3amg-light text-white border-0 shadow-lg"
             >
               {isLoading ? "Processando..." : "Teste Rápido"}
             </Button>
@@ -93,9 +95,9 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`text-sm font-medium transition-colors hover:text-blue-600 px-2 py-1 ${
+                  className={`text-sm font-medium transition-colors hover:text-3amg-purple px-2 py-1 rounded ${
                     isActiveLink(item.path)
-                      ? "text-blue-600 bg-blue-50 rounded"
+                      ? "text-3amg-purple bg-gradient-to-r from-purple-50 to-blue-50"
                       : "text-gray-600"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -110,7 +112,7 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
                 }}
                 disabled={isLoading}
                 size="sm"
-                className="mt-4 w-full"
+                className="mt-4 w-full bg-gradient-3amg hover:bg-gradient-3amg-light text-white"
               >
                 {isLoading ? "Processando..." : "Teste Rápido"}
               </Button>

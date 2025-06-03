@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom 3AMG colors matching the sales page
+				'3amg': {
+					purple: '#8B5CF6',
+					'purple-light': '#A78BFA',
+					'purple-dark': '#7C3AED',
+					blue: '#3B82F6',
+					'blue-dark': '#1D4ED8',
+					indigo: '#6366F1',
+					'gray-dark': '#1F2937',
+					'gray-light': '#F3F4F6'
 				}
 			},
 			borderRadius: {
@@ -89,6 +101,11 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backgroundImage: {
+				'gradient-3amg': 'linear-gradient(135deg, #8B5CF6 0%, #6366F1 50%, #3B82F6 100%)',
+				'gradient-3amg-light': 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 50%, #7C3AED 100%)',
+				'gradient-blue': 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)'
 			}
 		}
 	},
