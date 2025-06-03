@@ -1,494 +1,464 @@
 
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BookOpen, Code, Settings, Zap, Search, Download, ExternalLink, Copy, Check } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useWorkflow } from "@/hooks/useWorkflow";
 
 const Documentacao = () => {
-  return (
-    <div className="min-h-screen bg-gray-50 pb-12">
-      <header className="bg-white shadow-sm py-4 mb-6">
-        <div className="container mx-auto flex items-center px-4">
-          <Link to="/" className="text-blue-600 hover:text-blue-800 flex items-center mr-4">
-            <ArrowLeft size={16} className="mr-1" /> Voltar
-          </Link>
-          <h1 className="text-2xl font-bold text-gray-800">Documentação</h1>
-        </div>
-      </header>
+  const { handleWorkflowTrigger, isLoading } = useWorkflow();
+  const [activeSection, setActiveSection] = useState('fluxos');
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-      <main className="container mx-auto px-4">
-        <div className="mb-8 max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Documentação do Sistema n8n</h2>
-          <p className="text-gray-600 mb-6">
-            Esta documentação fornece informações sobre como configurar, usar e estender
-            o sistema de automação baseado em n8n. Ela inclui exemplos de fluxos de trabalho,
-            integração com APIs externas e melhores práticas.
-          </p>
+  const copyToClipboard = (code: string, id: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(id);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
 
-          <Tabs defaultValue="fluxos" className="mb-8">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="fluxos">Fluxos de Trabalho</TabsTrigger>
-              <TabsTrigger value="config">Configuração</TabsTrigger>
-              <TabsTrigger value="api">API</TabsTrigger>
-            </TabsList>
+  const workflowExamples = [
+    {
+      id: 'data-processing',
+      title: 'Processamento de Dados',
+      description: 'Workflow completo para ETL de dados',
+      difficulty: 'Intermediário',
+      code: `{
+  "name": "Processamento de Dados Avançado",
+  "active": true,
+  "nodes": [
+    {
+      "name": "Data Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [240, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "process-data",
+        "responseMode": "responseNode"
+      }
+    },
+    {
+      "name": "Validate Data",
+      "type": "n8n-nodes-base.function",
+      "position": [460, 300],
+      "parameters": {
+        "functionCode": "// Validação avançada de dados\\nconst requiredFields = ['id', 'name', 'email'];\\nconst data = items[0].json;\\n\\nfor (const field of requiredFields) {\\n  if (!data[field]) {\\n    throw new Error(\`Campo obrigatório ausente: \${field}\`);\\n  }\\n}\\n\\nreturn [{\\n  json: {\\n    ...data,\\n    validated: true,\\n    timestamp: new Date().toISOString()\\n  }\\n}];"
+        }
+    }
+  ]
+}`
+    },
+    {
+      id: 'notification-system',
+      title: 'Sistema de Notificações',
+      description: 'Multi-canal de notificações automáticas',
+      difficulty: 'Básico',
+      code: `{
+  "name": "Sistema de Notificações Multi-Canal",
+  "active": true,
+  "nodes": [
+    {
+      "name": "Event Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [240, 300],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "notify-event"
+      }
+    },
+    {
+      "name": "Route by Priority",
+      "type": "n8n-nodes-base.switch",
+      "position": [460, 300],
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.priority}}",
+              "operation": "equal",
+              "value2": "high"
+            },
+            {
+              "value1": "={{$json.priority}}",
+              "operation": "equal", 
+              "value2": "medium"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}`
+    }
+  ];
 
-            <TabsContent value="fluxos" className="pt-4">
-              <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h3 className="text-xl font-semibold mb-4">Fluxos de Trabalho</h3>
-                
-                <div className="mb-6">
-                  <h4 className="text-lg font-medium mb-2">Fluxo de Processamento de Dados</h4>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`// Pseudocódigo para um fluxo de processamento de dados
-name: "Processamento de Dados"
-trigger:
-  type: "webhook"
-  endpoint: "/data-processing"
-  method: "POST"
-  
-nodes:
-  # 1. Receber dados
-  - id: "receiveData"
-    type: "webhook"
-    parameters:
-      content: "{{ $trigger.body }}"
-    
-  # 2. Validar e transformar dados
-  - id: "processData"
-    type: "function"
-    parameters:
-      code: |
-        const data = $node.receiveData.output.data;
-        // Validação e transformação dos dados
-        return {
-          processed: true,
-          result: transformedData,
-          timestamp: new Date().toISOString()
-        };
-      
-  # 3. Armazenar no banco de dados
-  - id: "storeData"
-    type: "databaseQuery"
-    parameters:
-      operation: "insert"
-      table: "processed_data"
-      data: "{{ $node.processData.output }}"
-      
-  # 4. Notificar resultado
-  - id: "notifyResult"
-    type: "telegram"
-    parameters:
-      message: "Dados processados com sucesso. Total: {{ $node.processData.output.result.length }}"
-      chatId: "12345"
-`}
-                    </pre>
-                  </div>
-                </div>
+  const apiEndpoints = [
+    {
+      method: 'GET',
+      endpoint: '/api/v1/workflows',
+      description: 'Lista todos os workflows disponíveis',
+      example: `curl -X GET "https://api.3amg.com/v1/workflows" \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: application/json"`
+    },
+    {
+      method: 'POST',
+      endpoint: '/api/v1/executions',
+      description: 'Inicia uma nova execução de workflow',
+      example: `curl -X POST "https://api.3amg.com/v1/executions" \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "workflow_id": "uuid-here",
+    "data": {"customer_id": "12345"}
+  }'`
+    }
+  ];
 
-                <div className="mb-6">
-                  <h4 className="text-lg font-medium mb-2">Fluxo de Notificação Automática</h4>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`// Pseudocódigo para um fluxo de notificação
-name: "Sistema de Notificação"
-trigger:
-  type: "schedule"
-  cron: "0 9 * * *"  # Todos os dias às 9h
-  
-nodes:
-  # 1. Buscar dados pendentes
-  - id: "fetchPendingItems"
-    type: "databaseQuery"
-    parameters:
-      operation: "select"
-      table: "tasks"
-      where: 
-        status: "pending"
-        due_date: "<= NOW() + INTERVAL '1 day'"
-    
-  # 2. Para cada item pendente
-  - id: "processItems"
-    type: "loop"
-    parameters:
-      items: "{{ $node.fetchPendingItems.output.data }}"
-      
-  # 3. Buscar dados do usuário
-  - id: "getUserData"
-    type: "databaseQuery"
-    parameters:
-      operation: "select"
-      table: "users"
-      where:
-        id: "{{ $node.processItems.output.currentItem.user_id }}"
-        
-  # 4. Enviar e-mail de notificação
-  - id: "sendEmail"
-    type: "email"
-    parameters:
-      to: "{{ $node.getUserData.output.data[0].email }}"
-      subject: "Lembrete: Tarefa pendente"
-      text: "Olá {{ $node.getUserData.output.data[0].name }}, você tem a tarefa '{{ $node.processItems.output.currentItem.title }}' com vencimento próximo."
-`}
-                    </pre>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-lg font-medium mb-2">Fluxo de Integração com APIs Externas</h4>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`// Pseudocódigo para integração com APIs
-name: "Integração com APIs"
-trigger:
-  type: "webhook"
-  endpoint: "/api-integration"
-  
-nodes:
-  # 1. Receber solicitação
-  - id: "receiveRequest"
-    type: "webhook"
-    
-  # 2. Buscar dados de autenticação
-  - id: "getCredentials"
-    type: "databaseQuery"
-    parameters:
-      operation: "select"
-      table: "credentials"
-      where:
-        type: "api_service"
-        active: true
-        
-  # 3. Chamar API externa
-  - id: "callExternalAPI"
-    type: "httpRequest"
-    parameters:
-      url: "https://api.example.com/data"
-      method: "GET"
-      headers:
-        Authorization: "Bearer {{ $node.getCredentials.output.data[0].token }}"
-        
-  # 4. Processar resposta
-  - id: "processResponse"
-    type: "function"
-    parameters:
-      code: |
-        const response = $node.callExternalAPI.output;
-        // Processar e transformar dados da resposta
-        return {
-          processed: true,
-          data: transformedData
-        };
-        
-  # 5. Retornar resultado
-  - id: "returnResult"
-    type: "respondToWebhook"
-    parameters:
-      data: "{{ $node.processResponse.output.data }}"
-`}
-                    </pre>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="config" className="pt-4">
-              <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h3 className="text-xl font-semibold mb-4">Configuração do Sistema</h3>
-                
-                <div className="mb-6">
-                  <h4 className="text-lg font-medium mb-2">Configuração do n8n</h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    O n8n deve ser configurado com as seguintes variáveis de ambiente para 
-                    integração com o sistema:
-                  </p>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`# Arquivo .env para configuração do n8n
+  const configExamples = [
+    {
+      title: 'Variáveis de Ambiente',
+      code: `# Configuração Principal do n8n
 N8N_PORT=5678
 N8N_PROTOCOL=https
-N8N_HOST=n8n.example.com
-N8N_PATH=/
-N8N_ENCRYPTION_KEY=your-secure-encryption-key-here
+N8N_HOST=n8n.3amg.com
+N8N_ENCRYPTION_KEY=your-secure-key-here
 
-# Configuração do banco de dados
+# Database Configuration
 N8N_DB_TYPE=postgresdb
-N8N_DB_POSTGRESDB_HOST=postgres.example.com
+N8N_DB_POSTGRESDB_HOST=db.3amg.com
 N8N_DB_POSTGRESDB_PORT=5432
-N8N_DB_POSTGRESDB_DATABASE=n8n
+N8N_DB_POSTGRESDB_DATABASE=n8n_prod
 N8N_DB_POSTGRESDB_USER=n8n_user
-N8N_DB_POSTGRESDB_PASSWORD=your-secure-db-password
+N8N_DB_POSTGRESDB_PASSWORD=secure-password
 
-# Configuração de e-mail
+# Email Configuration
 N8N_EMAIL_MODE=smtp
-N8N_SMTP_HOST=smtp.example.com
+N8N_SMTP_HOST=smtp.gmail.com
 N8N_SMTP_PORT=587
-N8N_SMTP_USER=notifications@example.com
-N8N_SMTP_PASS=your-secure-smtp-password
-
-# Configurações gerais
-N8N_EDITOR_BASE_URL=https://n8n.example.com
-N8N_DISABLE_PRODUCTION_MAIN_PROCESS=false
-N8N_USER_MANAGEMENT_DISABLED=false
-N8N_DIAGNOSTICS_ENABLED=true
-N8N_HIRING_BANNER_ENABLED=false
-N8N_PERSONALIZATION_ENABLED=true`}
-                    </pre>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <h4 className="text-lg font-medium mb-2">Configuração de Webhooks</h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Para configurar os webhooks que conectam a aplicação web com o n8n, 
-                    use as seguintes URLs:
-                  </p>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`# URLs de Webhook para integração
-
-# Webhook para processamento de dados
-https://n8n.example.com/webhook/data-processing
-
-# Webhook para sistema de notificação
-https://n8n.example.com/webhook/notification
-
-# Webhook para integração com APIs
-https://n8n.example.com/webhook/api-integration
-
-# Parâmetros de segurança recomendados para todos os webhooks:
-# - Adicionar um cabeçalho de autenticação
-# - Usar HTTPS para todas as comunicações
-# - Validar a origem das solicitações
-# - Implementar limite de taxa para evitar abusos`}
-                    </pre>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-lg font-medium mb-2">Configuração de Credenciais</h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    As credenciais para APIs externas devem ser armazenadas com segurança:
-                  </p>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`# Exemplo de inserção de credencial no banco de dados
-INSERT INTO credentials (name, type, data, user_id) VALUES (
-  'API Service Credentials',
-  'api_service',
-  '{
-    "apiKey": "your-encrypted-api-key",
-    "baseUrl": "https://api.example.com",
-    "timeout": 30000
-  }'::jsonb,
-  'user-uuid-here'
-);
-
-# Nota: Nunca armazene senhas ou chaves em texto puro
-# Use o sistema de gerenciamento de credenciais do n8n`}
-                    </pre>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="api" className="pt-4">
-              <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h3 className="text-xl font-semibold mb-4">Documentação da API</h3>
-                
-                <div className="mb-6">
-                  <h4 className="text-lg font-medium mb-2">Endpoints de API</h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    O sistema expõe as seguintes APIs REST para integração com outros serviços:
-                  </p>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`# API REST Endpoints
-
-# Workflows
-GET /api/v1/workflows
-  - Lista todos os workflows
-  - Parâmetros: ?active=true/false&user_id=uuid
-  - Retorno: Array de objetos workflow
-
-GET /api/v1/workflows/:id
-  - Obtém detalhes de um workflow específico
-  - Retorno: Objeto workflow completo
-
-POST /api/v1/workflows
-  - Cria um novo workflow
-  - Corpo: Objeto workflow (name, nodes, connections, triggers)
-  - Retorno: Objeto workflow criado com ID
-
-PUT /api/v1/workflows/:id
-  - Atualiza um workflow existente
-  - Corpo: Objeto workflow (parcial ou completo)
-  - Retorno: Objeto workflow atualizado
-
-DELETE /api/v1/workflows/:id
-  - Remove um workflow
-  - Retorno: Status 204 No Content
-
-# Execuções
-GET /api/v1/executions
-  - Lista execuções de workflows
-  - Parâmetros: ?workflow_id=uuid&status=pending/running/completed/error
-  - Retorno: Array de objetos execution
-
-POST /api/v1/executions
-  - Inicia uma execução de workflow
-  - Corpo: { workflow_id: uuid, data: {} }
-  - Retorno: Objeto execution com status inicial
-
-GET /api/v1/executions/:id
-  - Obtém detalhes de uma execução específica
-  - Retorno: Objeto execution com detalhes e nós
-
-# Webhooks
-POST /webhook/:endpoint
-  - Endpoint para receber eventos externos
-  - Corpo: Depende do tipo de webhook
-  - Retorno: Status 200 ou resposta específica do workflow`}
-                    </pre>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <h4 className="text-lg font-medium mb-2">Exemplos de Uso da API</h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Exemplos de como usar a API REST para interagir com o sistema:
-                  </p>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`// Exemplo em JavaScript para iniciar a execução de um workflow
-
-// 1. Autenticação
-const getToken = async () => {
-  const response = await fetch('https://api.example.com/auth/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
+N8N_SMTP_USER=notifications@3amg.com
+N8N_SMTP_PASS=app-specific-password`
     },
-    body: JSON.stringify({
-      username: 'admin',
-      password: 'secure-password'
-    })
-  });
-  
-  const data = await response.json();
-  return data.token;
-};
-
-// 2. Executar um workflow
-const executeWorkflow = async (workflowId, inputData) => {
-  const token = await getToken();
-  
-  const response = await fetch('https://api.example.com/api/v1/executions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': \`Bearer \${token}\`
-    },
-    body: JSON.stringify({
-      workflow_id: workflowId,
-      data: inputData
-    })
-  });
-  
-  const executionData = await response.json();
-  return executionData;
-};
-
-// 3. Verificar status da execução
-const checkExecutionStatus = async (executionId) => {
-  const token = await getToken();
-  
-  const response = await fetch(\`https://api.example.com/api/v1/executions/\${executionId}\`, {
-    headers: {
-      'Authorization': \`Bearer \${token}\`
+    {
+      title: 'Docker Compose',
+      code: `version: '3.8'
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=secure-password
+      - N8N_HOST=n8n.3amg.com
+      - N8N_PROTOCOL=https
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+      
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=secure-password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      
+volumes:
+  n8n_data:
+  postgres_data:`
     }
-  });
-  
-  const statusData = await response.json();
-  return statusData;
-};
+  ];
 
-// Uso
-executeWorkflow('workflow-uuid-here', { 
-  customer_id: '12345',
-  action: 'process_payment',
-  amount: 99.99
-})
-.then(execution => {
-  console.log('Execution started:', execution.id);
-  
-  // Verificar status após alguns segundos
-  setTimeout(() => {
-    checkExecutionStatus(execution.id)
-      .then(status => console.log('Execution status:', status));
-  }, 5000);
-})
-.catch(error => console.error('Error:', error));`}
-                    </pre>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-lg font-medium mb-2">Autenticação e Segurança</h4>
-                  <p className="text-sm text-gray-600 mb-4">
-                    A API usa autenticação JWT para proteger os endpoints:
-                  </p>
-                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
-                    <pre className="text-xs md:text-sm overflow-auto p-4 bg-gray-800 text-white rounded-md">
-{`# Segurança da API
-
-# 1. Autenticação
-- Todas as requisições à API devem incluir um token JWT válido
-- O token deve ser enviado no cabeçalho Authorization como "Bearer [token]"
-- Tokens expiram após 24 horas e precisam ser renovados
-
-# 2. Endpoints de Autenticação
-POST /auth/token
-  - Gera um novo token de acesso
-  - Corpo: { username, password }
-  - Retorno: { token, expires_at }
-
-POST /auth/refresh
-  - Renova um token existente
-  - Corpo: { refresh_token }
-  - Retorno: { token, refresh_token, expires_at }
-
-# 3. Permissões e Papéis
-- As APIs respeitam o modelo de permissão baseado em papéis
-- Papéis disponíveis: admin, manager, user
-- Cada endpoint requer permissões específicas
-- O token JWT contém as informações de permissão do usuário
-
-# 4. Boas Práticas de Segurança
-- Use HTTPS para todas as comunicações com a API
-- Nunca armazene tokens JWT em localStorage
-- Implemente expiração curta para tokens
-- Use limites de taxa para evitar ataques de força bruta
-- Valide todos os dados de entrada para evitar injeção`}
-                    </pre>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
+      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
+      
+      {/* Hero Section */}
+      <section className="bg-gradient-3amg text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center space-x-3 mb-4">
+            <BookOpen className="h-10 w-10" />
+            <h1 className="text-4xl font-bold">
+              Documentação Completa
+            </h1>
+          </div>
+          <p className="text-xl opacity-90 max-w-3xl">
+            Guias detalhados, exemplos práticos e referência completa da API 
+            para maximizar o potencial da plataforma 3AMG.
+          </p>
         </div>
+      </section>
 
-        <div className="flex justify-between max-w-4xl mx-auto">
+      <main className="container mx-auto px-4 py-8">
+        {/* Quick Navigation */}
+        <Card className="mb-8 bg-white shadow-lg border-0">
+          <CardHeader>
+            <CardTitle className="flex items-center text-xl text-gray-900">
+              <Search className="h-6 w-6 mr-2 text-3amg-purple" />
+              Navegação Rápida
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setActiveSection('fluxos')}
+                className={`flex items-center justify-center p-4 h-auto ${activeSection === 'fluxos' ? 'bg-3amg-purple text-white' : 'hover:bg-purple-50'}`}
+              >
+                <Zap className="h-5 w-5 mr-2" />
+                Workflows
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setActiveSection('config')}
+                className={`flex items-center justify-center p-4 h-auto ${activeSection === 'config' ? 'bg-3amg-purple text-white' : 'hover:bg-purple-50'}`}
+              >
+                <Settings className="h-5 w-5 mr-2" />
+                Configuração
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setActiveSection('api')}
+                className={`flex items-center justify-center p-4 h-auto ${activeSection === 'api' ? 'bg-3amg-purple text-white' : 'hover:bg-purple-50'}`}
+              >
+                <Code className="h-5 w-5 mr-2" />
+                API Reference
+              </Button>
+              <Button 
+                variant="outline"
+                className="flex items-center justify-center p-4 h-auto hover:bg-purple-50"
+              >
+                <Download className="h-5 w-5 mr-2" />
+                Downloads
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Tabs value={activeSection} onValueChange={setActiveSection} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 bg-white border border-gray-200">
+            <TabsTrigger value="fluxos" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+              Workflows & Fluxos
+            </TabsTrigger>
+            <TabsTrigger value="config" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+              Configuração
+            </TabsTrigger>
+            <TabsTrigger value="api" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+              API Reference
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="fluxos" className="mt-6">
+            <div className="space-y-6">
+              <Card className="bg-white shadow-lg border-0">
+                <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 border-b">
+                  <CardTitle className="text-2xl text-gray-900">Exemplos de Workflows</CardTitle>
+                  <CardDescription>
+                    Workflows prontos para usar e customizar conforme suas necessidades
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {workflowExamples.map((workflow, index) => (
+                    <div key={workflow.id} className={`p-6 ${index !== workflowExamples.length - 1 ? 'border-b' : ''}`}>
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">{workflow.title}</h3>
+                          <p className="text-gray-600 mb-3">{workflow.description}</p>
+                          <Badge variant="outline" className="text-3amg-purple border-3amg-purple">
+                            {workflow.difficulty}
+                          </Badge>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => copyToClipboard(workflow.code, workflow.id)}
+                          className="border-3amg-purple text-3amg-purple hover:bg-3amg-purple hover:text-white"
+                        >
+                          {copiedCode === workflow.id ? (
+                            <>
+                              <Check className="h-4 w-4 mr-2" />
+                              Copiado!
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Copiar
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                      <div className="bg-gray-900 rounded-lg overflow-x-auto">
+                        <pre className="text-green-400 text-sm p-4">
+                          <code>{workflow.code}</code>
+                        </pre>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="config" className="mt-6">
+            <div className="space-y-6">
+              {configExamples.map((config, index) => (
+                <Card key={index} className="bg-white shadow-lg border-0">
+                  <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 border-b">
+                    <CardTitle className="flex items-center justify-between">
+                      <span className="text-xl text-gray-900">{config.title}</span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => copyToClipboard(config.code, `config-${index}`)}
+                        className="border-3amg-purple text-3amg-purple hover:bg-3amg-purple hover:text-white"
+                      >
+                        {copiedCode === `config-${index}` ? (
+                          <>
+                            <Check className="h-4 w-4 mr-2" />
+                            Copiado!
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="h-4 w-4 mr-2" />
+                            Copiar
+                          </>
+                        )}
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="bg-gray-900 rounded-b-lg overflow-x-auto">
+                      <pre className="text-green-400 text-sm p-4">
+                        <code>{config.code}</code>
+                      </pre>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="api" className="mt-6">
+            <div className="space-y-6">
+              <Card className="bg-white shadow-lg border-0">
+                <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 border-b">
+                  <CardTitle className="text-2xl text-gray-900">Endpoints da API</CardTitle>
+                  <CardDescription>
+                    Referência completa dos endpoints disponíveis para integração
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-8">
+                    {apiEndpoints.map((endpoint, index) => (
+                      <div key={index} className="border-l-4 border-l-3amg-purple pl-6">
+                        <div className="flex items-center space-x-3 mb-3">
+                          <Badge 
+                            className={`${endpoint.method === 'GET' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}
+                          >
+                            {endpoint.method}
+                          </Badge>
+                          <code className="text-lg font-mono bg-gray-100 px-3 py-1 rounded">
+                            {endpoint.endpoint}
+                          </code>
+                        </div>
+                        <p className="text-gray-600 mb-4">{endpoint.description}</p>
+                        <div className="bg-gray-900 rounded-lg overflow-x-auto">
+                          <div className="flex items-center justify-between p-3 border-b border-gray-700">
+                            <span className="text-green-400 text-sm font-semibold">Exemplo de uso:</span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => copyToClipboard(endpoint.example, `api-${index}`)}
+                              className="text-gray-400 hover:text-white"
+                            >
+                              {copiedCode === `api-${index}` ? (
+                                <Check className="h-4 w-4" />
+                              ) : (
+                                <Copy className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+                          <pre className="text-green-400 text-sm p-4">
+                            <code>{endpoint.example}</code>
+                          </pre>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Authentication Section */}
+              <Card className="bg-gradient-3amg text-white border-0">
+                <CardContent className="p-8">
+                  <h3 className="text-2xl font-bold mb-4 flex items-center">
+                    <Code className="h-8 w-8 mr-3" />
+                    Autenticação e Segurança
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white/10 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">JWT Tokens</h4>
+                      <p className="text-sm opacity-90">
+                        Todas as requisições requerem um token JWT válido no header Authorization.
+                      </p>
+                    </div>
+                    <div className="bg-white/10 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">Rate Limiting</h4>
+                      <p className="text-sm opacity-90">
+                        Limite de 1000 requisições por hora por token de API.
+                      </p>
+                    </div>
+                    <div className="bg-white/10 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">HTTPS Only</h4>
+                      <p className="text-sm opacity-90">
+                        Todas as comunicações devem usar HTTPS para garantir segurança.
+                      </p>
+                    </div>
+                    <div className="bg-white/10 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">Webhooks Seguros</h4>
+                      <p className="text-sm opacity-90">
+                        Validação de assinatura para todos os webhooks recebidos.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Navigation */}
+        <div className="flex justify-between mt-8">
           <Link to="/modelo-dados">
-            <Button variant="outline" className="flex items-center">
+            <Button variant="outline" className="flex items-center border-3amg-purple text-3amg-purple hover:bg-3amg-purple hover:text-white">
               <ArrowLeft size={16} className="mr-2" /> Modelo de Dados
             </Button>
           </Link>
-          <Link to="/">
-            <Button>Página Inicial</Button>
-          </Link>
+          <div className="flex space-x-4">
+            <Button 
+              className="flex items-center bg-gradient-3amg hover:bg-gradient-3amg-light text-white"
+              onClick={() => window.open('https://docs.n8n.io/', '_blank')}
+            >
+              Docs n8n <ExternalLink size={16} className="ml-2" />
+            </Button>
+            <Link to="/">
+              <Button className="flex items-center bg-gradient-3amg hover:bg-gradient-3amg-light text-white">
+                Página Inicial
+              </Button>
+            </Link>
+          </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };
