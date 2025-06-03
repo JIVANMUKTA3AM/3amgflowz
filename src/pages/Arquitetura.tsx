@@ -207,7 +207,7 @@ const Arquitetura = () => {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-2xl font-bold text-3amg-indigo">< 100ms</p>
+                      <p className="text-2xl font-bold text-3amg-indigo">&lt; 100ms</p>
                       <p className="text-gray-600">Latência Média</p>
                     </div>
                     <Zap className="h-8 w-8 text-3amg-indigo opacity-70" />
