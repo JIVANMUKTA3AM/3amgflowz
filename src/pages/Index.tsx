@@ -61,10 +61,22 @@ const Index = () => {
       {/* Header com Navigation */}
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
 
-      {/* Hero Section with gradient background and fiber optic animations */}
+      {/* Hero Section with agents background and fiber optic animations */}
       <section className="bg-gradient-3amg relative overflow-hidden min-h-[500px]">
+        {/* Background image of agents operating the system */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(/lovable-uploads/0397339e-530f-4d97-99d5-4ba944cd434d.png)`,
+          }}
+        ></div>
+        
+        {/* Fiber optic overlay */}
         <FiberOpticBackground />
-        <div className="absolute inset-0 bg-black/20 z-10"></div>
+        
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/40 z-10"></div>
+        
         <div className="container mx-auto px-4 py-16 relative z-20">
           <div className="text-center text-white">
             <h1 className="text-5xl font-bold mb-6">
