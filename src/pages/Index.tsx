@@ -8,6 +8,7 @@ import WebhookSpecificConfig from "@/components/WebhookSpecificConfig";
 import WorkflowCards from "@/components/WorkflowCards";
 import AgentesResumo from "@/components/AgentesResumo";
 import AgentServiceStatus from "@/components/AgentServiceStatus";
+import FiberOpticBackground from "@/components/FiberOpticBackground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
@@ -60,8 +61,9 @@ const Index = () => {
       {/* Header com Navigation */}
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
 
-      {/* Hero Section with gradient background */}
+      {/* Hero Section with gradient background and fiber optic animations */}
       <section className="bg-gradient-3amg relative overflow-hidden">
+        <FiberOpticBackground />
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="container mx-auto px-4 py-16 relative z-10">
           <div className="text-center text-white">
