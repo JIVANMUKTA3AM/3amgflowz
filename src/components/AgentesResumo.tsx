@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, CheckCircle, XCircle, Users, TrendingUp } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 
@@ -138,51 +138,116 @@ const AgentesResumo = () => {
   };
 
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle>Meus Agentes</CardTitle>
-        <CardDescription>
-          Gerencie os agentes ativos em sua conta.
-        </CardDescription>
+    <Card className="h-full bg-gradient-to-br from-white via-purple-50/30 to-indigo-50/30 border-purple-200/50 shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in hover:scale-[1.02]">
+      <CardHeader className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-indigo-500/10 rounded-t-lg"></div>
+        <div className="relative z-10 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-3amg rounded-full flex items-center justify-center shadow-lg">
+              <Users className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-xl bg-gradient-3amg bg-clip-text text-transparent">Meus Agentes</CardTitle>
+              <CardDescription className="text-gray-600">
+                Gerencie os agentes ativos em sua conta
+              </CardDescription>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 border border-purple-200/50">
+            <TrendingUp className="h-4 w-4 text-green-500" />
+            <span className="text-sm font-semibold text-gray-700">{activeCount}/{agents.length}</span>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
+      
+      <CardContent className="relative">
         {isLoading ? (
-          <div className="flex justify-center p-4">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <div className="flex justify-center p-8">
+            <div className="flex flex-col items-center gap-3">
+              <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+              <span className="text-sm text-gray-500">Carregando agentes...</span>
+            </div>
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="flex justify-between mb-2">
-              <span className="text-sm text-muted-foreground">
-                {activeCount} de {agents.length} agentes ativos
-              </span>
+            {/* Progress Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-gray-700">Progresso de Ativação</span>
+                <span className="text-sm text-purple-600 font-semibold">
+                  {Math.round((activeCount / agents.length) * 100)}%
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                <div 
+                  className="bg-gradient-3amg h-2.5 rounded-full transition-all duration-500 ease-out shadow-sm"
+                  style={{ width: `${(activeCount / agents.length) * 100}%` }}
+                ></div>
+              </div>
             </div>
             
-            {agents.map((agent) => (
-              <div 
-                key={agent.id} 
-                className="flex items-center justify-between border-b pb-2 last:border-none"
-              >
-                <div className="flex items-center gap-2">
-                  <Badge 
-                    variant={agent.is_active ? "default" : "outline"} 
-                    className="w-2 h-2 p-0 rounded-full"
-                  />
-                  <span>{getAgentDisplayName(agent.type)}</span>
+            {/* Agents List */}
+            <div className="space-y-3">
+              {agents.map((agent, index) => (
+                <div 
+                  key={agent.id} 
+                  className="group flex items-center justify-between p-3 rounded-lg border border-gray-200/60 bg-white/60 backdrop-blur-sm hover:bg-white/80 hover:border-purple-300/60 transition-all duration-300 hover:shadow-md animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      {agent.is_active ? (
+                        <CheckCircle className="w-5 h-5 text-green-500 drop-shadow-sm" />
+                      ) : (
+                        <XCircle className="w-5 h-5 text-gray-400" />
+                      )}
+                      {agent.is_active && (
+                        <div className="absolute inset-0 w-5 h-5 bg-green-400 rounded-full animate-ping opacity-20"></div>
+                      )}
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-800 group-hover:text-purple-700 transition-colors">
+                        {getAgentDisplayName(agent.type)}
+                      </span>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge 
+                          variant={agent.is_active ? "default" : "outline"} 
+                          className={`text-xs ${
+                            agent.is_active 
+                              ? "bg-green-100 text-green-700 border-green-300" 
+                              : "bg-gray-100 text-gray-500 border-gray-300"
+                          }`}
+                        >
+                          {agent.is_active ? "Ativo" : "Inativo"}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isSaving === agent.id && (
+                      <Loader2 className="h-4 w-4 animate-spin text-purple-600" />
+                    )}
+                    <Switch
+                      id={`agent-switch-mini-${agent.id}`}
+                      checked={agent.is_active}
+                      disabled={isSaving === agent.id}
+                      onCheckedChange={() => toggleAgent(agent)}
+                      className="data-[state=checked]:bg-gradient-3amg"
+                    />
+                  </div>
                 </div>
-                <Switch
-                  id={`agent-switch-mini-${agent.id}`}
-                  checked={agent.is_active}
-                  disabled={isSaving === agent.id}
-                  onCheckedChange={() => toggleAgent(agent)}
-                />
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </CardContent>
-      <CardFooter>
-        <Button className="w-full" onClick={handleGerenciarClick}>
+      
+      <CardFooter className="relative">
+        <Button 
+          className="w-full bg-gradient-3amg hover:bg-gradient-3amg-light text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]" 
+          onClick={handleGerenciarClick}
+        >
+          <Users className="w-4 h-4 mr-2" />
           Gerenciar Agentes
         </Button>
       </CardFooter>
