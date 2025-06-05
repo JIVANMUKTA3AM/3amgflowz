@@ -1,145 +1,136 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/components/ui/use-toast";
 
-// Definição de tipos
 export interface Invoice {
   id: string;
-  description: string;
+  user_id: string;
+  organization_id?: string;
   amount: number;
-  due_date: string;
+  description: string;
   status: string;
   payment_method?: string;
-  payment_date?: string;
+  payment_id?: string;
   payment_url?: string;
+  payment_data?: any;
+  payment_date?: string;
+  due_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export const useInvoices = () => {
-  const navigate = useNavigate();
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingInvoices, setIsLoadingInvoices] = useState(true);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const loadInvoices = async () => {
-    setIsLoadingInvoices(true);
-    try {
+  const { data: invoices, isLoading, error } = useQuery({
+    queryKey: ['invoices', user?.id],
+    queryFn: async () => {
+      if (!user?.id) throw new Error('User not authenticated');
+      
       const { data, error } = await supabase
-        .from("invoices")
-        .select("*")
-        .order("due_date", { ascending: true });
-
-      if (error) throw error;
-      setInvoices(data || []);
-    } catch (error) {
-      console.error("Erro ao carregar faturas:", error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível carregar suas faturas",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoadingInvoices(false);
-    }
-  };
-
-  const verifyPayment = async (invoiceId: string, sessionId?: string, intentId?: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke("verify-payment", {
-        body: { invoiceId, sessionId, intentId },
-      });
-
-      if (error) throw error;
-
-      if (data.isPaid) {
-        toast({
-          title: "Pagamento confirmado!",
-          description: "Sua fatura foi paga com sucesso.",
-        });
-        
-        // Remover parâmetros da URL e recarregar faturas
-        navigate('/pagamentos');
-        loadInvoices();
-      }
-    } catch (error) {
-      console.error("Erro ao verificar pagamento:", error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível verificar o status do pagamento",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handlePaymentClick = (invoice: Invoice) => {
-    setSelectedInvoice(invoice);
-    setIsPaymentModalOpen(true);
-  };
-
-  const processPayment = async (paymentMethod: string) => {
-    if (!selectedInvoice) return;
-    
-    setIsLoading(true);
-    try {
-      const response = await supabase.functions.invoke("process-payment", {
-        body: {
-          invoiceId: selectedInvoice.id,
-          paymentMethod,
-          returnUrl: window.location.origin + "/pagamentos",
-        },
-      });
-
-      if (!response.data.success) {
-        throw new Error(response.data.error || "Erro ao processar pagamento");
-      }
-
-      // Para cartão de crédito, redirecionamos para o checkout do Stripe
-      if (paymentMethod === "card" && response.data.url) {
-        window.location.href = response.data.url;
-        return;
-      }
+        .from('invoices')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
       
-      // Para Pix e Boleto, redirecionamos para página de pagamento específica
-      if (["pix", "boleto"].includes(paymentMethod) && response.data.clientSecret) {
-        navigate(`/pagamentos/metodo?method=${paymentMethod}&invoice=${selectedInvoice.id}&clientSecret=${response.data.clientSecret}&intentId=${response.data.intentId}`);
-        return;
-      }
+      if (error) throw error;
+      return data as Invoice[];
+    },
+    enabled: !!user?.id,
+  });
 
-      setIsPaymentModalOpen(false);
+  const createInvoiceMutation = useMutation({
+    mutationFn: async (invoiceData: {
+      amount: number;
+      description: string;
+      due_date: string;
+      organization_id?: string;
+    }) => {
+      if (!user?.id) throw new Error('User not authenticated');
       
-      // Se a fatura já estiver paga
-      if (response.data.message === "Fatura já está paga") {
-        toast({
-          title: "Fatura já paga",
-          description: "Esta fatura já foi paga anteriormente.",
-        });
-        loadInvoices();
-      }
-    } catch (error) {
-      console.error("Erro ao processar pagamento:", error);
+      const { data, error } = await supabase
+        .from('invoices')
+        .insert({
+          ...invoiceData,
+          user_id: user.id,
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices', user?.id] });
       toast({
-        title: "Erro",
-        description: error.message || "Falha ao processar pagamento",
+        title: "Fatura criada",
+        description: "Nova fatura foi gerada com sucesso.",
+      });
+    },
+    onError: (error) => {
+      console.error('Error creating invoice:', error);
+      toast({
+        title: "Erro ao criar fatura",
+        description: "Tente novamente em alguns instantes.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+  });
+
+  const updateInvoiceStatusMutation = useMutation({
+    mutationFn: async ({ 
+      invoiceId, 
+      status, 
+      paymentData 
+    }: { 
+      invoiceId: string; 
+      status: string; 
+      paymentData?: any;
+    }) => {
+      const updateData: any = {
+        status,
+        updated_at: new Date().toISOString()
+      };
+
+      if (status === 'paid' && paymentData) {
+        updateData.payment_date = new Date().toISOString();
+        updateData.payment_data = paymentData;
+      }
+
+      const { data, error } = await supabase
+        .from('invoices')
+        .update(updateData)
+        .eq('id', invoiceId)
+        .eq('user_id', user?.id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices', user?.id] });
+    },
+    onError: (error) => {
+      console.error('Error updating invoice:', error);
+      toast({
+        title: "Erro ao atualizar fatura",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    },
+  });
 
   return {
     invoices,
-    selectedInvoice,
-    isPaymentModalOpen,
     isLoading,
-    isLoadingInvoices,
-    loadInvoices,
-    verifyPayment,
-    handlePaymentClick,
-    processPayment,
-    setIsPaymentModalOpen,
+    error,
+    createInvoice: createInvoiceMutation.mutate,
+    isCreating: createInvoiceMutation.isPending,
+    updateInvoiceStatus: updateInvoiceStatusMutation.mutate,
+    isUpdating: updateInvoiceStatusMutation.isPending,
   };
 };
