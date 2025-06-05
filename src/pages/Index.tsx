@@ -62,7 +62,7 @@ const Index = () => {
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
 
       {/* Hero Section with agents background and fiber optic animations */}
-      <section className="bg-gradient-3amg relative overflow-hidden min-h-[500px]">
+      <section className="bg-gradient-3amg relative overflow-hidden min-h-[600px]">
         {/* Background image of agents operating the system */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -78,22 +78,64 @@ const Index = () => {
         <div className="absolute inset-0 bg-black/40 z-10"></div>
         
         <div className="container mx-auto px-4 py-16 relative z-20">
-          <div className="text-center text-white">
-            <h1 className="text-5xl font-bold mb-6">
-              Transform Your Routine with 3AMG
+          <div className="text-center text-white max-w-5xl mx-auto">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in">
+              Revolucione o <span className="text-cyan-400">Atendimento</span> do seu Provedor de Internet
             </h1>
-            <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90">
-              Solução inteligente para automatizar, monitorar e gerenciar processos de forma eficiente.
-              Plataforma de automação com integração n8n para processamento de dados e conexão com APIs externas.
+            <p className="text-xl md:text-2xl mb-8 opacity-95 leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <strong className="text-cyan-300">Agentes IA especializados</strong> que eliminam filas de espera, resolvem problemas técnicos em tempo real 
+              e oferecem suporte humanizado 24/7 para seus clientes.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <div className="flex items-center text-white/90">
-                <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
-                <span>Aumento da centralização da equipe por semana</span>
+            
+            {/* Pain Points Addressed */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                <div className="text-3xl mb-3">⚡</div>
+                <h3 className="text-lg font-semibold mb-2 text-cyan-300">Atendimento Instantâneo</h3>
+                <p className="text-sm opacity-90">Elimine filas de espera com agentes que respondem em segundos, não em horas</p>
               </div>
-              <div className="flex items-center text-white/90">
-                <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
-                <span>Automação eficiente de tarefas rotineiras</span>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                <div className="text-3xl mb-3">🤖</div>
+                <h3 className="text-lg font-semibold mb-2 text-cyan-300">Suporte Técnico Especializado</h3>
+                <p className="text-sm opacity-90">Agentes treinados para resolver problemas de conectividade, configuração e infraestrutura</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                <div className="text-3xl mb-3">💬</div>
+                <h3 className="text-lg font-semibold mb-2 text-cyan-300">Comunicação Humanizada</h3>
+                <p className="text-sm opacity-90">Linguagem natural e empática que mantém seus clientes satisfeitos e engajados</p>
+              </div>
+            </div>
+
+            {/* Key Benefits */}
+            <div className="flex flex-col md:flex-row gap-8 justify-center items-center mb-8 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+              <div className="flex items-center text-white/95 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <div className="w-3 h-3 bg-green-400 rounded-full mr-3 animate-pulse"></div>
+                <span className="font-medium">Redução de 80% no tempo de resolução</span>
+              </div>
+              <div className="flex items-center text-white/95 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <div className="w-3 h-3 bg-cyan-400 rounded-full mr-3 animate-pulse"></div>
+                <span className="font-medium">Satisfação do cliente acima de 95%</span>
+              </div>
+              <div className="flex items-center text-white/95 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+                <div className="w-3 h-3 bg-purple-400 rounded-full mr-3 animate-pulse"></div>
+                <span className="font-medium">Disponibilidade 24/7 sem pausas</span>
+              </div>
+            </div>
+
+            {/* CTA Section */}
+            <div className="animate-fade-in" style={{ animationDelay: '0.8s' }}>
+              <p className="text-lg mb-6 text-cyan-200">
+                Transforme reclamações em elogios com nossa plataforma de automação inteligente
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
+                  Começar Agora
+                </button>
+                <button className="border-2 border-white/30 hover:border-white/50 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 hover:bg-white/10">
+                  Ver Demonstração
+                </button>
               </div>
             </div>
           </div>
