@@ -4,7 +4,7 @@ import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@
 import { LoaderCircle } from "lucide-react";
 import InvoiceStatusBadge from "./InvoiceStatusBadge";
 import { formatCurrency, formatDate } from "@/utils/formatters";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import type { Invoice } from "@/hooks/useInvoices";
 
 interface InvoicesTableProps {

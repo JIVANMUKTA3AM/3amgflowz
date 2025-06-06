@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,8 +25,11 @@ export interface Invoice {
 export const useInvoices = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
 
-  const { data: invoices, isLoading, error } = useQuery({
+  const { data: invoices = [], isLoading, error } = useQuery({
     queryKey: ['invoices', user?.id],
     queryFn: async () => {
       if (!user?.id) throw new Error('User not authenticated');
@@ -124,10 +128,98 @@ export const useInvoices = () => {
     },
   });
 
+  // Função para carregar faturas (refetch)
+  const loadInvoices = () => {
+    queryClient.invalidateQueries({ queryKey: ['invoices', user?.id] });
+  };
+
+  // Função para verificar pagamento
+  const verifyPayment = async (invoiceId: string, sessionId: string) => {
+    setIsPaymentLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("verify-payment", {
+        body: { invoiceId, sessionId },
+      });
+
+      if (error) throw error;
+
+      if (data.isPaid) {
+        queryClient.invalidateQueries({ queryKey: ['invoices', user?.id] });
+        toast({
+          title: "Pagamento confirmado!",
+          description: "Seu pagamento foi processado com sucesso.",
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao verificar pagamento:", error);
+      toast({
+        title: "Erro ao verificar pagamento",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPaymentLoading(false);
+    }
+  };
+
+  // Função para abrir modal de pagamento
+  const handlePaymentClick = (invoice: Invoice) => {
+    setSelectedInvoice(invoice);
+    setIsPaymentModalOpen(true);
+  };
+
+  // Função para processar pagamento
+  const processPayment = async (method: string) => {
+    if (!selectedInvoice) return;
+    
+    setIsPaymentLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("process-payment", {
+        body: { 
+          invoiceId: selectedInvoice.id, 
+          paymentMethod: method,
+          returnUrl: window.location.origin + "/pagamentos"
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.url) {
+        // Redirecionar para o checkout do Stripe
+        window.location.href = data.url;
+      } else if (data.clientSecret) {
+        // Para PIX e Boleto, fechar modal e mostrar o formulário de pagamento
+        setIsPaymentModalOpen(false);
+        // Aqui você pode implementar a lógica para mostrar o formulário PIX/Boleto
+        toast({
+          title: "Redirecionando para pagamento",
+          description: `Prepare-se para pagar via ${method.toUpperCase()}`,
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao processar pagamento:", error);
+      toast({
+        title: "Erro ao processar pagamento",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPaymentLoading(false);
+    }
+  };
+
   return {
     invoices,
-    isLoading,
+    selectedInvoice,
+    isPaymentModalOpen,
+    isLoading: isPaymentLoading,
+    isLoadingInvoices: isLoading,
     error,
+    loadInvoices,
+    verifyPayment,
+    handlePaymentClick,
+    processPayment,
+    setIsPaymentModalOpen,
     createInvoice: createInvoiceMutation.mutate,
     isCreating: createInvoiceMutation.isPending,
     updateInvoiceStatus: updateInvoiceStatusMutation.mutate,

@@ -97,6 +97,36 @@ export const useSubscription = () => {
     }
   };
 
+  const createCheckout = async (priceId: string) => {
+    if (!user?.id) {
+      toast({
+        title: "Erro",
+        description: "Você precisa estar logado para fazer uma assinatura.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { priceId },
+      });
+
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error("Erro ao criar checkout:", error);
+      toast({
+        title: "Erro ao criar checkout",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const createSubscriptionMutation = useMutation({
     mutationFn: async (subscriptionData: {
       email: string;
@@ -145,6 +175,7 @@ export const useSubscription = () => {
     error,
     checkSubscription,
     manageSubscription,
+    createCheckout,
     createSubscription: createSubscriptionMutation.mutate,
     isCreating: createSubscriptionMutation.isPending,
   };
