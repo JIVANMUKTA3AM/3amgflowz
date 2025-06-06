@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
+import { Copy, QrCode } from "lucide-react";
 
 interface PixPaymentProps {
   qrCodeUrl: string | null;
@@ -9,7 +10,14 @@ interface PixPaymentProps {
 
 const PixPayment = ({ qrCodeUrl, copyText }: PixPaymentProps) => {
   const copyToClipboard = () => {
-    if (!copyText) return;
+    if (!copyText) {
+      toast({
+        title: "Erro",
+        description: "Código PIX não disponível",
+        variant: "destructive",
+      });
+      return;
+    }
     
     navigator.clipboard.writeText(copyText).then(() => {
       toast({
@@ -26,29 +34,49 @@ const PixPayment = ({ qrCodeUrl, copyText }: PixPaymentProps) => {
     });
   };
 
-  if (!qrCodeUrl) {
-    return <div id="payment-element" className="mb-4"></div>;
-  }
-
   return (
-    <div className="flex flex-col items-center">
-      <div className="bg-white p-4 border rounded-lg mb-4">
-        <img 
-          src={qrCodeUrl} 
-          alt="QR Code PIX" 
-          className="max-w-xs"
-        />
-      </div>
+    <div className="flex flex-col items-center space-y-4">
+      {/* Elemento onde o Stripe monta o componente */}
+      <div id="payment-element" className="w-full"></div>
+      
+      {/* QR Code */}
+      {qrCodeUrl ? (
+        <div className="bg-white p-4 border rounded-lg shadow-sm">
+          <img 
+            src={qrCodeUrl} 
+            alt="QR Code PIX" 
+            className="max-w-xs mx-auto"
+          />
+        </div>
+      ) : (
+        <div className="bg-gray-100 p-8 border rounded-lg flex flex-col items-center">
+          <QrCode className="h-16 w-16 text-gray-400 mb-2" />
+          <p className="text-gray-500 text-sm">Carregando QR Code...</p>
+        </div>
+      )}
+      
+      {/* Botão para copiar código */}
       <Button 
-        className="w-full mb-4" 
+        className="w-full flex items-center gap-2" 
         onClick={copyToClipboard}
+        disabled={!copyText}
       >
-        Copiar Código PIX
+        <Copy className="h-4 w-4" />
+        {copyText ? "Copiar Código PIX" : "Carregando código..."}
       </Button>
-      <p className="text-sm text-gray-500 text-center">
-        Abra o app do seu banco, escolha PIX, e escaneie o QR code 
-        ou cole o código copiado
-      </p>
+      
+      <div className="text-center space-y-2">
+        <p className="text-sm text-gray-600 font-medium">Como pagar:</p>
+        <ol className="text-xs text-gray-500 space-y-1 text-left">
+          <li>1. Abra o app do seu banco</li>
+          <li>2. Escolha a opção PIX</li>
+          <li>3. Escaneie o QR code ou cole o código copiado</li>
+          <li>4. Confirme o pagamento</li>
+        </ol>
+        <p className="text-xs text-gray-400 mt-3">
+          O pagamento será confirmado automaticamente em alguns segundos
+        </p>
+      </div>
     </div>
   );
 };

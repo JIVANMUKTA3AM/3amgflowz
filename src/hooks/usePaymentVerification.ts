@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 
 interface UsePaymentVerificationProps {
@@ -21,15 +21,22 @@ export const usePaymentVerification = ({
   const checkPaymentStatus = async () => {
     if (!invoiceId || !intentId || isPaid || verifying) return;
     
+    console.log('Verificando pagamento...', { invoiceId, intentId });
     setVerifying(true);
+    
     try {
       const { data, error } = await supabase.functions.invoke("verify-payment", {
         body: { invoiceId, intentId },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Erro na função verify-payment:', error);
+        throw error;
+      }
 
-      if (data.isPaid) {
+      console.log('Resposta da verificação:', data);
+
+      if (data?.isPaid) {
         setIsPaid(true);
         toast({
           title: "Pagamento confirmado!",
@@ -42,13 +49,20 @@ export const usePaymentVerification = ({
       }
     } catch (error) {
       console.error("Erro ao verificar pagamento:", error);
+      // Não mostrar toast de erro para evitar spam
     } finally {
       setVerifying(false);
     }
   };
 
-  // Iniciar verificação periódica de pagamento
+  // Verificação inicial e periódica
   useEffect(() => {
+    if (!invoiceId || !intentId) return;
+
+    // Verificação inicial
+    checkPaymentStatus();
+    
+    // Verificação periódica a cada 5 segundos
     const interval = setInterval(() => {
       if (!isPaid) {
         checkPaymentStatus();
