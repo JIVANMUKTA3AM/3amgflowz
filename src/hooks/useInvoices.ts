@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -184,18 +183,16 @@ export const useInvoices = () => {
 
       if (error) throw error;
 
-      if (data.url) {
-        // Redirecionar para o checkout do Stripe
+      if (data.url && method === 'card') {
+        // Para cartão, redirecionar para o checkout do Stripe
         window.location.href = data.url;
-      } else if (data.clientSecret) {
-        // Para PIX e Boleto, fechar modal e mostrar o formulário de pagamento
-        setIsPaymentModalOpen(false);
-        // Aqui você pode implementar a lógica para mostrar o formulário PIX/Boleto
-        toast({
-          title: "Redirecionando para pagamento",
-          description: `Prepare-se para pagar via ${method.toUpperCase()}`,
-        });
+      } else if (data.clientSecret && (method === 'pix' || method === 'boleto')) {
+        // Para PIX e Boleto, redirecionar para página específica
+        const paymentUrl = `${window.location.origin}/pagamento-metodo?method=${method}&invoice=${selectedInvoice.id}&clientSecret=${data.clientSecret}&intentId=${data.intentId}`;
+        window.location.href = paymentUrl;
       }
+      
+      setIsPaymentModalOpen(false);
     } catch (error) {
       console.error("Erro ao processar pagamento:", error);
       toast({
