@@ -14,7 +14,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface HeaderProps {
-  handleWorkflowTrigger: () => void;
+  handleWorkflowTrigger: (workflowType?: string) => void;
   isLoading: boolean;
 }
 
@@ -66,7 +66,7 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
             <Button
-              onClick={handleWorkflowTrigger}
+              onClick={() => handleWorkflowTrigger('general')}
               disabled={isLoading}
               variant="outline"
               size="sm"
@@ -153,7 +153,7 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
               ))}
               <div className="px-3 py-2">
                 <Button
-                  onClick={handleWorkflowTrigger}
+                  onClick={() => handleWorkflowTrigger('general')}
                   disabled={isLoading}
                   variant="outline"
                   size="sm"

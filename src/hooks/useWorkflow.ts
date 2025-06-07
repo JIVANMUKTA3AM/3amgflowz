@@ -4,7 +4,7 @@ import { useState } from 'react';
 export const useWorkflow = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleWorkflowTrigger = async (workflowType: string) => {
+  const handleWorkflowTrigger = async (workflowType: string = 'default') => {
     setIsLoading(true);
     try {
       // Simular processamento do workflow
