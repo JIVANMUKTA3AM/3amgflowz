@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ import Integracoes from "./pages/Integracoes";
 import Subscription from "./pages/Subscription";
 import IntegrationsManagement from "./pages/IntegrationsManagement";
 import DatabaseManagement from "./pages/DatabaseManagement";
+import ClientWebhook from "./pages/ClientWebhook";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,11 @@ const App = () => (
             <Route path="/subscription" element={
               <ProtectedRoute>
                 <Subscription />
+              </ProtectedRoute>
+            } />
+            <Route path="/webhook" element={
+              <ProtectedRoute>
+                <ClientWebhook />
               </ProtectedRoute>
             } />
             <Route path="/arquitetura" element={
