@@ -9,6 +9,7 @@ import { Webhook, Save, TestTube2, Check, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useWorkflow } from "@/hooks/useWorkflow";
 
 const ClientWebhook = () => {
   const [webhookUrl, setWebhookUrl] = useState("");
@@ -16,6 +17,8 @@ const ClientWebhook = () => {
   const [isTesting, setIsTesting] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
   const [lastTested, setLastTested] = useState<string | null>(null);
+  
+  const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
 
   useEffect(() => {
     // Carregar configuração salva
@@ -121,7 +124,7 @@ const ClientWebhook = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
-      <Header handleWorkflowTrigger={() => {}} isLoading={false} />
+      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
       
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
