@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Webhook, ExternalLink, Settings, Database, Cloud, Zap } from "lucide-react";
+import { Webhook, ExternalLink, Settings, Database, Cloud, Zap, MessageCircle, Router } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useWorkflow } from "@/hooks/useWorkflow";
@@ -26,12 +25,22 @@ const Integracoes = () => {
       id: 2,
       name: "WhatsApp Business API",
       description: "Integração com WhatsApp para atendimento via chat",
-      icon: Settings,
-      status: "coming_soon",
-      type: "chat"
+      icon: MessageCircle,
+      status: "available",
+      type: "chat",
+      route: "/whatsapp-config"
     },
     {
       id: 3,
+      name: "APIs de OLT",
+      description: "Conecte com diferentes marcas de OLT (VSol, Datacom, etc.) para automação",
+      icon: Router,
+      status: "available",
+      type: "olt",
+      route: "/olt-config"
+    },
+    {
+      id: 4,
       name: "CRM Pipedrive",
       description: "Sincronização automática de leads e tickets",
       icon: Database,
@@ -39,7 +48,7 @@ const Integracoes = () => {
       type: "crm"
     },
     {
-      id: 4,
+      id: 5,
       name: "Slack",
       description: "Notificações de tickets e alertas em tempo real",
       icon: Cloud,
@@ -47,7 +56,7 @@ const Integracoes = () => {
       type: "notification"
     },
     {
-      id: 5,
+      id: 6,
       name: "Sistema de Billing",
       description: "Integração com sistemas de cobrança e faturamento",
       icon: Zap,
