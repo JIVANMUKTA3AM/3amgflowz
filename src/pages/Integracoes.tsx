@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -44,16 +45,18 @@ const Integracoes = () => {
       name: "CRM Pipedrive",
       description: "Sincronização automática de leads e tickets com Pipedrive",
       icon: Database,
-      status: "coming_soon",
-      type: "crm"
+      status: "available",
+      type: "crm",
+      route: "/pipedrive-config"
     },
     {
       id: 5,
       name: "CRM RD Station",
       description: "Integração com RD Station para automação de marketing e vendas",
       icon: Database,
-      status: "coming_soon",
-      type: "crm"
+      status: "available",
+      type: "crm",
+      route: "/rdstation-config"
     },
     {
       id: 6,
