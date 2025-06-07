@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,7 @@ import PagamentoMetodo from "./pages/PagamentoMetodo";
 import Agentes from "./pages/Agentes";
 import Integracoes from "./pages/Integracoes";
 import Subscription from "./pages/Subscription";
+import SubscriptionManagement from "./pages/SubscriptionManagement";
 import IntegrationsManagement from "./pages/IntegrationsManagement";
 import DatabaseManagement from "./pages/DatabaseManagement";
 import ClientWebhook from "./pages/ClientWebhook";
@@ -55,6 +55,11 @@ const App = () => (
             <Route path="/subscription" element={
               <ProtectedRoute>
                 <Subscription />
+              </ProtectedRoute>
+            } />
+            <Route path="/subscription-management" element={
+              <ProtectedRoute>
+                <SubscriptionManagement />
               </ProtectedRoute>
             } />
             <Route path="/webhook" element={
