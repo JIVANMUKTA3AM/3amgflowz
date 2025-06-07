@@ -19,6 +19,8 @@ interface IntegrationFormProps {
   isLoading?: boolean;
 }
 
+type AuthType = 'none' | 'bearer' | 'basic' | 'api_key';
+
 const IntegrationForm = ({ integration, onSave, onCancel, isLoading }: IntegrationFormProps) => {
   const [formData, setFormData] = useState({
     name: integration?.name || '',
@@ -28,7 +30,7 @@ const IntegrationForm = ({ integration, onSave, onCancel, isLoading }: Integrati
     config: {
       url: integration?.config.url || '',
       method: integration?.config.method || 'POST',
-      auth_type: integration?.config.auth_type || 'none',
+      auth_type: (integration?.config.auth_type || 'none') as AuthType,
       headers: integration?.config.headers || {},
       credentials: integration?.config.credentials || {},
       ...integration?.config
@@ -252,7 +254,7 @@ const IntegrationForm = ({ integration, onSave, onCancel, isLoading }: Integrati
                 <Label htmlFor="auth_type">Tipo de Autenticação</Label>
                 <Select
                   value={formData.config.auth_type}
-                  onValueChange={(value) => setFormData(prev => ({
+                  onValueChange={(value: AuthType) => setFormData(prev => ({
                     ...prev,
                     config: { ...prev.config, auth_type: value }
                   }))}
