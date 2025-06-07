@@ -23,6 +23,8 @@ import Subscription from "./pages/Subscription";
 import IntegrationsManagement from "./pages/IntegrationsManagement";
 import DatabaseManagement from "./pages/DatabaseManagement";
 import ClientWebhook from "./pages/ClientWebhook";
+import WhatsAppConfig from "./pages/WhatsAppConfig";
+import OltConfig from "./pages/OltConfig";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +56,16 @@ const App = () => (
             <Route path="/webhook" element={
               <ProtectedRoute>
                 <ClientWebhook />
+              </ProtectedRoute>
+            } />
+            <Route path="/whatsapp-config" element={
+              <ProtectedRoute>
+                <WhatsAppConfig />
+              </ProtectedRoute>
+            } />
+            <Route path="/olt-config" element={
+              <ProtectedRoute>
+                <OltConfig />
               </ProtectedRoute>
             } />
             <Route path="/arquitetura" element={
