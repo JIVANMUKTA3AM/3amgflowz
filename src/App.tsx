@@ -27,6 +27,8 @@ import WhatsAppConfig from "./pages/WhatsAppConfig";
 import OltConfig from "./pages/OltConfig";
 import PipedriveConfig from "./pages/PipedriveConfig";
 import RdStationConfig from "./pages/RdStationConfig";
+import SlackConfig from "./pages/SlackConfig";
+import BillingConfig from "./pages/BillingConfig";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +80,16 @@ const App = () => (
             <Route path="/rdstation-config" element={
               <ProtectedRoute>
                 <RdStationConfig />
+              </ProtectedRoute>
+            } />
+            <Route path="/slack-config" element={
+              <ProtectedRoute>
+                <SlackConfig />
+              </ProtectedRoute>
+            } />
+            <Route path="/billing-config" element={
+              <ProtectedRoute>
+                <BillingConfig />
               </ProtectedRoute>
             } />
             <Route path="/arquitetura" element={
