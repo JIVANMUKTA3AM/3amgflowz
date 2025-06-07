@@ -31,6 +31,22 @@ export const useSubscription = () => {
         };
       }
       
+      // Primeiro, buscar na nova tabela de assinaturas
+      const { data: newSubData, error: newSubError } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      
+      if (newSubData && !newSubError) {
+        return {
+          subscribed: newSubData.status === 'active',
+          subscription_tier: newSubData.plan_type,
+          subscription_end: newSubData.current_period_end,
+        };
+      }
+      
+      // Fallback para a tabela subscribers antiga
       const { data, error } = await supabase
         .from('subscribers')
         .select('*')
@@ -55,7 +71,7 @@ export const useSubscription = () => {
     if (!user?.id) return;
     
     try {
-      const { data, error } = await supabase.functions.invoke("check-subscription", {
+      const { data, error } = await supabase.functions.invoke("check-subscription-status", {
         body: { userId: user.id },
       });
 
@@ -79,7 +95,10 @@ export const useSubscription = () => {
     
     try {
       const { data, error } = await supabase.functions.invoke("customer-portal", {
-        body: { userId: user.id },
+        body: { 
+          userId: user.id,
+          returnUrl: `${window.location.origin}/subscription-management`
+        },
       });
 
       if (error) throw error;
@@ -108,14 +127,18 @@ export const useSubscription = () => {
     }
     
     try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId },
+      const { data, error } = await supabase.functions.invoke("create-subscription-checkout", {
+        body: { 
+          planType: priceId, // Assumindo que priceId é na verdade o planType
+          successUrl: `${window.location.origin}/subscription-management?success=true`,
+          cancelUrl: `${window.location.origin}/subscription-management?canceled=true`
+        },
       });
 
       if (error) throw error;
       
       if (data?.url) {
-        window.open(data.url, '_blank');
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error("Erro ao criar checkout:", error);

@@ -210,6 +210,7 @@ export type Database = {
           stripe_customer_id: string | null
           subscribed: boolean
           subscription_end: string | null
+          subscription_id: string | null
           subscription_tier: string | null
           updated_at: string
           user_id: string | null
@@ -221,6 +222,7 @@ export type Database = {
           stripe_customer_id?: string | null
           subscribed?: boolean
           subscription_end?: string | null
+          subscription_id?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string | null
@@ -232,9 +234,172 @@ export type Database = {
           stripe_customer_id?: string | null
           subscribed?: boolean
           subscription_end?: string | null
+          subscription_id?: string | null
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscribers_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_history: {
+        Row: {
+          created_at: string
+          event_data: Json | null
+          event_type: string
+          id: string
+          new_plan: Database["public"]["Enums"]["subscription_plan_type"] | null
+          new_status: Database["public"]["Enums"]["subscription_status"] | null
+          old_plan: Database["public"]["Enums"]["subscription_plan_type"] | null
+          old_status: Database["public"]["Enums"]["subscription_status"] | null
+          stripe_event_id: string | null
+          subscription_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          new_plan?:
+            | Database["public"]["Enums"]["subscription_plan_type"]
+            | null
+          new_status?: Database["public"]["Enums"]["subscription_status"] | null
+          old_plan?:
+            | Database["public"]["Enums"]["subscription_plan_type"]
+            | null
+          old_status?: Database["public"]["Enums"]["subscription_status"] | null
+          stripe_event_id?: string | null
+          subscription_id: string
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          new_plan?:
+            | Database["public"]["Enums"]["subscription_plan_type"]
+            | null
+          new_status?: Database["public"]["Enums"]["subscription_status"] | null
+          old_plan?:
+            | Database["public"]["Enums"]["subscription_plan_type"]
+            | null
+          old_status?: Database["public"]["Enums"]["subscription_status"] | null
+          stripe_event_id?: string | null
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_history_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_plans: {
+        Row: {
+          billing_interval: string
+          created_at: string
+          description: string | null
+          features: Json
+          id: string
+          is_active: boolean | null
+          name: string
+          plan_type: Database["public"]["Enums"]["subscription_plan_type"]
+          price_amount: number
+          price_currency: string
+          sort_order: number | null
+          stripe_price_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          billing_interval?: string
+          created_at?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean | null
+          name: string
+          plan_type: Database["public"]["Enums"]["subscription_plan_type"]
+          price_amount: number
+          price_currency?: string
+          sort_order?: number | null
+          stripe_price_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          billing_interval?: string
+          created_at?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          plan_type?: Database["public"]["Enums"]["subscription_plan_type"]
+          price_amount?: number
+          price_currency?: string
+          sort_order?: number | null
+          stripe_price_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          canceled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          plan_type: Database["public"]["Enums"]["subscription_plan_type"]
+          price_amount: number | null
+          price_currency: string | null
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_type?: Database["public"]["Enums"]["subscription_plan_type"]
+          price_amount?: number | null
+          price_currency?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_type?: Database["public"]["Enums"]["subscription_plan_type"]
+          price_amount?: number | null
+          price_currency?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -288,6 +453,13 @@ export type Database = {
       agent_type: "atendimento" | "comercial" | "suporte_tecnico"
       membership_role: "owner" | "admin" | "member" | "viewer"
       subscription_plan: "free" | "pro" | "enterprise"
+      subscription_plan_type: "free" | "basic" | "premium" | "enterprise"
+      subscription_status:
+        | "active"
+        | "canceled"
+        | "past_due"
+        | "unpaid"
+        | "incomplete"
       user_role: "admin" | "user" | "viewer"
     }
     CompositeTypes: {
@@ -407,6 +579,14 @@ export const Constants = {
       agent_type: ["atendimento", "comercial", "suporte_tecnico"],
       membership_role: ["owner", "admin", "member", "viewer"],
       subscription_plan: ["free", "pro", "enterprise"],
+      subscription_plan_type: ["free", "basic", "premium", "enterprise"],
+      subscription_status: [
+        "active",
+        "canceled",
+        "past_due",
+        "unpaid",
+        "incomplete",
+      ],
       user_role: ["admin", "user", "viewer"],
     },
   },
