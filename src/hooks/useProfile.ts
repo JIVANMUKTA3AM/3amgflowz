@@ -6,8 +6,8 @@ import { toast } from "@/components/ui/use-toast";
 
 export interface UserProfile {
   id: string;
-  role: 'admin' | 'user' | 'viewer';
-  plan: 'free' | 'pro' | 'enterprise';
+  role: 'admin' | 'user' | 'moderator';
+  plan: 'free' | 'basic' | 'premium' | 'enterprise';
   agent_settings: {
     onboarding_completed: boolean;
     [key: string]: any;

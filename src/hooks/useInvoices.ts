@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -10,7 +11,7 @@ export interface Invoice {
   organization_id?: string;
   amount: number;
   description: string;
-  status: string;
+  status: 'pending' | 'paid' | 'overdue' | 'canceled';
   payment_method?: string;
   payment_id?: string;
   payment_url?: string;

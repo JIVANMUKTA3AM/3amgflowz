@@ -8,9 +8,9 @@ export interface Agent {
   id: string;
   name: string;
   description: string;
-  type: 'atendimento' | 'comercial' | 'suporte_tecnico';
+  type: 'chatbot' | 'voice' | 'email' | 'sms' | 'whatsapp';
   base_price: number;
-  features: Record<string, boolean>;
+  features: string[];
   created_at: string;
   updated_at: string;
 }
@@ -18,7 +18,7 @@ export interface Agent {
 export interface UserAgent {
   id: string;
   user_id: string;
-  agent_type: 'atendimento' | 'comercial' | 'suporte_tecnico';
+  agent_type: 'chatbot' | 'voice' | 'email' | 'sms' | 'whatsapp';
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -62,7 +62,7 @@ export const useAgents = () => {
 
   // Contratar um agente
   const contractAgentMutation = useMutation({
-    mutationFn: async (agentType: 'atendimento' | 'comercial' | 'suporte_tecnico') => {
+    mutationFn: async (agentType: 'chatbot' | 'voice' | 'email' | 'sms' | 'whatsapp') => {
       if (!user?.id) throw new Error('User not authenticated');
       
       const { data, error } = await supabase
