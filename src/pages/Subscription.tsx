@@ -1,105 +1,125 @@
 
-import { useSubscription } from "@/hooks/useSubscription";
+import { useEffect } from "react";
+import { useLocation, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SubscriptionCard from "@/components/SubscriptionCard";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
+import SubscriptionCard from "@/components/SubscriptionCard";
 import { useWorkflow } from "@/hooks/useWorkflow";
+import { useSubscription } from "@/hooks/useSubscription";
+import { toast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Settings } from "lucide-react";
 
 const Subscription = () => {
-  const { handleWorkflowTrigger, isLoading } = useWorkflow();
-  const { subscriptionData, createCheckout } = useSubscription();
+  const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
+  const { createCheckout } = useSubscription();
+  const location = useLocation();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const success = urlParams.get('success');
+    const canceled = urlParams.get('canceled');
+
+    if (success) {
+      toast({
+        title: "Assinatura ativada!",
+        description: "Sua assinatura foi ativada com sucesso.",
+      });
+    } else if (canceled) {
+      toast({
+        title: "Pagamento cancelado",
+        description: "O processo de pagamento foi cancelado.",
+        variant: "destructive",
+      });
+    }
+  }, [location]);
 
   const plans = [
     {
-      title: "Basic",
-      description: "Ideal para começar",
-      price: "R$ 29",
+      title: "Básico",
+      description: "Perfeito para pequenas empresas",
+      price: "R$ 49",
       period: "mês",
       features: [
-        "1 agente ativo",
-        "1.000 execuções/mês",
-        "Suporte por email",
-        "Integrações básicas"
-      ],
-      priceId: "price_basic_monthly" // Substitua pelo ID real do Stripe
+        "5 agentes IA",
+        "1.000 interações/mês",
+        "Integrações básicas",
+        "Suporte por email"
+      ]
     },
     {
       title: "Premium",
-      description: "Para negócios em crescimento",
-      price: "R$ 79",
+      description: "Para empresas em crescimento",
+      price: "R$ 149",
       period: "mês",
       features: [
-        "5 agentes ativos",
-        "10.000 execuções/mês",
-        "Suporte prioritário",
+        "20 agentes IA",
+        "10.000 interações/mês",
         "Todas as integrações",
-        "Analytics avançados"
+        "Analytics avançados",
+        "Suporte prioritário"
       ],
-      isPopular: true,
-      priceId: "price_premium_monthly" // Substitua pelo ID real do Stripe
+      isPopular: true
     },
     {
       title: "Enterprise",
-      description: "Para grandes empresas",
-      price: "R$ 199",
+      description: "Para grandes organizações",
+      price: "R$ 399",
       period: "mês",
       features: [
         "Agentes ilimitados",
-        "Execuções ilimitadas",
-        "Suporte 24/7",
+        "Interações ilimitadas",
         "Integrações customizadas",
-        "SLA garantido",
+        "Suporte 24/7",
         "Gerente dedicado"
-      ],
-      priceId: "price_enterprise_monthly" // Substitua pelo ID real do Stripe
+      ]
     }
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
+      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
       
       <main className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Escolha seu Plano
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Desbloqueie todo o potencial da automação com nossos planos flexíveis
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          <SubscriptionStatus />
-          
-          <div className="bg-blue-50 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">
-              Por que assinar?
-            </h3>
-            <ul className="space-y-2 text-blue-800">
-              <li>• Automatize processos complexos</li>
-              <li>• Integre com suas ferramentas favoritas</li>
-              <li>• Escale seu negócio sem limites</li>
-              <li>• Suporte especializado quando precisar</li>
-            </ul>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Escolha seu Plano
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-6">
+              Desbloqueie todo o potencial da plataforma com nossos planos flexíveis
+            </p>
+            
+            {/* Link para gerenciamento */}
+            <Link to="/subscription-management">
+              <Button variant="outline" className="mb-8">
+                <Settings className="mr-2 h-4 w-4" />
+                Gerenciar Assinatura
+              </Button>
+            </Link>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan, index) => (
-            <SubscriptionCard
-              key={index}
-              title={plan.title}
-              description={plan.description}
-              price={plan.price}
-              period={plan.period}
-              features={plan.features}
-              isPopular={plan.isPopular}
-              isCurrentPlan={subscriptionData.subscription_tier === plan.title}
-              onSubscribe={() => createCheckout(plan.priceId)}
-            />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="md:col-span-2">
+              <SubscriptionStatus />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {plans.map((plan, index) => (
+              <SubscriptionCard
+                key={index}
+                title={plan.title}
+                description={plan.description}
+                price={plan.price}
+                period={plan.period}
+                features={plan.features}
+                isPopular={plan.isPopular}
+                onSubscribe={() => createCheckout(plan.title.toLowerCase())}
+              />
+            ))}
+          </div>
         </div>
       </main>
 
