@@ -42,13 +42,21 @@ const Integracoes = () => {
     {
       id: 4,
       name: "CRM Pipedrive",
-      description: "Sincronização automática de leads e tickets",
+      description: "Sincronização automática de leads e tickets com Pipedrive",
       icon: Database,
       status: "coming_soon",
       type: "crm"
     },
     {
       id: 5,
+      name: "CRM RD Station",
+      description: "Integração com RD Station para automação de marketing e vendas",
+      icon: Database,
+      status: "coming_soon",
+      type: "crm"
+    },
+    {
+      id: 6,
       name: "Slack",
       description: "Notificações de tickets e alertas em tempo real",
       icon: Cloud,
@@ -56,7 +64,7 @@ const Integracoes = () => {
       type: "notification"
     },
     {
-      id: 6,
+      id: 7,
       name: "Sistema de Billing",
       description: "Integração com sistemas de cobrança e faturamento",
       icon: Zap,
