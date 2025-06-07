@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,8 @@ import PagamentoMetodo from "./pages/PagamentoMetodo";
 import Agentes from "./pages/Agentes";
 import Integracoes from "./pages/Integracoes";
 import Subscription from "./pages/Subscription";
+import IntegrationsManagement from "./pages/IntegrationsManagement";
+import DatabaseManagement from "./pages/DatabaseManagement";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,16 @@ const App = () => (
             <Route path="/integracoes" element={
               <ProtectedRoute>
                 <Integracoes />
+              </ProtectedRoute>
+            } />
+            <Route path="/integracoes/gerenciar" element={
+              <ProtectedRoute>
+                <IntegrationsManagement />
+              </ProtectedRoute>
+            } />
+            <Route path="/database" element={
+              <ProtectedRoute>
+                <DatabaseManagement />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
