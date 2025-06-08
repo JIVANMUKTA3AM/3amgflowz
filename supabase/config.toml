@@ -27,5 +27,8 @@ verify_jwt = true
 [functions.webhook-stripe]
 verify_jwt = false
 
+[functions.agent-chat]
+verify_jwt = false
+
 [realtime]
 # Configuração do Realtime

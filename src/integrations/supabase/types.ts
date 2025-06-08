@@ -24,6 +24,139 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_configurations: {
+        Row: {
+          agent_type: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          max_tokens: number | null
+          model: string
+          name: string
+          prompt: string
+          temperature: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_type: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_tokens?: number | null
+          model?: string
+          name: string
+          prompt: string
+          temperature?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          max_tokens?: number | null
+          model?: string
+          name?: string
+          prompt?: string
+          temperature?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      agent_conversations: {
+        Row: {
+          agent_configuration_id: string
+          agent_response: string
+          created_at: string
+          id: string
+          model_used: string | null
+          response_time_ms: number | null
+          session_id: string
+          tokens_used: number | null
+          user_id: string
+          user_message: string
+        }
+        Insert: {
+          agent_configuration_id: string
+          agent_response: string
+          created_at?: string
+          id?: string
+          model_used?: string | null
+          response_time_ms?: number | null
+          session_id: string
+          tokens_used?: number | null
+          user_id: string
+          user_message: string
+        }
+        Update: {
+          agent_configuration_id?: string
+          agent_response?: string
+          created_at?: string
+          id?: string
+          model_used?: string | null
+          response_time_ms?: number | null
+          session_id?: string
+          tokens_used?: number | null
+          user_id?: string
+          user_message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_conversations_agent_configuration_id_fkey"
+            columns: ["agent_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_metrics: {
+        Row: {
+          agent_configuration_id: string
+          avg_response_time_ms: number | null
+          created_at: string
+          date: string
+          id: string
+          total_conversations: number | null
+          total_tokens_used: number | null
+          updated_at: string
+          user_satisfaction_avg: number | null
+        }
+        Insert: {
+          agent_configuration_id: string
+          avg_response_time_ms?: number | null
+          created_at?: string
+          date: string
+          id?: string
+          total_conversations?: number | null
+          total_tokens_used?: number | null
+          updated_at?: string
+          user_satisfaction_avg?: number | null
+        }
+        Update: {
+          agent_configuration_id?: string
+          avg_response_time_ms?: number | null
+          created_at?: string
+          date?: string
+          id?: string
+          total_conversations?: number | null
+          total_tokens_used?: number | null
+          updated_at?: string
+          user_satisfaction_avg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_metrics_agent_configuration_id_fkey"
+            columns: ["agent_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agents: {
         Row: {
           base_price: number
