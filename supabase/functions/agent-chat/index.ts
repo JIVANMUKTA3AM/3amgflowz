@@ -24,10 +24,10 @@ serve(async (req) => {
       );
     }
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!geminiApiKey) {
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
+        JSON.stringify({ error: 'Gemini API key not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -60,42 +60,51 @@ serve(async (req) => {
       .order('created_at')
       .limit(10);
 
-    // Montar histórico para contexto
-    const messages = [
-      { role: 'system', content: config.prompt }
-    ];
-
+    // Montar contexto para o Gemini
+    let contextText = config.prompt + "\n\n";
+    
     // Adicionar histórico recente
-    if (history) {
+    if (history && history.length > 0) {
+      contextText += "Histórico da conversa:\n";
       history.forEach(conv => {
-        messages.push({ role: 'user', content: conv.user_message });
-        messages.push({ role: 'assistant', content: conv.agent_response });
+        contextText += `Usuário: ${conv.user_message}\n`;
+        contextText += `Assistente: ${conv.agent_response}\n\n`;
       });
     }
-
-    // Adicionar mensagem atual
-    messages.push({ role: 'user', content: user_message });
+    
+    contextText += `Usuário: ${user_message}\nAssistente:`;
 
     const startTime = Date.now();
 
-    // Chamar OpenAI
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Chamar Gemini API
+    const geminiModel = config.model || 'gemini-1.5-flash';
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiApiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: config.model,
-        messages: messages,
-        temperature: config.temperature,
-        max_tokens: config.max_tokens,
+        contents: [
+          {
+            parts: [
+              {
+                text: contextText
+              }
+            ]
+          }
+        ],
+        generationConfig: {
+          temperature: config.temperature || 0.7,
+          maxOutputTokens: config.max_tokens || 1000,
+          topP: 0.8,
+          topK: 10
+        }
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('OpenAI API error:', error);
+      console.error('Gemini API error:', error);
       return new Response(
         JSON.stringify({ error: 'Failed to generate response' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -103,9 +112,11 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const agent_response = data.choices[0].message.content;
+    const agent_response = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Desculpe, não consegui gerar uma resposta.';
     const response_time_ms = Date.now() - startTime;
-    const tokens_used = data.usage?.total_tokens || 0;
+    
+    // Estimar tokens usados (Gemini não retorna essa informação diretamente)
+    const tokens_used = Math.ceil((contextText.length + agent_response.length) / 4);
 
     // Salvar conversa
     const { error: saveError } = await supabase
@@ -118,7 +129,7 @@ serve(async (req) => {
         agent_response,
         response_time_ms,
         tokens_used,
-        model_used: config.model,
+        model_used: geminiModel,
       });
 
     if (saveError) {

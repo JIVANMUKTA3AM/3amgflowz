@@ -116,6 +116,7 @@ export const useAgentConfigurations = () => {
         .insert({
           ...config,
           user_id: user.id,
+          model: config.model || 'gemini-1.5-flash', // Default para Gemini
         })
         .select()
         .single();
