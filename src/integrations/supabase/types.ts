@@ -113,6 +113,56 @@ export type Database = {
           },
         ]
       }
+      agent_integrations: {
+        Row: {
+          agent_configuration_id: string
+          api_credentials: Json | null
+          created_at: string
+          id: string
+          integration_name: string
+          integration_type: string
+          is_active: boolean
+          last_sync_at: string | null
+          settings: Json | null
+          updated_at: string
+          webhook_endpoints: Json | null
+        }
+        Insert: {
+          agent_configuration_id: string
+          api_credentials?: Json | null
+          created_at?: string
+          id?: string
+          integration_name: string
+          integration_type: string
+          is_active?: boolean
+          last_sync_at?: string | null
+          settings?: Json | null
+          updated_at?: string
+          webhook_endpoints?: Json | null
+        }
+        Update: {
+          agent_configuration_id?: string
+          api_credentials?: Json | null
+          created_at?: string
+          id?: string
+          integration_name?: string
+          integration_type?: string
+          is_active?: boolean
+          last_sync_at?: string | null
+          settings?: Json | null
+          updated_at?: string
+          webhook_endpoints?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_integrations_agent_configuration_id_fkey"
+            columns: ["agent_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_metrics: {
         Row: {
           agent_configuration_id: string
@@ -157,6 +207,53 @@ export type Database = {
           },
         ]
       }
+      agent_workflows: {
+        Row: {
+          agent_configuration_id: string
+          configuration: Json | null
+          created_at: string
+          id: string
+          is_active: boolean
+          updated_at: string
+          webhook_secret: string | null
+          webhook_url: string | null
+          workflow_name: string
+          workflow_type: string
+        }
+        Insert: {
+          agent_configuration_id: string
+          configuration?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
+          workflow_name: string
+          workflow_type: string
+        }
+        Update: {
+          agent_configuration_id?: string
+          configuration?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
+          workflow_name?: string
+          workflow_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_workflows_agent_configuration_id_fkey"
+            columns: ["agent_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agents: {
         Row: {
           base_price: number
@@ -189,6 +286,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      automation_data: {
+        Row: {
+          agent_configuration_id: string
+          created_at: string
+          data_key: string
+          data_type: string
+          data_value: Json
+          expires_at: string | null
+          id: string
+          metadata: Json | null
+          updated_at: string
+        }
+        Insert: {
+          agent_configuration_id: string
+          created_at?: string
+          data_key: string
+          data_type: string
+          data_value: Json
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          agent_configuration_id?: string
+          created_at?: string
+          data_key?: string
+          data_type?: string
+          data_value?: Json
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_data_agent_configuration_id_fkey"
+            columns: ["agent_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       invoices: {
         Row: {
@@ -562,6 +703,63 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      workflow_executions: {
+        Row: {
+          agent_configuration_id: string
+          completed_at: string | null
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          result_data: Json | null
+          started_at: string
+          status: string
+          trigger_data: Json | null
+          trigger_type: string
+          workflow_id: string
+        }
+        Insert: {
+          agent_configuration_id: string
+          completed_at?: string | null
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          result_data?: Json | null
+          started_at?: string
+          status?: string
+          trigger_data?: Json | null
+          trigger_type: string
+          workflow_id: string
+        }
+        Update: {
+          agent_configuration_id?: string
+          completed_at?: string | null
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          result_data?: Json | null
+          started_at?: string
+          status?: string
+          trigger_data?: Json | null
+          trigger_type?: string
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_executions_agent_configuration_id_fkey"
+            columns: ["agent_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_executions_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "agent_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
