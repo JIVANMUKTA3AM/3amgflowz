@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,36 +19,48 @@ const ClientDashboard = () => {
     integracoesAtivas: 2
   };
 
-  // Dados mock para os componentes
+  // Dados mock para os componentes - seguindo as interfaces corretas
   const mockConfigurations = [
     {
       id: "1",
+      user_id: "user-123",
       name: "Atendimento Geral",
-      type: "customer_service" as const,
-      model: "gemini-1.5-flash" as const,
-      isActive: true
+      agent_type: "customer_service",
+      prompt: "Você é um assistente de atendimento geral especializado em ajudar clientes.",
+      model: "gemini-1.5-flash",
+      temperature: 0.7,
+      max_tokens: 1000,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     },
     {
       id: "2", 
+      user_id: "user-123",
       name: "Suporte Técnico",
-      type: "technical_support" as const,
-      model: "gpt-4-omni" as const,
-      isActive: true
+      agent_type: "technical_support",
+      prompt: "Você é um especialista em suporte técnico para resolver problemas de internet e equipamentos.",
+      model: "gpt-4-omni",
+      temperature: 0.5,
+      max_tokens: 1500,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }
   ];
 
   const mockConversations = [
     {
       id: "1",
-      sessionId: "session_1",
-      agentId: "1",
-      agentName: "Atendimento Geral",
-      userMessage: "Preciso de ajuda com minha conta",
-      agentResponse: "Claro! Como posso ajudar você com sua conta?",
-      timestamp: new Date().toISOString(),
-      responseTime: 1200,
-      tokensUsed: 45,
-      model: "gemini-1.5-flash" as const
+      user_id: "user-123",
+      agent_configuration_id: "1",
+      session_id: "session_1",
+      user_message: "Preciso de ajuda com minha conta",
+      agent_response: "Claro! Como posso ajudar você com sua conta?",
+      response_time_ms: 1200,
+      tokens_used: 45,
+      model_used: "gemini-1.5-flash",
+      created_at: new Date().toISOString()
     }
   ];
 
