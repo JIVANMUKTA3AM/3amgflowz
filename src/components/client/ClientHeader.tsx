@@ -1,5 +1,6 @@
 
 import { Shield } from "lucide-react";
+import UserMenu from "@/components/UserMenu";
 
 const ClientHeader = () => {
   return (
@@ -20,6 +21,7 @@ const ClientHeader = () => {
               <Shield className="inline w-4 h-4 mr-2" />
               Plano Pro Ativo
             </div>
+            <UserMenu />
           </div>
         </div>
       </div>
