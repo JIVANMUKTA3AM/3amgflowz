@@ -60,6 +60,22 @@ export const useAgents = () => {
     enabled: !!user?.id,
   });
 
+  // Buscar modelos de IA disponíveis
+  const getAvailableModels = () => {
+    return [
+      // Modelos OpenAI
+      { value: 'gpt-4o', label: 'GPT-4 Omni (OpenAI)', provider: 'openai', description: 'Modelo mais avançado da OpenAI com capacidades multimodais' },
+      { value: 'gpt-4o-mini', label: 'GPT-4 Omni Mini (OpenAI)', provider: 'openai', description: 'Versão mais rápida e econômica do GPT-4' },
+      { value: 'gpt-4-turbo', label: 'GPT-4 Turbo (OpenAI)', provider: 'openai', description: 'GPT-4 otimizado para velocidade' },
+      { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (OpenAI)', provider: 'openai', description: 'Modelo rápido e eficiente para tarefas gerais' },
+      
+      // Modelos Gemini (Google)
+      { value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro (Google)', provider: 'gemini', description: 'Modelo mais avançado do Google Gemini' },
+      { value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash (Google)', provider: 'gemini', description: 'Versão rápida do Gemini para respostas instantâneas' },
+      { value: 'gemini-1.0-pro', label: 'Gemini 1.0 Pro (Google)', provider: 'gemini', description: 'Modelo estável e confiável' },
+    ];
+  };
+
   // Contratar um agente
   const contractAgentMutation = useMutation({
     mutationFn: async (agentType: 'chatbot' | 'voice' | 'email' | 'sms' | 'whatsapp') => {
@@ -132,6 +148,7 @@ export const useAgents = () => {
   return {
     availableAgents,
     userAgents,
+    availableModels: getAvailableModels(),
     isLoading: loadingAvailable || loadingUserAgents,
     contractAgent: contractAgentMutation.mutate,
     isContracting: contractAgentMutation.isPending,

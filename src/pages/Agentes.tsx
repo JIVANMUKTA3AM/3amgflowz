@@ -4,15 +4,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Bot, MessageCircle, BarChart3, Settings, Play } from "lucide-react";
+import { Plus, Bot, MessageCircle, BarChart3, Settings, Play, Zap, Link } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useWorkflow } from "@/hooks/useWorkflow";
 import { useAgentConfigurations } from "@/hooks/useAgentConfigurations";
+import { useAgentIntegrations } from "@/hooks/useAgentIntegrations";
+import { useWorkflowExecutions } from "@/hooks/useWorkflowExecutions";
 import AgentConfigurationForm from "@/components/agents/AgentConfigurationForm";
 import ConversationLogs from "@/components/agents/ConversationLogs";
 import AgentMetrics from "@/components/agents/AgentMetrics";
 import AgentChat from "@/components/agents/AgentChat";
+import AgentIntegrations from "@/components/agents/AgentIntegrations";
+import WorkflowExecutions from "@/components/agents/WorkflowExecutions";
+import AgentTrainingSystem from "@/components/agents/AgentTrainingSystem";
+import IntegrationConfigForm from "@/components/agents/IntegrationConfigForm";
 
 const Agentes = () => {
   const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
@@ -29,8 +35,13 @@ const Agentes = () => {
     isDeleting,
   } = useAgentConfigurations();
 
+  const { integrations } = useAgentIntegrations();
+  const { executions } = useWorkflowExecutions();
+
   const [showForm, setShowForm] = useState(false);
   const [editingAgent, setEditingAgent] = useState<string | null>(null);
+  const [showIntegrationForm, setShowIntegrationForm] = useState(false);
+  const [editingIntegration, setEditingIntegration] = useState<any>(null);
 
   const handleSaveAgent = (agentData: any) => {
     if (editingAgent) {
@@ -47,12 +58,19 @@ const Agentes = () => {
     setShowForm(true);
   };
 
+  const handleEditIntegration = (integration: any) => {
+    setEditingIntegration(integration);
+    setShowIntegrationForm(true);
+  };
+
   const editingConfiguration = editingAgent 
     ? configurations?.find(config => config.id === editingAgent)
     : undefined;
 
   const activeAgents = configurations?.filter(config => config.is_active).length || 0;
   const totalConversations = conversations?.length || 0;
+  const activeIntegrations = integrations?.filter(int => int.is_active).length || 0;
+  const successfulExecutions = executions?.filter(exec => exec.status === 'success').length || 0;
 
   if (isLoading) {
     return (
@@ -81,7 +99,7 @@ const Agentes = () => {
         </div>
 
         {/* Cards de Resumo */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -109,10 +127,22 @@ const Agentes = () => {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
-                <BarChart3 className="h-8 w-8 text-purple-600" />
+                <Link className="h-8 w-8 text-purple-600" />
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Configurações</p>
-                  <p className="text-2xl font-bold text-gray-900">{configurations?.length || 0}</p>
+                  <p className="text-sm font-medium text-gray-600">Integrações Ativas</p>
+                  <p className="text-2xl font-bold text-gray-900">{activeIntegrations}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <Zap className="h-8 w-8 text-orange-600" />
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-gray-600">Execuções Bem-sucedidas</p>
+                  <p className="text-2xl font-bold text-gray-900">{successfulExecutions}</p>
                 </div>
               </div>
             </CardContent>
@@ -120,7 +150,7 @@ const Agentes = () => {
         </div>
 
         <Tabs defaultValue="chat" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-7 mb-8">
             <TabsTrigger value="chat" className="gap-2">
               <MessageCircle className="h-4 w-4" />
               Chat
@@ -128,6 +158,14 @@ const Agentes = () => {
             <TabsTrigger value="configurations" className="gap-2">
               <Settings className="h-4 w-4" />
               Configurações
+            </TabsTrigger>
+            <TabsTrigger value="integrations" className="gap-2">
+              <Link className="h-4 w-4" />
+              Integrações
+            </TabsTrigger>
+            <TabsTrigger value="workflows" className="gap-2">
+              <Zap className="h-4 w-4" />
+              Workflows
             </TabsTrigger>
             <TabsTrigger value="logs" className="gap-2">
               <MessageCircle className="h-4 w-4" />
@@ -215,6 +253,42 @@ const Agentes = () => {
               </div>
             </div>
           </TabsContent>
+
+          <TabsContent value="integrations">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold">Integrações</h2>
+                <Button onClick={() => setShowIntegrationForm(true)} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Nova Integração
+                </Button>
+              </div>
+
+              {showIntegrationForm && (
+                <IntegrationConfigForm
+                  integration={editingIntegration}
+                  onClose={() => {
+                    setShowIntegrationForm(false);
+                    setEditingIntegration(null);
+                  }}
+                />
+              )}
+
+              <AgentIntegrations 
+                integrations={integrations || []}
+                onEdit={handleEditIntegration}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="workflows">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-bold">Execuções de Workflow</h2>
+              </div>
+              <WorkflowExecutions executions={executions || []} />
+            </div>
+          </TabsContent>
           
           <TabsContent value="logs">
             <ConversationLogs 
@@ -232,24 +306,7 @@ const Agentes = () => {
           </TabsContent>
           
           <TabsContent value="training">
-            <Card>
-              <CardHeader>
-                <CardTitle>Sistema de Treinamento</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Bot className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Em Desenvolvimento</h3>
-                  <p className="text-gray-600 mb-4">
-                    O sistema de treinamento de agentes estará disponível em breve.
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Funcionalidades planejadas: Fine-tuning, feedback de conversas, 
-                    otimização automática de prompts e treinamento com dados personalizados.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <AgentTrainingSystem />
           </TabsContent>
         </Tabs>
       </main>

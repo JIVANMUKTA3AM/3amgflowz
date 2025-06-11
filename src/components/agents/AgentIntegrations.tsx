@@ -2,15 +2,19 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Settings, Zap, Smartphone, Mail, Database, MessageSquare } from "lucide-react";
+import { Settings, Zap, Smartphone, Mail, Database, MessageSquare, Edit, TestTube } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useAgentIntegrations } from "@/hooks/useAgentIntegrations";
 
 interface AgentIntegrationsProps {
   integrations: any[];
+  onEdit?: (integration: any) => void;
 }
 
-const AgentIntegrations = ({ integrations }: AgentIntegrationsProps) => {
+const AgentIntegrations = ({ integrations, onEdit }: AgentIntegrationsProps) => {
+  const { testIntegration, isTesting } = useAgentIntegrations();
+
   const getIntegrationIcon = (type: string) => {
     switch (type.toLowerCase()) {
       case 'whatsapp': return <Smartphone className="w-4 h-4 text-green-600" />;
@@ -24,6 +28,10 @@ const AgentIntegrations = ({ integrations }: AgentIntegrationsProps) => {
 
   const getStatusColor = (isActive: boolean) => {
     return isActive ? "bg-green-500" : "bg-gray-500";
+  };
+
+  const handleTest = (integrationId: string) => {
+    testIntegration(integrationId);
   };
 
   if (!integrations || integrations.length === 0) {
@@ -80,10 +88,30 @@ const AgentIntegrations = ({ integrations }: AgentIntegrationsProps) => {
                   )}
                 </div>
                 
-                <Button size="sm" variant="outline" className="w-full">
-                  <Settings className="w-3 h-3 mr-1" />
-                  Configurar
-                </Button>
+                <div className="flex gap-2">
+                  {onEdit && (
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      onClick={() => onEdit(integration)}
+                      className="flex-1"
+                    >
+                      <Edit className="w-3 h-3 mr-1" />
+                      Editar
+                    </Button>
+                  )}
+                  
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={() => handleTest(integration.id)}
+                    disabled={isTesting}
+                    className="flex-1"
+                  >
+                    <TestTube className="w-3 h-3 mr-1" />
+                    Testar
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
