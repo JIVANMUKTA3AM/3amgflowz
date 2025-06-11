@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading: authLoading } = useAuth();
-  const { profile, loading: profileLoading } = useProfile();
+  const { profile, isLoading: profileLoading } = useProfile();
 
   if (authLoading || profileLoading) {
     return (
