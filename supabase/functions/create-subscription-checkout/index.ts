@@ -79,7 +79,7 @@ serve(async (req) => {
       logStep("New customer created", { customerId });
     }
 
-    // Criar sessão de checkout
+    // Criar sessão de checkout com URL de sucesso personalizada para onboarding
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
@@ -90,7 +90,7 @@ serve(async (req) => {
           quantity: 1,
         },
       ],
-      success_url: successUrl || `${req.headers.get('origin')}/subscription?success=true`,
+      success_url: successUrl || `${req.headers.get('origin')}/subscription?success=true&redirect_to_onboarding=true`,
       cancel_url: cancelUrl || `${req.headers.get('origin')}/subscription?canceled=true`,
       metadata: {
         user_id: userData.user.id,

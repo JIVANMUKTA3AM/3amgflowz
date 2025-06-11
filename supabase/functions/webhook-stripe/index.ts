@@ -98,13 +98,17 @@ serve(async (req) => {
       
       const userId = userData.id;
 
-      // Atualizar o plano do usuário para 'pro'
+      // Atualizar o plano do usuário para 'pro' e marcar como precisando do onboarding
       const { error: updateError } = await supabaseAdmin
         .from('profiles')
         .update({ 
           plan: 'pro', 
           updated_at: new Date().toISOString(),
-          agent_settings: { onboarding_completed: true, checkout_completed: true }
+          agent_settings: { 
+            onboarding_completed: false, // Marca que precisa completar onboarding
+            checkout_completed: true,
+            needs_onboarding: true
+          }
         })
         .eq('id', userId);
       
@@ -161,10 +165,10 @@ serve(async (req) => {
         });
       }
 
-      logStep("Perfil e agentes atualizados com sucesso", { email: customerEmail, plan: 'pro' });
+      logStep("Perfil e agentes atualizados com sucesso - usuário será redirecionado para onboarding", { email: customerEmail, plan: 'pro' });
       return new Response(JSON.stringify({ 
         status: "success", 
-        message: "Plano atualizado para pro e agentes ativados" 
+        message: "Plano atualizado para pro, agentes ativados e onboarding necessário" 
       }), { 
         status: 200, 
         headers: { ...corsHeaders, "Content-Type": "application/json" } 
