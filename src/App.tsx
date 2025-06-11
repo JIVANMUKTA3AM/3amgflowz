@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -17,18 +18,18 @@ import Subscription from "@/pages/Subscription";
 import SubscriptionManagement from "@/pages/SubscriptionManagement";
 import Pagamentos from "@/pages/Pagamentos";
 import IntegrationsManagement from "@/pages/IntegrationsManagement";
-import WhatsAppConfig from "@/pages/config/WhatsAppConfig";
-import SlackConfig from "@/pages/config/SlackConfig";
-import RdStationConfig from "@/pages/config/RdStationConfig";
-import PipedriveConfig from "@/pages/config/PipedriveConfig";
-import OltConfig from "@/pages/config/OltConfig";
-import BillingConfig from "@/pages/config/BillingConfig";
-import PagamentoMetodo from "@/pages/config/PagamentoMetodo";
-import ClientWebhook from "@/pages/config/ClientWebhook";
-import Arquitetura from "@/pages/info/Arquitetura";
-import ModeloDados from "@/pages/info/ModeloDados";
-import Fluxos from "@/pages/info/Fluxos";
-import Documentacao from "@/pages/info/Documentacao";
+import WhatsAppConfig from "@/pages/WhatsAppConfig";
+import SlackConfig from "@/pages/SlackConfig";
+import RdStationConfig from "@/pages/RdStationConfig";
+import PipedriveConfig from "@/pages/PipedriveConfig";
+import OltConfig from "@/pages/OltConfig";
+import BillingConfig from "@/pages/BillingConfig";
+import PagamentoMetodo from "@/pages/PagamentoMetodo";
+import ClientWebhook from "@/pages/ClientWebhook";
+import Arquitetura from "@/pages/Arquitetura";
+import ModeloDados from "@/pages/ModeloDados";
+import Fluxos from "@/pages/Fluxos";
+import Documentacao from "@/pages/Documentacao";
 import NotFound from "@/pages/NotFound";
 
 function App() {

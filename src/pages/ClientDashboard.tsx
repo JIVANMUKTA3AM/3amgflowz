@@ -20,6 +20,39 @@ const ClientDashboard = () => {
     integracoesAtivas: 2
   };
 
+  // Dados mock para os componentes
+  const mockConfigurations = [
+    {
+      id: "1",
+      name: "Atendimento Geral",
+      type: "customer_service" as const,
+      model: "gemini-1.5-flash" as const,
+      isActive: true
+    },
+    {
+      id: "2", 
+      name: "Suporte Técnico",
+      type: "technical_support" as const,
+      model: "gpt-4-omni" as const,
+      isActive: true
+    }
+  ];
+
+  const mockConversations = [
+    {
+      id: "1",
+      sessionId: "session_1",
+      agentId: "1",
+      agentName: "Atendimento Geral",
+      userMessage: "Preciso de ajuda com minha conta",
+      agentResponse: "Claro! Como posso ajudar você com sua conta?",
+      timestamp: new Date().toISOString(),
+      responseTime: 1200,
+      tokensUsed: 45,
+      model: "gemini-1.5-flash" as const
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
       {/* Header do Cliente */}
@@ -213,7 +246,7 @@ const ClientDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <AgentChat />
+                <AgentChat configurations={mockConfigurations} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -227,7 +260,10 @@ const ClientDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ConversationLogs />
+                <ConversationLogs 
+                  conversations={mockConversations} 
+                  configurations={mockConfigurations} 
+                />
               </CardContent>
             </Card>
           </TabsContent>
