@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +27,7 @@ const IntegrationConfigForm = ({ integration, onClose }: IntegrationConfigFormPr
     api_credentials: integration?.api_credentials || {},
     webhook_endpoints: integration?.webhook_endpoints || {},
     settings: integration?.settings || {},
+    last_sync_at: integration?.last_sync_at || null,
   });
 
   const integrationTypes = [
