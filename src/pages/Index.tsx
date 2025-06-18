@@ -1,18 +1,21 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Activity, TrendingUp, Shield } from "lucide-react";
+import { Users, Activity, TrendingUp, Shield, Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import UserMenu from "@/components/UserMenu";
 
 const Index = () => {
   const { user } = useAuth();
   const { profile } = useProfile();
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     if (user && profile) {
@@ -27,7 +30,30 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-blue-50/30">
-      <Header />
+      {/* Header simples para página de monitoramento */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Link to="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg"></div>
+              <span className="font-bold text-xl text-gray-900">AgentFlow</span>
+            </Link>
+
+            <div className="flex items-center space-x-4">
+              {user && <UserMenu />}
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                className="md:hidden"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
       
       <main className="container mx-auto px-4 py-16">
         {/* Painel de Status Geral */}
