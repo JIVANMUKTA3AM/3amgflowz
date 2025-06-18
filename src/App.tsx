@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import ResetPassword from "@/pages/ResetPassword";
 import Onboarding from "@/pages/Onboarding";
+import ClientDashboard from "@/pages/ClientDashboard";
 import Agentes from "@/pages/Agentes";
 import Integracoes from "@/pages/Integracoes";
 import Dashboard from "@/pages/Dashboard";
@@ -51,6 +53,11 @@ function App() {
               <Route path="/" element={
                 <ProtectedRoute>
                   <RoleBasedRouter />
+                </ProtectedRoute>
+              } />
+              <Route path="/client-dashboard" element={
+                <ProtectedRoute>
+                  <ClientDashboard />
                 </ProtectedRoute>
               } />
               <Route path="/agentes" element={
