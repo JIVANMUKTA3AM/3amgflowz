@@ -1,197 +1,147 @@
 
-import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import WebhookConfig from "@/components/WebhookConfig";
-import WebhookSpecificConfig from "@/components/WebhookSpecificConfig";
-import WorkflowCards from "@/components/WorkflowCards";
-import AgentesResumo from "@/components/AgentesResumo";
-import AgentServiceStatus from "@/components/AgentServiceStatus";
-import FiberOpticBackground from "@/components/FiberOpticBackground";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, Activity, TrendingUp, Shield } from "lucide-react";
 
 const Index = () => {
-  const [webhookUrl, setWebhookUrl] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuth();
+  const { profile } = useProfile();
+  const navigate = useNavigate();
 
-  const handleWorkflowTrigger = async (workflowType: string) => {
-    if (!webhookUrl) {
-      toast({
-        title: "URL do webhook necessário",
-        description: "Por favor, insira a URL do seu webhook do n8n",
-        variant: "destructive",
-      });
-      return;
+  useEffect(() => {
+    if (user && profile) {
+      // Se o usuário está logado, redireciona para o dashboard do cliente
+      navigate("/client-dashboard");
     }
+  }, [user, profile, navigate]);
 
-    setIsLoading(true);
-    try {
-      await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "no-cors",
-        body: JSON.stringify({
-          workflow_type: workflowType,
-          timestamp: new Date().toISOString(),
-          source: window.location.origin,
-        }),
-      });
-
-      toast({
-        title: "Workflow iniciado",
-        description: `O workflow "${workflowType}" foi iniciado no n8n.`,
-      });
-    } catch (error) {
-      console.error("Erro ao iniciar workflow:", error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível iniciar o workflow. Verifique a URL e tente novamente.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  if (user) {
+    return null; // Irá redirecionar
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
-      {/* Header com Navigation */}
-      <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-blue-50/30">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-16">
+        {/* Painel de Status Geral */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Painel de Monitoramento
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Monitore clientes, assinaturas e desempenho da plataforma
+          </p>
+        </div>
 
-      {/* Hero Section with agents background and fiber optic animations */}
-      <section className="bg-gradient-3amg relative overflow-hidden min-h-[600px]">
-        {/* Background image of agents operating the system */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url(/lovable-uploads/0397339e-530f-4d97-99d5-4ba944cd434d.png)`,
-          }}
-        ></div>
-        
-        {/* Fiber optic overlay */}
-        <FiberOpticBackground />
-        
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/40 z-10"></div>
-        
-        <div className="container mx-auto px-4 py-16 relative z-20">
-          <div className="text-center text-white max-w-5xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in">
-              Revolucione o <span className="text-cyan-400">Atendimento</span> do seu Provedor de Internet
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-95 leading-relaxed animate-fade-in" style={{ animationDelay: '0.2s' }}>
-              <strong className="text-cyan-300">Agentes IA especializados</strong> que eliminam filas de espera, resolvem problemas técnicos em tempo real 
-              e oferecem suporte humanizado 24/7 para seus clientes.
-            </p>
-            
-            {/* Pain Points Addressed */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
-                <div className="text-3xl mb-3">⚡</div>
-                <h3 className="text-lg font-semibold mb-2 text-cyan-300">Atendimento Instantâneo</h3>
-                <p className="text-sm opacity-90">Elimine filas de espera com agentes que respondem em segundos, não em horas</p>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
-                <div className="text-3xl mb-3">🤖</div>
-                <h3 className="text-lg font-semibold mb-2 text-cyan-300">Suporte Técnico Especializado</h3>
-                <p className="text-sm opacity-90">Agentes treinados para resolver problemas de conectividade, configuração e infraestrutura</p>
-              </div>
-              
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 hover:bg-white/15 transition-all duration-300">
-                <div className="text-3xl mb-3">💬</div>
-                <h3 className="text-lg font-semibold mb-2 text-cyan-300">Comunicação Humanizada</h3>
-                <p className="text-sm opacity-90">Linguagem natural e empática que mantém seus clientes satisfeitos e engajados</p>
-              </div>
-            </div>
+        {/* Métricas Resumidas */}
+        <DashboardMetrics />
 
-            {/* Key Benefits */}
-            <div className="flex flex-col md:flex-row gap-8 justify-center items-center mb-8 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              <div className="flex items-center text-white/95 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                <div className="w-3 h-3 bg-green-400 rounded-full mr-3 animate-pulse"></div>
-                <span className="font-medium">Redução de 80% no tempo de resolução</span>
-              </div>
-              <div className="flex items-center text-white/95 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                <div className="w-3 h-3 bg-cyan-400 rounded-full mr-3 animate-pulse"></div>
-                <span className="font-medium">Satisfação do cliente acima de 95%</span>
-              </div>
-              <div className="flex items-center text-white/95 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                <div className="w-3 h-3 bg-purple-400 rounded-full mr-3 animate-pulse"></div>
-                <span className="font-medium">Disponibilidade 24/7 sem pausas</span>
-              </div>
-            </div>
-
-            {/* CTA Section */}
-            <div className="animate-fade-in" style={{ animationDelay: '0.8s' }}>
-              <p className="text-lg mb-6 text-cyan-200">
-                Transforme reclamações em elogios com nossa plataforma de automação inteligente
+        {/* Cards de Status da Plataforma */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Clientes Ativos</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">12</div>
+              <p className="text-xs text-muted-foreground">
+                +2 novos esta semana
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-3 px-8 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
-                  Começar Agora
-                </button>
-                <button className="border-2 border-white/30 hover:border-white/50 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 hover:bg-white/10">
-                  Ver Demonstração
-                </button>
-              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Agentes Online</CardTitle>
+              <Activity className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">34</div>
+              <p className="text-xs text-muted-foreground">
+                100% disponibilidade
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Receita Mensal</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">R$ 2.847</div>
+              <p className="text-xs text-muted-foreground">
+                +15% em relação ao mês anterior
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Status Sistema</CardTitle>
+              <Shield className="h-4 w-4 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">Online</div>
+              <p className="text-xs text-muted-foreground">
+                Todos os serviços funcionando
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Acesso Rápido */}
+        <Card className="mt-12 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle>Acesso Rápido</CardTitle>
+            <CardDescription>
+              Links diretos para as principais funcionalidades
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button
+                onClick={() => navigate("/subscription")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <h3 className="font-semibold mb-2">Gerenciar Assinaturas</h3>
+                <p className="text-sm text-gray-600">
+                  Visualize e gerencie todas as assinaturas ativas
+                </p>
+              </button>
+              
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <h3 className="font-semibold mb-2">Dashboard Completo</h3>
+                <p className="text-sm text-gray-600">
+                  Acesse o painel administrativo completo
+                </p>
+              </button>
+              
+              <button
+                onClick={() => navigate("/agentes")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <h3 className="font-semibold mb-2">Gerenciar Agentes</h3>
+                <p className="text-sm text-gray-600">
+                  Configure e monitore agentes de IA
+                </p>
+              </button>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Conteúdo Principal */}
-      <main className="container mx-auto px-4 py-12">
-        {/* Resumo dos Agentes e Status de Serviços */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <AgentesResumo />
-          <AgentServiceStatus />
-        </div>
-
-        {/* Configuração de Webhooks com Tabs */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Configuração de Webhooks</h2>
-            <p className="text-gray-600">Configure os webhooks para integração com n8n e automação de fluxos</p>
-          </div>
-          
-          <Tabs defaultValue="global" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white border border-gray-200">
-              <TabsTrigger value="global" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
-                Webhook Global
-              </TabsTrigger>
-              <TabsTrigger value="specific" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
-                Webhooks por Agente
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="global" className="mt-6">
-              <WebhookConfig webhookUrl={webhookUrl} setWebhookUrl={setWebhookUrl} />
-            </TabsContent>
-            
-            <TabsContent value="specific" className="mt-6">
-              <WebhookSpecificConfig />
-            </TabsContent>
-          </Tabs>
-        </div>
-
-        {/* Cards de Fluxos */}
-        <div className="mb-12">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Fluxos de Automação</h2>
-            <p className="text-gray-600">Inicie workflows automatizados para diferentes processos</p>
-          </div>
-          <WorkflowCards 
-            handleWorkflowTrigger={handleWorkflowTrigger} 
-            isLoading={isLoading} 
-            webhookUrl={webhookUrl} 
-          />
-        </div>
+          </CardContent>
+        </Card>
       </main>
 
-      {/* Footer */}
       <Footer />
     </div>
   );
