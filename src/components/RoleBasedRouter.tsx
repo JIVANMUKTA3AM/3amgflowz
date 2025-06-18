@@ -18,12 +18,22 @@ const RoleBasedRouter = () => {
     );
   }
 
-  // Se não tem perfil ou role definido, redireciona para onboarding
-  if (!profile || !profile.user_role_type) {
+  // Se não tem perfil, redireciona para onboarding
+  if (!profile) {
     return <Navigate to="/onboarding" replace />;
   }
 
-  // Renderiza o dashboard baseado no role
+  // Se é admin (role principal), vai direto para o dashboard completo
+  if (profile.role === 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // Se não tem user_role_type definido, redireciona para onboarding
+  if (!profile.user_role_type) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // Renderiza o dashboard baseado no user_role_type para usuários não-admin
   return <RoleBasedDashboard />;
 };
 

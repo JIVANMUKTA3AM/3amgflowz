@@ -5,6 +5,7 @@ import ComercialDashboard from "./agent-dashboard/ComercialDashboard";
 import GeralDashboard from "./agent-dashboard/GeralDashboard";
 import Dashboard from "@/pages/Dashboard";
 import { Loader2 } from "lucide-react";
+import { Navigate } from "react-router-dom";
 
 const RoleBasedDashboard = () => {
   const { profile, isLoading } = useProfile();
@@ -18,6 +19,11 @@ const RoleBasedDashboard = () => {
         </div>
       </div>
     );
+  }
+
+  // Se é admin principal, redireciona para dashboard completo
+  if (profile?.role === 'admin') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   const userRole = profile?.user_role_type;
@@ -43,6 +49,12 @@ const RoleBasedDashboard = () => {
               <span className="text-sm text-gray-600">
                 Logado como: {userRole?.toUpperCase()}
               </span>
+              <button 
+                onClick={() => window.location.href = '/dashboard'}
+                className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+              >
+                Admin Panel
+              </button>
             </div>
           </div>
         </div>
@@ -85,9 +97,15 @@ const RoleBasedDashboard = () => {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Acesso Não Configurado
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 mb-4">
               Seu perfil ainda não foi configurado. Entre em contato com o administrador.
             </p>
+            <button 
+              onClick={() => window.location.href = '/dashboard'}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Ir para Admin Panel
+            </button>
           </div>
         </div>
       );
