@@ -287,6 +287,54 @@ export type Database = {
         }
         Relationships: []
       }
+      atendimentos_gerais: {
+        Row: {
+          agent_id: string
+          cliente_contato: string | null
+          cliente_nome: string
+          created_at: string | null
+          data_abertura: string | null
+          data_conclusao: string | null
+          descricao: string
+          id: string
+          observacoes: string | null
+          prioridade: Database["public"]["Enums"]["prioridade_level"] | null
+          status: Database["public"]["Enums"]["atividade_status"] | null
+          tipo_atendimento: string
+          updated_at: string | null
+        }
+        Insert: {
+          agent_id: string
+          cliente_contato?: string | null
+          cliente_nome: string
+          created_at?: string | null
+          data_abertura?: string | null
+          data_conclusao?: string | null
+          descricao: string
+          id?: string
+          observacoes?: string | null
+          prioridade?: Database["public"]["Enums"]["prioridade_level"] | null
+          status?: Database["public"]["Enums"]["atividade_status"] | null
+          tipo_atendimento: string
+          updated_at?: string | null
+        }
+        Update: {
+          agent_id?: string
+          cliente_contato?: string | null
+          cliente_nome?: string
+          created_at?: string | null
+          data_abertura?: string | null
+          data_conclusao?: string | null
+          descricao?: string
+          id?: string
+          observacoes?: string | null
+          prioridade?: Database["public"]["Enums"]["prioridade_level"] | null
+          status?: Database["public"]["Enums"]["atividade_status"] | null
+          tipo_atendimento?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       automation_data: {
         Row: {
           agent_configuration_id: string
@@ -330,6 +378,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      integracoes_n8n: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          descricao: string | null
+          evento_associado: Database["public"]["Enums"]["evento_type"]
+          id: string
+          is_active: boolean | null
+          nome: string
+          tipo_execucao: string | null
+          updated_at: string | null
+          webhook_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          descricao?: string | null
+          evento_associado: Database["public"]["Enums"]["evento_type"]
+          id?: string
+          is_active?: boolean | null
+          nome: string
+          tipo_execucao?: string | null
+          updated_at?: string | null
+          webhook_url: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          descricao?: string | null
+          evento_associado?: Database["public"]["Enums"]["evento_type"]
+          id?: string
+          is_active?: boolean | null
+          nome?: string
+          tipo_execucao?: string | null
+          updated_at?: string | null
+          webhook_url?: string
+        }
+        Relationships: []
       }
       invoices: {
         Row: {
@@ -425,6 +512,50 @@ export type Database = {
           },
         ]
       }
+      n8n_execution_logs: {
+        Row: {
+          erro_message: string | null
+          executado_por: string | null
+          id: string
+          integracao_id: string
+          payload_enviado: Json | null
+          resposta_recebida: Json | null
+          status_resposta: number | null
+          timestamp_execucao: string | null
+          tipo_execucao: string | null
+        }
+        Insert: {
+          erro_message?: string | null
+          executado_por?: string | null
+          id?: string
+          integracao_id: string
+          payload_enviado?: Json | null
+          resposta_recebida?: Json | null
+          status_resposta?: number | null
+          timestamp_execucao?: string | null
+          tipo_execucao?: string | null
+        }
+        Update: {
+          erro_message?: string | null
+          executado_por?: string | null
+          id?: string
+          integracao_id?: string
+          payload_enviado?: Json | null
+          resposta_recebida?: Json | null
+          status_resposta?: number | null
+          timestamp_execucao?: string | null
+          tipo_execucao?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "n8n_execution_logs_integracao_id_fkey"
+            columns: ["integracao_id"]
+            isOneToOne: false
+            referencedRelation: "integracoes_n8n"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -457,6 +588,7 @@ export type Database = {
           plan: Database["public"]["Enums"]["subscription_plan"]
           role: Database["public"]["Enums"]["user_role"]
           updated_at: string
+          user_role_type: Database["public"]["Enums"]["user_role_type"] | null
         }
         Insert: {
           agent_settings?: Json | null
@@ -465,6 +597,7 @@ export type Database = {
           plan?: Database["public"]["Enums"]["subscription_plan"]
           role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
+          user_role_type?: Database["public"]["Enums"]["user_role_type"] | null
         }
         Update: {
           agent_settings?: Json | null
@@ -473,6 +606,58 @@ export type Database = {
           plan?: Database["public"]["Enums"]["subscription_plan"]
           role?: Database["public"]["Enums"]["user_role"]
           updated_at?: string
+          user_role_type?: Database["public"]["Enums"]["user_role_type"] | null
+        }
+        Relationships: []
+      }
+      propostas_comerciais: {
+        Row: {
+          agent_id: string
+          cliente_email: string | null
+          cliente_nome: string
+          cliente_telefone: string | null
+          created_at: string | null
+          data_abertura: string | null
+          data_conclusao: string | null
+          id: string
+          observacoes: string | null
+          plano_interesse: string
+          prioridade: Database["public"]["Enums"]["prioridade_level"] | null
+          status: Database["public"]["Enums"]["atividade_status"] | null
+          updated_at: string | null
+          valor_proposto: number | null
+        }
+        Insert: {
+          agent_id: string
+          cliente_email?: string | null
+          cliente_nome: string
+          cliente_telefone?: string | null
+          created_at?: string | null
+          data_abertura?: string | null
+          data_conclusao?: string | null
+          id?: string
+          observacoes?: string | null
+          plano_interesse: string
+          prioridade?: Database["public"]["Enums"]["prioridade_level"] | null
+          status?: Database["public"]["Enums"]["atividade_status"] | null
+          updated_at?: string | null
+          valor_proposto?: number | null
+        }
+        Update: {
+          agent_id?: string
+          cliente_email?: string | null
+          cliente_nome?: string
+          cliente_telefone?: string | null
+          created_at?: string | null
+          data_abertura?: string | null
+          data_conclusao?: string | null
+          id?: string
+          observacoes?: string | null
+          plano_interesse?: string
+          prioridade?: Database["public"]["Enums"]["prioridade_level"] | null
+          status?: Database["public"]["Enums"]["atividade_status"] | null
+          updated_at?: string | null
+          valor_proposto?: number | null
         }
         Relationships: []
       }
@@ -677,6 +862,57 @@ export type Database = {
         }
         Relationships: []
       }
+      tickets_tecnicos: {
+        Row: {
+          agent_id: string
+          cliente_endereco: string | null
+          cliente_nome: string
+          cliente_telefone: string | null
+          created_at: string | null
+          data_abertura: string | null
+          data_conclusao: string | null
+          descricao: string
+          id: string
+          observacoes: string | null
+          prioridade: Database["public"]["Enums"]["prioridade_level"] | null
+          status: Database["public"]["Enums"]["atividade_status"] | null
+          tipo_servico: string
+          updated_at: string | null
+        }
+        Insert: {
+          agent_id: string
+          cliente_endereco?: string | null
+          cliente_nome: string
+          cliente_telefone?: string | null
+          created_at?: string | null
+          data_abertura?: string | null
+          data_conclusao?: string | null
+          descricao: string
+          id?: string
+          observacoes?: string | null
+          prioridade?: Database["public"]["Enums"]["prioridade_level"] | null
+          status?: Database["public"]["Enums"]["atividade_status"] | null
+          tipo_servico: string
+          updated_at?: string | null
+        }
+        Update: {
+          agent_id?: string
+          cliente_endereco?: string | null
+          cliente_nome?: string
+          cliente_telefone?: string | null
+          created_at?: string | null
+          data_abertura?: string | null
+          data_conclusao?: string | null
+          descricao?: string
+          id?: string
+          observacoes?: string | null
+          prioridade?: Database["public"]["Enums"]["prioridade_level"] | null
+          status?: Database["public"]["Enums"]["atividade_status"] | null
+          tipo_servico?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_agents: {
         Row: {
           agent_type: Database["public"]["Enums"]["agent_type"]
@@ -701,6 +937,80 @@ export type Database = {
           is_active?: boolean
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      webhook_logs: {
+        Row: {
+          erro_message: string | null
+          id: string
+          payload_enviado: Json | null
+          resposta_recebida: Json | null
+          status_http: number | null
+          timestamp_execucao: string | null
+          webhook_id: string
+        }
+        Insert: {
+          erro_message?: string | null
+          id?: string
+          payload_enviado?: Json | null
+          resposta_recebida?: Json | null
+          status_http?: number | null
+          timestamp_execucao?: string | null
+          webhook_id: string
+        }
+        Update: {
+          erro_message?: string | null
+          id?: string
+          payload_enviado?: Json | null
+          resposta_recebida?: Json | null
+          status_http?: number | null
+          timestamp_execucao?: string | null
+          webhook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_logs_webhook_id_fkey"
+            columns: ["webhook_id"]
+            isOneToOne: false
+            referencedRelation: "webhooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      webhooks: {
+        Row: {
+          created_at: string | null
+          created_by: string
+          evento: Database["public"]["Enums"]["evento_type"]
+          headers: Json | null
+          id: string
+          is_active: boolean | null
+          nome: string
+          updated_at: string | null
+          url_destino: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by: string
+          evento: Database["public"]["Enums"]["evento_type"]
+          headers?: Json | null
+          id?: string
+          is_active?: boolean | null
+          nome: string
+          updated_at?: string | null
+          url_destino: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string
+          evento?: Database["public"]["Enums"]["evento_type"]
+          headers?: Json | null
+          id?: string
+          is_active?: boolean | null
+          nome?: string
+          updated_at?: string | null
+          url_destino?: string
         }
         Relationships: []
       }
@@ -782,7 +1092,21 @@ export type Database = {
     }
     Enums: {
       agent_type: "atendimento" | "comercial" | "suporte_tecnico"
+      atividade_status:
+        | "pendente"
+        | "em_andamento"
+        | "concluida"
+        | "cancelada"
+        | "pausada"
+      evento_type:
+        | "novo_ticket"
+        | "conclusao_servico"
+        | "venda_concluida"
+        | "instalacao_agendada"
+        | "pagamento_recebido"
+        | "cliente_cadastrado"
       membership_role: "owner" | "admin" | "member" | "viewer"
+      prioridade_level: "baixa" | "media" | "alta" | "urgente"
       subscription_plan: "free" | "pro" | "enterprise"
       subscription_plan_type: "free" | "basic" | "premium" | "enterprise"
       subscription_status:
@@ -792,6 +1116,7 @@ export type Database = {
         | "unpaid"
         | "incomplete"
       user_role: "admin" | "user" | "viewer"
+      user_role_type: "tecnico" | "comercial" | "geral" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -908,7 +1233,23 @@ export const Constants = {
   public: {
     Enums: {
       agent_type: ["atendimento", "comercial", "suporte_tecnico"],
+      atividade_status: [
+        "pendente",
+        "em_andamento",
+        "concluida",
+        "cancelada",
+        "pausada",
+      ],
+      evento_type: [
+        "novo_ticket",
+        "conclusao_servico",
+        "venda_concluida",
+        "instalacao_agendada",
+        "pagamento_recebido",
+        "cliente_cadastrado",
+      ],
       membership_role: ["owner", "admin", "member", "viewer"],
+      prioridade_level: ["baixa", "media", "alta", "urgente"],
       subscription_plan: ["free", "pro", "enterprise"],
       subscription_plan_type: ["free", "basic", "premium", "enterprise"],
       subscription_status: [
@@ -919,6 +1260,7 @@ export const Constants = {
         "incomplete",
       ],
       user_role: ["admin", "user", "viewer"],
+      user_role_type: ["tecnico", "comercial", "geral", "admin"],
     },
   },
 } as const

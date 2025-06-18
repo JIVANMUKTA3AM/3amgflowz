@@ -1,0 +1,133 @@
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "@/components/ui/use-toast";
+
+export interface Webhook {
+  id: string;
+  nome: string;
+  url_destino: string;
+  evento: string;
+  headers: any;
+  is_active: boolean;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WebhookLog {
+  id: string;
+  webhook_id: string;
+  status_http?: number;
+  payload_enviado?: any;
+  resposta_recebida?: any;
+  timestamp_execucao: string;
+  erro_message?: string;
+}
+
+export const useWebhooks = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: webhooks, isLoading: loadingWebhooks } = useQuery({
+    queryKey: ['webhooks', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('webhooks')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data as Webhook[];
+    },
+    enabled: !!user?.id,
+  });
+
+  const { data: webhookLogs, isLoading: loadingLogs } = useQuery({
+    queryKey: ['webhook-logs', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('webhook_logs')
+        .select('*, webhooks(nome)')
+        .order('timestamp_execucao', { ascending: false })
+        .limit(50);
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user?.id,
+  });
+
+  const createWebhookMutation = useMutation({
+    mutationFn: async (webhook: Omit<Webhook, 'id' | 'created_at' | 'updated_at'>) => {
+      const { data, error } = await supabase
+        .from('webhooks')
+        .insert(webhook)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['webhooks', user?.id] });
+      toast({
+        title: "Webhook criado!",
+        description: "Novo webhook foi configurado com sucesso.",
+      });
+    },
+  });
+
+  const updateWebhookMutation = useMutation({
+    mutationFn: async ({ id, ...webhook }: Partial<Webhook> & { id: string }) => {
+      const { data, error } = await supabase
+        .from('webhooks')
+        .update(webhook)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['webhooks', user?.id] });
+      toast({
+        title: "Webhook atualizado!",
+        description: "Webhook foi atualizado com sucesso.",
+      });
+    },
+  });
+
+  const deleteWebhookMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('webhooks')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['webhooks', user?.id] });
+      toast({
+        title: "Webhook removido!",
+        description: "Webhook foi removido com sucesso.",
+      });
+    },
+  });
+
+  return {
+    webhooks,
+    webhookLogs,
+    loadingWebhooks,
+    loadingLogs,
+    createWebhook: createWebhookMutation.mutate,
+    updateWebhook: updateWebhookMutation.mutate,
+    deleteWebhook: deleteWebhookMutation.mutate,
+    isCreating: createWebhookMutation.isPending,
+    isUpdating: updateWebhookMutation.isPending,
+    isDeleting: deleteWebhookMutation.isPending,
+  };
+};

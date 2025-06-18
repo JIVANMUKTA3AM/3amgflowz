@@ -1,13 +1,13 @@
 
-import { useUserRole } from '@/hooks/useUserRole';
-import { Loader2 } from 'lucide-react';
-import Index from '@/pages/Index';
-import ClientDashboard from '@/pages/ClientDashboard';
+import { useProfile } from "@/hooks/useProfile";
+import { Navigate } from "react-router-dom";
+import RoleBasedDashboard from "./RoleBasedDashboard";
+import { Loader2 } from "lucide-react";
 
 const RoleBasedRouter = () => {
-  const { role, loading } = useUserRole();
+  const { profile, isLoading } = useProfile();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -18,13 +18,13 @@ const RoleBasedRouter = () => {
     );
   }
 
-  // Se for admin, mostra a interface completa atual
-  if (role === 'admin') {
-    return <Index />;
+  // Se não tem perfil ou role definido, redireciona para onboarding
+  if (!profile || !profile.user_role_type) {
+    return <Navigate to="/onboarding" replace />;
   }
 
-  // Se for cliente, mostra a interface simplificada
-  return <ClientDashboard />;
+  // Renderiza o dashboard baseado no role
+  return <RoleBasedDashboard />;
 };
 
 export default RoleBasedRouter;

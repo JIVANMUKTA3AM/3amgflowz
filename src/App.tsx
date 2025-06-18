@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -20,6 +19,8 @@ import Subscription from "@/pages/Subscription";
 import SubscriptionManagement from "@/pages/SubscriptionManagement";
 import Pagamentos from "@/pages/Pagamentos";
 import IntegrationsManagement from "@/pages/IntegrationsManagement";
+import WebhooksManagement from "@/pages/WebhooksManagement";
+import N8nManagement from "@/pages/N8nManagement";
 import WhatsAppConfig from "@/pages/WhatsAppConfig";
 import SlackConfig from "@/pages/SlackConfig";
 import RdStationConfig from "@/pages/RdStationConfig";
@@ -71,6 +72,20 @@ function App() {
                 <ProtectedRoute>
                   <AdminRoute>
                     <Integracoes />
+                  </AdminRoute>
+                </ProtectedRoute>
+              } />
+              <Route path="/webhooks" element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <WebhooksManagement />
+                  </AdminRoute>
+                </ProtectedRoute>
+              } />
+              <Route path="/n8n" element={
+                <ProtectedRoute>
+                  <AdminRoute>
+                    <N8nManagement />
                   </AdminRoute>
                 </ProtectedRoute>
               } />
