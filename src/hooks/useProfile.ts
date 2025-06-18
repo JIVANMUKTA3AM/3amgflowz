@@ -8,6 +8,7 @@ export interface UserProfile {
   id: string;
   role: 'admin' | 'user' | 'moderator';
   plan: 'free' | 'basic' | 'premium' | 'enterprise';
+  user_role_type: 'tecnico' | 'comercial' | 'geral' | 'admin';
   agent_settings: {
     onboarding_completed: boolean;
     [key: string]: any;
