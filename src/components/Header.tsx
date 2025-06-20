@@ -27,7 +27,9 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
     { name: "Dashboard", path: "/dashboard" },
     { name: "Agentes", path: "/agentes" },
     { name: "Fluxos", path: "/fluxos" },
-    { name: "Integrações", path: "/integracoes" },
+    { name: "N8n", path: "/n8n" },
+    { name: "Webhooks", path: "/webhooks" },
+    { name: "Integrações", path: "/integrations-management" },
     { name: "Pagamentos", path: "/pagamentos" },
     { name: "Assinatura", path: "/subscription-management" },
   ];
