@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentConfiguration } from "@/hooks/useAgentConfigurations";
+import { useAIProviders } from "@/hooks/useAIProviders";
+import AIProviderSelector from "./AIProviderSelector";
 
 interface AgentConfigurationFormProps {
   configuration?: AgentConfiguration;
@@ -16,11 +18,13 @@ interface AgentConfigurationFormProps {
 }
 
 const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: AgentConfigurationFormProps) => {
+  const { validateConfiguration } = useAIProviders();
+  
   const [formData, setFormData] = useState({
     name: "",
     agent_type: "",
     prompt: "",
-    model: "gemini-1.5-flash",
+    model: "gpt-4o-mini",
     temperature: 0.7,
     max_tokens: 1000,
     is_active: true,
@@ -42,6 +46,11 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateConfiguration(formData.model, formData.temperature, formData.max_tokens)) {
+      return;
+    }
+    
     onSave(formData);
   };
 
@@ -51,12 +60,6 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
       [field]: value
     }));
   };
-
-  const geminiModels = [
-    { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash (Rápido)" },
-    { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro (Avançado)" },
-    { value: "gemini-1.0-pro", label: "Gemini 1.0 Pro (Estável)" },
-  ];
 
   const agentTypes = [
     { value: "atendimento", label: "Atendimento ao Cliente" },
@@ -115,23 +118,12 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <Label htmlFor="model">Modelo Gemini</Label>
-              <Select value={formData.model} onValueChange={(value) => handleChange("model", value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {geminiModels.map((model) => (
-                    <SelectItem key={model.value} value={model.value}>
-                      {model.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+          <AIProviderSelector
+            selectedModel={formData.model}
+            onModelChange={(model) => handleChange("model", model)}
+          />
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="temperature">Temperatura</Label>
               <Input
