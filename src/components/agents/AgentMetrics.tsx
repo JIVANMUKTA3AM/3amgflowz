@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -7,7 +6,7 @@ import { MessageCircle, Clock, Zap, TrendingUp, Star } from "lucide-react";
 import { AgentMetric, AgentConfiguration, AgentConversation } from "@/hooks/useAgentConfigurations";
 
 interface AgentMetricsProps {
-  metrics: (AgentMetric & { agent_configurations: Pick<AgentConfiguration, 'name' | 'agent_type'> })[];
+  metrics: AgentMetric[];
   configurations: AgentConfiguration[];
   conversations: AgentConversation[];
 }

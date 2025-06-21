@@ -1,4 +1,3 @@
-
 import { TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,9 +65,11 @@ const AgentsTabContent = ({
 }: AgentsTabContentProps) => {
   return (
     <>
+      
       <TabsContent value="chat">
         <AgentChat configurations={configurations || []} />
       </TabsContent>
+      
       
       <TabsContent value="configurations">
         <div className="space-y-6">
@@ -179,12 +180,14 @@ const AgentsTabContent = ({
         </div>
       </TabsContent>
       
+      
       <TabsContent value="logs">
         <ConversationLogs 
           conversations={conversations || []} 
           configurations={configurations || []}
         />
       </TabsContent>
+      
       
       <TabsContent value="metrics">
         <AgentMetrics 
