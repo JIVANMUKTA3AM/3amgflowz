@@ -19,6 +19,7 @@ import AgentIntegrations from "@/components/agents/AgentIntegrations";
 import WorkflowExecutions from "@/components/agents/WorkflowExecutions";
 import AgentTrainingSystem from "@/components/agents/AgentTrainingSystem";
 import IntegrationConfigForm from "@/components/agents/IntegrationConfigForm";
+import WorkflowManagement from "@/components/agents/WorkflowManagement";
 
 const Agentes = () => {
   const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
@@ -150,7 +151,7 @@ const Agentes = () => {
         </div>
 
         <Tabs defaultValue="chat" className="w-full">
-          <TabsList className="grid w-full grid-cols-7 mb-8">
+          <TabsList className="grid w-full grid-cols-8 mb-8">
             <TabsTrigger value="chat" className="gap-2">
               <MessageCircle className="h-4 w-4" />
               Chat
@@ -159,13 +160,17 @@ const Agentes = () => {
               <Settings className="h-4 w-4" />
               Configurações
             </TabsTrigger>
+            <TabsTrigger value="workflows" className="gap-2">
+              <Zap className="h-4 w-4" />
+              Workflows N8n
+            </TabsTrigger>
             <TabsTrigger value="integrations" className="gap-2">
               <Link className="h-4 w-4" />
               Integrações
             </TabsTrigger>
-            <TabsTrigger value="workflows" className="gap-2">
-              <Zap className="h-4 w-4" />
-              Workflows
+            <TabsTrigger value="executions" className="gap-2">
+              <Play className="h-4 w-4" />
+              Execuções
             </TabsTrigger>
             <TabsTrigger value="logs" className="gap-2">
               <MessageCircle className="h-4 w-4" />
@@ -254,6 +259,10 @@ const Agentes = () => {
             </div>
           </TabsContent>
 
+          <TabsContent value="workflows">
+            <WorkflowManagement />
+          </TabsContent>
+
           <TabsContent value="integrations">
             <div className="space-y-6">
               <div className="flex justify-between items-center">
@@ -281,7 +290,7 @@ const Agentes = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="workflows">
+          <TabsContent value="executions">
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Execuções de Workflow</h2>
