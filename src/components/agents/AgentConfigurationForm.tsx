@@ -18,13 +18,13 @@ interface AgentConfigurationFormProps {
 }
 
 const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: AgentConfigurationFormProps) => {
-  const { validateConfiguration } = useAIProviders();
+  const { validateConfiguration, getRecommendedModels } = useAIProviders();
   
   const [formData, setFormData] = useState({
     name: "",
     agent_type: "",
     prompt: "",
-    model: "gpt-4o-mini",
+    model: "gpt-4.1-2025-04-14", // Modelo mais recente como padrão
     temperature: 0.7,
     max_tokens: 1000,
     is_active: true,
@@ -41,8 +41,14 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
         max_tokens: configuration.max_tokens,
         is_active: configuration.is_active,
       });
+    } else {
+      // Se não há configuração, usar o primeiro modelo recomendado
+      const recommendedModels = getRecommendedModels();
+      if (recommendedModels.length > 0) {
+        setFormData(prev => ({ ...prev, model: recommendedModels[0] }));
+      }
     }
-  }, [configuration]);
+  }, [configuration, getRecommendedModels]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
