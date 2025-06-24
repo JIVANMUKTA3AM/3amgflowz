@@ -6,44 +6,17 @@ import { Check, Crown, Zap, Star } from "lucide-react";
 import { useSubscriptionManagement } from "@/hooks/useSubscriptionManagement";
 
 const SubscriptionPlans = () => {
-  const { 
-    plans, 
-    subscription, 
-    createCheckout, 
-    isCreatingCheckout 
-  } = useSubscriptionManagement();
+  const { plans, subscription, createCheckout, isCreatingCheckout } = useSubscriptionManagement();
 
-  const formatPrice = (amount: number, currency: string = "BRL") => {
-    if (amount === 0) return "Gratuito";
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: currency.toUpperCase(),
-    }).format(amount / 100);
+  const formatPrice = (amount: number) => {
+    return `R$ ${(amount / 100).toFixed(2).replace('.', ',')}`;
   };
 
   const getPlanIcon = (planType: string) => {
     switch (planType) {
-      case 'free':
-        return <Star className="h-5 w-5" />;
-      case 'basic':
-        return <Zap className="h-5 w-5" />;
-      case 'premium':
-        return <Crown className="h-5 w-5" />;
-      case 'enterprise':
-        return <Crown className="h-5 w-5 text-purple-500" />;
-      default:
-        return <Star className="h-5 w-5" />;
-    }
-  };
-
-  const getPlanColor = (planType: string) => {
-    switch (planType) {
-      case 'premium':
-        return 'border-blue-500';
-      case 'enterprise':
-        return 'border-purple-500';
-      default:
-        return '';
+      case 'premium': return <Crown className="h-5 w-5" />;
+      case 'enterprise': return <Star className="h-5 w-5" />;
+      default: return <Zap className="h-5 w-5" />;
     }
   };
 
@@ -51,14 +24,8 @@ const SubscriptionPlans = () => {
     return subscription?.plan_type === planType;
   };
 
-  const canUpgrade = (planType: string) => {
-    if (!subscription) return planType !== 'free';
-    
-    const planOrder = { free: 0, basic: 1, premium: 2, enterprise: 3 };
-    const currentOrder = planOrder[subscription.plan_type as keyof typeof planOrder] || 0;
-    const targetOrder = planOrder[planType as keyof typeof planOrder] || 0;
-    
-    return targetOrder > currentOrder;
+  const isPopularPlan = (planType: string) => {
+    return planType === 'premium';
   };
 
   return (
@@ -66,11 +33,13 @@ const SubscriptionPlans = () => {
       {plans.map((plan) => (
         <Card 
           key={plan.id} 
-          className={`relative ${getPlanColor(plan.plan_type)} ${
-            plan.plan_type === 'premium' ? 'border-2' : ''
+          className={`relative ${
+            isPopularPlan(plan.plan_type) ? 'border-blue-500 border-2 shadow-lg' : ''
+          } ${
+            isCurrentPlan(plan.plan_type) ? 'border-green-500 border-2' : ''
           }`}
         >
-          {plan.plan_type === 'premium' && (
+          {isPopularPlan(plan.plan_type) && (
             <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-500">
               <Crown className="w-3 h-3 mr-1" />
               Mais Popular
@@ -92,10 +61,10 @@ const SubscriptionPlans = () => {
             <CardDescription>{plan.description}</CardDescription>
             <div className="mt-4">
               <span className="text-3xl font-bold">
-                {formatPrice(plan.price_amount, plan.price_currency)}
+                {plan.price_amount === 0 ? 'Grátis' : formatPrice(plan.price_amount)}
               </span>
               {plan.price_amount > 0 && (
-                <span className="text-gray-500">/{plan.billing_interval === 'month' ? 'mês' : 'ano'}</span>
+                <span className="text-gray-500">/{plan.billing_interval}</span>
               )}
             </div>
           </CardHeader>
@@ -114,13 +83,15 @@ const SubscriptionPlans = () => {
               onClick={() => createCheckout(plan.plan_type)}
               className="w-full"
               variant={isCurrentPlan(plan.plan_type) ? "outline" : "default"}
-              disabled={isCurrentPlan(plan.plan_type) || isCreatingCheckout || !canUpgrade(plan.plan_type)}
+              disabled={isCurrentPlan(plan.plan_type) || isCreatingCheckout}
             >
               {isCurrentPlan(plan.plan_type) 
                 ? "Plano Atual" 
-                : canUpgrade(plan.plan_type)
-                  ? (isCreatingCheckout ? "Processando..." : "Fazer Upgrade")
-                  : "Downgrade Indisponível"
+                : isCreatingCheckout 
+                ? "Processando..." 
+                : plan.price_amount === 0 
+                ? "Começar Grátis" 
+                : "Assinar Agora"
               }
             </Button>
           </CardContent>
