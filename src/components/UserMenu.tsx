@@ -1,6 +1,8 @@
 
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,90 +10,156 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { LogOut, User, Settings, CreditCard, Shield } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
-import { useNavigate } from 'react-router-dom';
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import ProfileSettings from "@/components/profile/ProfileSettings";
+import OrganizationManagement from "@/components/organizations/OrganizationManagement";
+import { 
+  User, 
+  Settings, 
+  LogOut, 
+  Building, 
+  Crown,
+  CreditCard,
+  HelpCircle
+} from "lucide-react";
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
+  const { profile } = useUserProfile();
   const navigate = useNavigate();
+  const [showProfileDialog, setShowProfileDialog] = useState(false);
+  const [showOrgDialog, setShowOrgDialog] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
-    toast({
-      title: "Logout realizado",
-      description: "Você foi desconectado com sucesso.",
-    });
+    navigate("/auth");
   };
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
-
-  if (!user) return null;
-
-  const userInitials = user.email
-    ? user.email.substring(0, 2).toUpperCase()
-    : 'U';
-
-  const getUserName = () => {
-    if (user.user_metadata?.first_name && user.user_metadata?.last_name) {
-      return `${user.user_metadata.first_name} ${user.user_metadata.last_name}`;
+  const getRoleColor = (role: string) => {
+    switch (role) {
+      case 'admin': return 'bg-red-100 text-red-800';
+      case 'tecnico': return 'bg-blue-100 text-blue-800';
+      case 'comercial': return 'bg-green-100 text-green-800';
+      case 'geral': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
-    return user.email?.split('@')[0] || 'Usuário';
   };
+
+  const getPlanColor = (plan: string) => {
+    switch (plan) {
+      case 'enterprise': return 'bg-purple-100 text-purple-800';
+      case 'premium': return 'bg-yellow-100 text-yellow-800';
+      case 'basic': return 'bg-blue-100 text-blue-800';
+      case 'free': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  if (!user || !profile) return null;
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
-              {userInitials}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{getUserName()}</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {user.email}
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        
-        <DropdownMenuItem onClick={() => handleNavigation('/dashboard')}>
-          <User className="mr-2 h-4 w-4" />
-          <span>Dashboard</span>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem onClick={() => handleNavigation('/subscription')}>
-          <CreditCard className="mr-2 h-4 w-4" />
-          <span>Assinatura</span>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem onClick={() => handleNavigation('/integracoes')}>
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Configurações</span>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem onClick={() => handleNavigation('/agentes')}>
-          <Shield className="mr-2 h-4 w-4" />
-          <span>Meus Agentes</span>
-        </DropdownMenuItem>
-        
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600">
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Sair</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={profile.avatar_url} alt={profile.first_name} />
+              <AvatarFallback>
+                {profile.first_name?.[0]}{profile.last_name?.[0]}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-80" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src={profile.avatar_url} alt={profile.first_name} />
+                  <AvatarFallback>
+                    {profile.first_name?.[0]}{profile.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <p className="text-sm font-medium leading-none">
+                    {profile.first_name} {profile.last_name}
+                  </p>
+                  <p className="text-xs leading-none text-muted-foreground mt-1">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Badge className={getRoleColor(profile.user_role_type)} variant="secondary">
+                  {profile.user_role_type.charAt(0).toUpperCase() + profile.user_role_type.slice(1)}
+                </Badge>
+                <Badge className={getPlanColor(profile.plan)} variant="secondary">
+                  {profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1)}
+                </Badge>
+              </div>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          
+          <DropdownMenuItem onClick={() => setShowProfileDialog(true)}>
+            <User className="mr-2 h-4 w-4" />
+            <span>Configurações do Perfil</span>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem onClick={() => setShowOrgDialog(true)}>
+            <Building className="mr-2 h-4 w-4" />
+            <span>Organizações</span>
+          </DropdownMenuItem>
+          
+          {(profile.role === 'admin' || profile.user_role_type === 'admin') && (
+            <DropdownMenuItem onClick={() => navigate("/subscription-management")}>
+              <Crown className="mr-2 h-4 w-4" />
+              <span>Painel Admin</span>
+            </DropdownMenuItem>
+          )}
+          
+          <DropdownMenuItem onClick={() => navigate("/subscription")}>
+            <CreditCard className="mr-2 h-4 w-4" />
+            <span>Assinatura e Cobrança</span>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem>
+            <HelpCircle className="mr-2 h-4 w-4" />
+            <span>Ajuda e Suporte</span>
+          </DropdownMenuItem>
+          
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleSignOut}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Sair</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Dialog para Configurações do Perfil */}
+      <Dialog open={showProfileDialog} onOpenChange={setShowProfileDialog}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Configurações do Perfil</DialogTitle>
+          </DialogHeader>
+          <ProfileSettings />
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog para Organizações */}
+      <Dialog open={showOrgDialog} onOpenChange={setShowOrgDialog}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Gerenciar Organizações</DialogTitle>
+          </DialogHeader>
+          <OrganizationManagement />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
