@@ -57,6 +57,14 @@ const SubscriptionDashboard = () => {
     }
   };
 
+  const handleCheckSubscription = () => {
+    checkSubscription();
+  };
+
+  const handleManageSubscription = () => {
+    manageSubscription();
+  };
+
   return (
     <div className="space-y-6">
       {/* Status da Assinatura */}
@@ -75,7 +83,7 @@ const SubscriptionDashboard = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={checkSubscription}
+              onClick={handleCheckSubscription}
               disabled={isChecking}
             >
               {isChecking ? (
@@ -134,7 +142,7 @@ const SubscriptionDashboard = () => {
               )}
 
               <Button
-                onClick={manageSubscription}
+                onClick={handleManageSubscription}
                 disabled={isManaging}
                 className="w-full mt-4"
               >
