@@ -34,78 +34,58 @@ serve(async (req) => {
 
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError || !userData.user) {
+    if (userError || !userData.user?.email) {
       throw new Error("User not authenticated");
     }
 
     const { subscriptionId, cancelAtPeriodEnd = true } = await req.json();
-    logStep("Request data", { subscriptionId, cancelAtPeriodEnd });
-
+    
     if (!subscriptionId) {
       throw new Error("Subscription ID is required");
     }
 
+    logStep("Canceling subscription", { subscriptionId, cancelAtPeriodEnd });
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
-    // Verificar se a assinatura pertence ao usuário
-    const { data: subscription, error: subError } = await supabaseClient
-      .from('subscriptions')
-      .select('*')
-      .eq('stripe_subscription_id', subscriptionId)
-      .eq('user_id', userData.user.id)
-      .single();
-
-    if (subError || !subscription) {
-      throw new Error("Subscription not found or access denied");
-    }
-
     let updatedSubscription;
-    
     if (cancelAtPeriodEnd) {
       // Cancelar no final do período
       updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
         cancel_at_period_end: true,
       });
-      logStep("Subscription set to cancel at period end");
     } else {
-      // Reativar ou cancelar imediatamente
-      if (subscription.cancel_at_period_end) {
-        // Reativar assinatura
-        updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
-          cancel_at_period_end: false,
-        });
-        logStep("Subscription reactivated");
-      } else {
-        // Cancelar imediatamente
-        updatedSubscription = await stripe.subscriptions.cancel(subscriptionId);
-        logStep("Subscription canceled immediately");
-      }
+      // Cancelar imediatamente
+      updatedSubscription = await stripe.subscriptions.cancel(subscriptionId);
     }
 
-    // Atualizar assinatura no Supabase
-    const updateData: any = {
-      cancel_at_period_end: updatedSubscription.cancel_at_period_end,
+    logStep("Subscription updated in Stripe", { 
+      subscriptionId, 
       status: updatedSubscription.status,
-      updated_at: new Date().toISOString(),
-    };
+      cancelAtPeriodEnd: updatedSubscription.cancel_at_period_end
+    });
 
-    if (updatedSubscription.canceled_at) {
-      updateData.canceled_at = new Date(updatedSubscription.canceled_at * 1000).toISOString();
-    }
-
+    // Atualizar status na nossa base de dados
     const { error: updateError } = await supabaseClient
       .from('subscriptions')
-      .update(updateData)
-      .eq('id', subscription.id);
+      .update({
+        status: updatedSubscription.status as any,
+        cancel_at_period_end: updatedSubscription.cancel_at_period_end,
+        canceled_at: updatedSubscription.canceled_at ? 
+          new Date(updatedSubscription.canceled_at * 1000).toISOString() : null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('user_id', userData.user.id)
+      .eq('stripe_subscription_id', subscriptionId);
 
     if (updateError) {
       logStep("Error updating subscription in database", { error: updateError });
-      throw updateError;
+      throw new Error("Failed to update subscription status in database");
     }
 
-    logStep("Subscription updated successfully");
+    logStep("Subscription successfully updated");
 
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       success: true,
       subscription: {
         id: updatedSubscription.id,

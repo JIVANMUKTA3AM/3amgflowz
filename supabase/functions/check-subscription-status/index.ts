@@ -45,112 +45,78 @@ serve(async (req) => {
     // Buscar cliente no Stripe
     const customers = await stripe.customers.list({ email: userData.user.email, limit: 1 });
     
-    if (customers.data.length === 0) {
-      logStep("No Stripe customer found");
-      // Garantir que existe um registro de assinatura gratuita
-      await supabaseClient.from('subscriptions').upsert({
-        user_id: userData.user.id,
-        plan_type: 'free',
-        status: 'active',
-        cancel_at_period_end: false,
-        price_amount: 0,
-        price_currency: 'BRL',
-      }, { onConflict: 'user_id' });
-      
-      return new Response(JSON.stringify({ 
-        subscription: null,
-        message: "No active subscription found" 
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
+    let subscriptionData = {
+      plan_type: 'free' as const,
+      status: 'active' as const,
+      current_period_start: null as string | null,
+      current_period_end: null as string | null,
+      cancel_at_period_end: false,
+      price_amount: 0,
+      stripe_customer_id: null as string | null,
+      stripe_subscription_id: null as string | null,
+    };
+
+    if (customers.data.length > 0) {
+      const customerId = customers.data[0].id;
+      subscriptionData.stripe_customer_id = customerId;
+      logStep("Found Stripe customer", { customerId });
+
+      // Buscar assinaturas ativas
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customerId,
+        status: "active",
+        limit: 1,
       });
-    }
 
-    const customerId = customers.data[0].id;
-    logStep("Stripe customer found", { customerId });
+      if (subscriptions.data.length > 0) {
+        const subscription = subscriptions.data[0];
+        const price = subscription.items.data[0].price;
+        
+        // Determinar tipo do plano baseado no preço
+        let planType: 'free' | 'basic' | 'premium' | 'enterprise' = 'free';
+        const amount = price.unit_amount || 0;
+        
+        if (amount === 4900) planType = 'basic';
+        else if (amount === 14900) planType = 'premium';
+        else if (amount === 29900) planType = 'enterprise';
 
-    // Buscar assinaturas ativas no Stripe
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: 'all',
-      limit: 10,
-    });
+        subscriptionData = {
+          plan_type: planType,
+          status: subscription.status as any,
+          current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+          current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+          cancel_at_period_end: subscription.cancel_at_period_end,
+          price_amount: amount,
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subscription.id,
+        };
 
-    let activeSubscription = null;
-    
-    // Encontrar a assinatura mais recente
-    for (const sub of subscriptions.data) {
-      if (['active', 'past_due', 'unpaid'].includes(sub.status)) {
-        activeSubscription = sub;
-        break;
+        logStep("Active subscription found", { subscriptionId: subscription.id, planType });
       }
     }
 
-    if (!activeSubscription) {
-      logStep("No active subscription found in Stripe");
-      // Atualizar para plano gratuito
-      await supabaseClient.from('subscriptions').upsert({
-        user_id: userData.user.id,
-        stripe_customer_id: customerId,
-        plan_type: 'free',
-        status: 'active',
-        cancel_at_period_end: false,
-        price_amount: 0,
-        price_currency: 'BRL',
-      }, { onConflict: 'user_id' });
-      
-      return new Response(JSON.stringify({ 
-        subscription: null,
-        message: "No active subscription found" 
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
-    }
-
-    logStep("Active subscription found", { subscriptionId: activeSubscription.id, status: activeSubscription.status });
-
-    // Determinar tipo de plano baseado no preço
-    const priceId = activeSubscription.items.data[0].price.id;
-    const price = await stripe.prices.retrieve(priceId);
-    const amount = price.unit_amount || 0;
-    
-    let planType = 'free';
-    if (amount <= 2900) planType = 'basic';
-    else if (amount <= 7900) planType = 'premium';
-    else if (amount > 7900) planType = 'enterprise';
-
-    // Atualizar assinatura no Supabase
-    const subscriptionData = {
-      user_id: userData.user.id,
-      stripe_customer_id: customerId,
-      stripe_subscription_id: activeSubscription.id,
-      plan_type: planType as any,
-      status: activeSubscription.status as any,
-      current_period_start: new Date(activeSubscription.current_period_start * 1000).toISOString(),
-      current_period_end: new Date(activeSubscription.current_period_end * 1000).toISOString(),
-      cancel_at_period_end: activeSubscription.cancel_at_period_end,
-      canceled_at: activeSubscription.canceled_at ? new Date(activeSubscription.canceled_at * 1000).toISOString() : null,
-      price_amount: amount,
-      price_currency: price.currency?.toUpperCase() || 'BRL',
-    };
-
-    const { data: updatedSub, error: updateError } = await supabaseClient
+    // Atualizar ou criar registro na tabela subscriptions
+    const { error: upsertError } = await supabaseClient
       .from('subscriptions')
-      .upsert(subscriptionData, { onConflict: 'user_id' })
-      .select()
-      .single();
+      .upsert({
+        user_id: userData.user.id,
+        ...subscriptionData,
+        updated_at: new Date().toISOString(),
+      }, { 
+        onConflict: 'user_id',
+        ignoreDuplicates: false 
+      });
 
-    if (updateError) {
-      logStep("Error updating subscription", { error: updateError });
-      throw updateError;
+    if (upsertError) {
+      logStep("Error updating subscription", { error: upsertError });
+      throw new Error("Failed to update subscription status");
     }
 
-    logStep("Subscription updated successfully", { planType, status: activeSubscription.status });
+    logStep("Subscription status updated successfully", subscriptionData);
 
-    return new Response(JSON.stringify({ 
-      subscription: updatedSub,
-      message: "Subscription status updated successfully" 
+    return new Response(JSON.stringify({
+      success: true,
+      subscription: subscriptionData
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
