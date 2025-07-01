@@ -41,24 +41,6 @@ serve(async (req) => {
     const { planType, successUrl, cancelUrl } = await req.json();
     logStep("Request data", { planType, successUrl, cancelUrl });
 
-    // Buscar informações do plano
-    const { data: planData, error: planError } = await supabaseClient
-      .from('subscription_plans')
-      .select('*')
-      .eq('plan_type', planType)
-      .eq('is_active', true)
-      .single();
-
-    if (planError || !planData) {
-      throw new Error(`Plan not found: ${planType}`);
-    }
-
-    if (!planData.stripe_price_id) {
-      throw new Error(`Plan ${planType} does not have a Stripe price ID`);
-    }
-
-    logStep("Plan found", { plan: planData.name, priceId: planData.stripe_price_id });
-
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
     // Verificar se o cliente já existe no Stripe
@@ -79,18 +61,38 @@ serve(async (req) => {
       logStep("New customer created", { customerId });
     }
 
-    // Criar sessão de checkout com URL de sucesso personalizada para onboarding
+    // Definir preço baseado no plano
+    let priceData;
+    if (planType === 'premium') {
+      priceData = {
+        currency: 'brl',
+        product_data: {
+          name: 'Plano Completo - Todos os Agentes',
+          description: 'Acesso a todos os 3 agentes IA: Chatbot, Voice e WhatsApp',
+        },
+        unit_amount: 49900, // R$ 499,00 em centavos
+        recurring: {
+          interval: 'month',
+        },
+      };
+    } else {
+      throw new Error(`Plan type ${planType} not supported`);
+    }
+
+    logStep("Creating checkout session", { planType, priceAmount: priceData.unit_amount });
+
+    // Criar sessão de checkout
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card'],
       mode: 'subscription',
       line_items: [
         {
-          price: planData.stripe_price_id,
+          price_data: priceData,
           quantity: 1,
         },
       ],
-      success_url: successUrl || `${req.headers.get('origin')}/subscription?success=true&redirect_to_onboarding=true`,
+      success_url: successUrl || `${req.headers.get('origin')}/subscription?success=true`,
       cancel_url: cancelUrl || `${req.headers.get('origin')}/subscription?canceled=true`,
       metadata: {
         user_id: userData.user.id,
@@ -102,6 +104,9 @@ serve(async (req) => {
           plan_type: planType,
         },
       },
+      allow_promotion_codes: true,
+      billing_address_collection: 'required',
+      locale: 'pt-BR',
     });
 
     logStep("Checkout session created", { sessionId: session.id, url: session.url });
