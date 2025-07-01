@@ -25,8 +25,8 @@ const Index = () => {
         return;
       }
       
-      // Se é cliente regular, redireciona para client dashboard
-      if (profile.role === 'client' || !profile.role) {
+      // Se é usuário regular (não admin), redireciona para client dashboard
+      if (profile.role === 'user' || !profile.role) {
         navigate("/client-dashboard");
       }
     }
