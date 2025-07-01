@@ -38,73 +38,85 @@ serve(async (req) => {
       throw new Error("User not authenticated");
     }
 
-    logStep("User authenticated", { userId: userData.user.id, email: userData.user.email });
+    logStep("User authenticated", { email: userData.user.email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
-    // Buscar cliente no Stripe
+    // Verificar se o cliente já existe no Stripe
     const customers = await stripe.customers.list({ email: userData.user.email, limit: 1 });
     
-    let subscriptionData = {
-      plan_type: 'free' as const,
-      status: 'active' as const,
-      current_period_start: null as string | null,
-      current_period_end: null as string | null,
-      cancel_at_period_end: false,
-      price_amount: 0,
-      stripe_customer_id: null as string | null,
-      stripe_subscription_id: null as string | null,
-    };
+    if (customers.data.length === 0) {
+      logStep("No customer found, updating subscription status to inactive");
+      
+      // Atualizar ou criar assinatura como inativa
+      const { error: upsertError } = await supabaseClient
+        .from('subscriptions')
+        .upsert({
+          user_id: userData.user.id,
+          plan_type: 'free',
+          status: 'canceled',
+          stripe_customer_id: null,
+          stripe_subscription_id: null,
+          updated_at: new Date().toISOString(),
+        }, { 
+          onConflict: 'user_id'
+        });
 
-    if (customers.data.length > 0) {
-      const customerId = customers.data[0].id;
-      subscriptionData.stripe_customer_id = customerId;
-      logStep("Found Stripe customer", { customerId });
-
-      // Buscar assinaturas ativas
-      const subscriptions = await stripe.subscriptions.list({
-        customer: customerId,
-        status: "active",
-        limit: 1,
-      });
-
-      if (subscriptions.data.length > 0) {
-        const subscription = subscriptions.data[0];
-        const price = subscription.items.data[0].price;
-        
-        // Determinar tipo do plano baseado no preço
-        let planType: 'free' | 'basic' | 'premium' | 'enterprise' = 'free';
-        const amount = price.unit_amount || 0;
-        
-        if (amount === 4900) planType = 'basic';
-        else if (amount === 14900) planType = 'premium';
-        else if (amount === 29900) planType = 'enterprise';
-
-        subscriptionData = {
-          plan_type: planType,
-          status: subscription.status as any,
-          current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-          current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-          cancel_at_period_end: subscription.cancel_at_period_end,
-          price_amount: amount,
-          stripe_customer_id: customerId,
-          stripe_subscription_id: subscription.id,
-        };
-
-        logStep("Active subscription found", { subscriptionId: subscription.id, planType });
+      if (upsertError) {
+        logStep("Error updating subscription", { error: upsertError });
       }
+
+      return new Response(JSON.stringify({ 
+        subscribed: false,
+        plan_type: 'free',
+        status: 'canceled'
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
-    // Atualizar ou criar registro na tabela subscriptions
+    const customerId = customers.data[0].id;
+    logStep("Found Stripe customer", { customerId });
+
+    // Buscar assinaturas ativas
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customerId,
+      status: 'active',
+      limit: 1,
+    });
+
+    const hasActiveSubscription = subscriptions.data.length > 0;
+    let subscriptionData = null;
+
+    if (hasActiveSubscription) {
+      const subscription = subscriptions.data[0];
+      subscriptionData = {
+        stripe_subscription_id: subscription.id,
+        plan_type: 'premium',
+        status: 'active',
+        current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+        current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+        cancel_at_period_end: subscription.cancel_at_period_end,
+        price_amount: subscription.items.data[0].price.unit_amount,
+        price_currency: subscription.items.data[0].price.currency,
+      };
+      
+      logStep("Active subscription found", { subscriptionId: subscription.id });
+    }
+
+    // Atualizar dados da assinatura no Supabase
     const { error: upsertError } = await supabaseClient
       .from('subscriptions')
       .upsert({
         user_id: userData.user.id,
+        stripe_customer_id: customerId,
+        plan_type: hasActiveSubscription ? 'premium' : 'free',
+        status: hasActiveSubscription ? 'active' : 'canceled',
         ...subscriptionData,
         updated_at: new Date().toISOString(),
       }, { 
-        onConflict: 'user_id',
-        ignoreDuplicates: false 
+        onConflict: 'user_id'
       });
 
     if (upsertError) {
@@ -112,11 +124,16 @@ serve(async (req) => {
       throw new Error("Failed to update subscription status");
     }
 
-    logStep("Subscription status updated successfully", subscriptionData);
+    logStep("Subscription status updated successfully", { 
+      subscribed: hasActiveSubscription,
+      planType: hasActiveSubscription ? 'premium' : 'free'
+    });
 
     return new Response(JSON.stringify({
-      success: true,
-      subscription: subscriptionData
+      subscribed: hasActiveSubscription,
+      plan_type: hasActiveSubscription ? 'premium' : 'free',
+      status: hasActiveSubscription ? 'active' : 'canceled',
+      ...subscriptionData,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

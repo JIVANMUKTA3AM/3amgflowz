@@ -38,13 +38,8 @@ serve(async (req) => {
       throw new Error("User not authenticated");
     }
 
-    const { subscriptionId, cancelAtPeriodEnd = true } = await req.json();
-    
-    if (!subscriptionId) {
-      throw new Error("Subscription ID is required");
-    }
-
-    logStep("Canceling subscription", { subscriptionId, cancelAtPeriodEnd });
+    const { subscriptionId, cancelAtPeriodEnd } = await req.json();
+    logStep("Request data", { subscriptionId, cancelAtPeriodEnd });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
@@ -54,45 +49,36 @@ serve(async (req) => {
       updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
         cancel_at_period_end: true,
       });
+      logStep("Subscription set to cancel at period end");
     } else {
       // Cancelar imediatamente
       updatedSubscription = await stripe.subscriptions.cancel(subscriptionId);
+      logStep("Subscription canceled immediately");
     }
 
-    logStep("Subscription updated in Stripe", { 
-      subscriptionId, 
-      status: updatedSubscription.status,
-      cancelAtPeriodEnd: updatedSubscription.cancel_at_period_end
-    });
-
-    // Atualizar status na nossa base de dados
+    // Atualizar status no Supabase
     const { error: updateError } = await supabaseClient
       .from('subscriptions')
       .update({
-        status: updatedSubscription.status as any,
+        status: updatedSubscription.status,
         cancel_at_period_end: updatedSubscription.cancel_at_period_end,
-        canceled_at: updatedSubscription.canceled_at ? 
-          new Date(updatedSubscription.canceled_at * 1000).toISOString() : null,
+        canceled_at: updatedSubscription.canceled_at ? new Date(updatedSubscription.canceled_at * 1000).toISOString() : null,
         updated_at: new Date().toISOString(),
       })
-      .eq('user_id', userData.user.id)
-      .eq('stripe_subscription_id', subscriptionId);
+      .eq('stripe_subscription_id', subscriptionId)
+      .eq('user_id', userData.user.id);
 
     if (updateError) {
       logStep("Error updating subscription in database", { error: updateError });
-      throw new Error("Failed to update subscription status in database");
+      throw new Error("Failed to update subscription status");
     }
 
-    logStep("Subscription successfully updated");
+    logStep("Subscription canceled and updated successfully");
 
     return new Response(JSON.stringify({
       success: true,
-      subscription: {
-        id: updatedSubscription.id,
-        status: updatedSubscription.status,
-        cancel_at_period_end: updatedSubscription.cancel_at_period_end,
-        canceled_at: updatedSubscription.canceled_at,
-      }
+      status: updatedSubscription.status,
+      cancel_at_period_end: updatedSubscription.cancel_at_period_end,
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

@@ -38,12 +38,15 @@ serve(async (req) => {
       throw new Error("User not authenticated");
     }
 
-    logStep("User authenticated", { userId: userData.user.id, email: userData.user.email });
+    logStep("User authenticated", { email: userData.user.email });
+
+    const { returnUrl } = await req.json();
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
-    // Buscar cliente no Stripe
+    // Verificar se o cliente já existe no Stripe
     const customers = await stripe.customers.list({ email: userData.user.email, limit: 1 });
+    
     if (customers.data.length === 0) {
       throw new Error("No Stripe customer found for this user");
     }
@@ -51,16 +54,17 @@ serve(async (req) => {
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
-    const { returnUrl } = await req.json();
-    
+    // Criar sessão do portal do cliente
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: returnUrl || `${req.headers.get("origin")}/subscription`,
+      return_url: returnUrl || `${req.headers.get('origin')}/subscription`,
     });
 
     logStep("Portal session created", { sessionId: portalSession.id });
 
-    return new Response(JSON.stringify({ url: portalSession.url }), {
+    return new Response(JSON.stringify({ 
+      url: portalSession.url 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
