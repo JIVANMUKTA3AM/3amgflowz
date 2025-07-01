@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Check, Crown, Zap, Star, Loader2 } from "lucide-react";
+import { Check, Crown, Loader2 } from "lucide-react";
 import { useSubscriptionManagement } from "@/hooks/useSubscriptionManagement";
 import { useSubscriptionQuotas } from "@/hooks/useSubscriptionQuotas";
 
@@ -19,29 +19,12 @@ const SubscriptionCheckout = ({
   onPlanSelect, 
   showCurrentPlan = true 
 }: SubscriptionCheckoutProps) => {
-  const { plans, subscription, createCheckout, isCreatingCheckout } = useSubscriptionManagement();
+  const { subscription, createCheckout, isCreatingCheckout } = useSubscriptionManagement();
   const { currentPlan } = useSubscriptionQuotas();
   const [processingPlan, setProcessingPlan] = useState<string | null>(null);
 
-  const formatPrice = (amount: number) => {
-    return `R$ ${(amount / 100).toFixed(2).replace('.', ',')}`;
-  };
-
-  const getPlanIcon = (planType: string) => {
-    switch (planType) {
-      case 'premium': return <Crown className="h-5 w-5 text-yellow-500" />;
-      case 'enterprise': return <Star className="h-5 w-5 text-purple-500" />;
-      case 'basic': return <Zap className="h-5 w-5 text-blue-500" />;
-      default: return <Zap className="h-5 w-5 text-gray-500" />;
-    }
-  };
-
   const isCurrentPlan = (planType: string) => {
     return subscription?.plan_type === planType || currentPlan === planType;
-  };
-
-  const isPopularPlan = (planType: string) => {
-    return planType === 'premium';
   };
 
   const handleSubscribe = async (planType: string) => {
@@ -59,6 +42,39 @@ const SubscriptionCheckout = ({
     }
   };
 
+  const plans = [
+    {
+      id: 'free',
+      type: 'free',
+      name: 'Gratuito',
+      description: 'Para testar a plataforma',
+      price: 0,
+      features: [
+        'Acesso limitado à plataforma',
+        'Suporte básico por email',
+        'Documentação completa'
+      ]
+    },
+    {
+      id: 'premium',
+      type: 'premium',
+      name: 'Plano Completo',
+      description: 'Todos os agentes incluídos',
+      price: 49900, // R$ 499,00 em centavos
+      features: [
+        'Todos os 3 agentes IA incluídos',
+        'Chatbot, Voice e WhatsApp',
+        'Integrações ilimitadas',
+        'Analytics avançados',
+        'Suporte prioritário 24/7',
+        'Webhooks personalizados',
+        'API completa',
+        'Exportação de dados'
+      ],
+      popular: true
+    }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -67,31 +83,31 @@ const SubscriptionCheckout = ({
           Escolha seu Plano
         </h2>
         <p className="text-gray-600">
-          Desbloqueie todo o potencial da plataforma com nossos planos flexíveis
+          Simples e direto: todos os agentes por um preço único
         </p>
       </div>
 
       {/* Plans Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {plans.map((plan) => (
           <Card 
             key={plan.id} 
             className={`relative transition-all hover:shadow-lg ${
-              isPopularPlan(plan.plan_type) ? 'border-blue-500 border-2 shadow-md scale-105' : ''
+              plan.popular ? 'border-blue-500 border-2 shadow-md scale-105' : ''
             } ${
-              isCurrentPlan(plan.plan_type) ? 'border-green-500 border-2' : ''
+              isCurrentPlan(plan.type) ? 'border-green-500 border-2' : ''
             } ${
-              selectedPlan === plan.plan_type ? 'ring-2 ring-blue-500' : ''
+              selectedPlan === plan.type ? 'ring-2 ring-blue-500' : ''
             }`}
           >
-            {isPopularPlan(plan.plan_type) && (
+            {plan.popular && (
               <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-500">
                 <Crown className="w-3 h-3 mr-1" />
-                Mais Popular
+                Recomendado
               </Badge>
             )}
             
-            {isCurrentPlan(plan.plan_type) && showCurrentPlan && (
+            {isCurrentPlan(plan.type) && showCurrentPlan && (
               <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500">
                 <Check className="w-3 h-3 mr-1" />
                 Seu Plano
@@ -99,17 +115,14 @@ const SubscriptionCheckout = ({
             )}
 
             <CardHeader className="text-center pb-4">
-              <div className="flex items-center justify-center mb-2">
-                {getPlanIcon(plan.plan_type)}
-              </div>
               <CardTitle className="text-xl">{plan.name}</CardTitle>
               <CardDescription className="min-h-[40px]">{plan.description}</CardDescription>
               <div className="mt-4">
                 <span className="text-3xl font-bold">
-                  {plan.price_amount === 0 ? 'Grátis' : formatPrice(plan.price_amount)}
+                  {plan.price === 0 ? 'Grátis' : `R$ ${(plan.price / 100).toFixed(0)}`}
                 </span>
-                {plan.price_amount > 0 && (
-                  <span className="text-gray-500">/{plan.billing_interval}</span>
+                {plan.price > 0 && (
+                  <span className="text-gray-500">/mês</span>
                 )}
               </div>
             </CardHeader>
@@ -127,23 +140,23 @@ const SubscriptionCheckout = ({
               </ul>
               
               <Button 
-                onClick={() => handleSubscribe(plan.plan_type)}
+                onClick={() => handleSubscribe(plan.type)}
                 className="w-full"
-                variant={isCurrentPlan(plan.plan_type) ? "outline" : "default"}
+                variant={isCurrentPlan(plan.type) ? "outline" : "default"}
                 disabled={
-                  isCurrentPlan(plan.plan_type) || 
-                  processingPlan === plan.plan_type || 
+                  isCurrentPlan(plan.type) || 
+                  processingPlan === plan.type || 
                   isCreatingCheckout
                 }
               >
-                {processingPlan === plan.plan_type ? (
+                {processingPlan === plan.type ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     Processando...
                   </>
-                ) : isCurrentPlan(plan.plan_type) ? (
+                ) : isCurrentPlan(plan.type) ? (
                   "Plano Atual"
-                ) : plan.price_amount === 0 ? (
+                ) : plan.price === 0 ? (
                   "Começar Grátis"
                 ) : (
                   "Assinar Agora"
@@ -156,7 +169,7 @@ const SubscriptionCheckout = ({
 
       {/* Additional Info */}
       <div className="text-center text-sm text-gray-500">
-        <p>Todos os planos incluem período de teste gratuito</p>
+        <p>Todos os 3 agentes incluídos por apenas R$ 499/mês</p>
         <p>Cancele a qualquer momento • Sem taxas de cancelamento</p>
       </div>
     </div>

@@ -2,146 +2,201 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useSubscriptionQuotas } from "@/hooks/useSubscriptionQuotas";
-import { AlertTriangle, Infinity, CheckCircle, XCircle } from "lucide-react";
+import { Bot, Zap, Settings, CheckCircle } from "lucide-react";
 
 interface QuotaStatusProps {
-  currentUsage?: {
-    agents?: number;
-    apiCalls?: number;
-    integrations?: number;
+  currentUsage: {
+    agents: number;
+    apiCalls: number;
+    integrations: number;
   };
-  showUpgradeAlert?: boolean;
 }
 
-const QuotaStatus = ({ currentUsage = {}, showUpgradeAlert = true }: QuotaStatusProps) => {
-  const { quotas, currentPlan, checkQuota, isFeatureAvailable } = useSubscriptionQuotas();
+const QuotaStatus = ({ currentUsage }: QuotaStatusProps) => {
+  const { quotas, currentPlan, checkQuota } = useSubscriptionQuotas();
 
-  const usageStats = [
-    {
-      label: "Agentes IA",
-      current: currentUsage.agents || 0,
-      limit: quotas.maxAgents,
-      icon: "🤖"
-    },
-    {
-      label: "Chamadas API",
-      current: currentUsage.apiCalls || 0,
-      limit: quotas.maxApiCalls,
-      icon: "📡"
-    },
-    {
-      label: "Integrações",
-      current: currentUsage.integrations || 0,
-      limit: quotas.maxIntegrations,
-      icon: "🔗"
-    },
-  ];
+  const agentQuota = checkQuota('maxAgents', currentUsage.agents);
+  const apiQuota = checkQuota('maxApiCalls', currentUsage.apiCalls);
+  const integrationQuota = checkQuota('maxIntegrations', currentUsage.integrations);
 
-  const features = [
-    {
-      label: "Analytics Avançados",
-      available: isFeatureAvailable('hasAdvancedAnalytics'),
-    },
-    {
-      label: "Suporte Prioritário",
-      available: isFeatureAvailable('hasPrioritySupport'),
-    },
-    {
-      label: "Integrações Customizadas",
-      available: isFeatureAvailable('hasCustomIntegrations'),
-    },
-    {
-      label: "Exportação de Dados",
-      available: isFeatureAvailable('canExportData'),
-    },
-  ];
-
-  const getUsagePercentage = (current: number, limit: number) => {
-    if (limit === -1) return 0; // unlimited
-    return Math.min((current / limit) * 100, 100);
+  const getProgressValue = (current: number, max: number) => {
+    if (max === -1) return 0; // Ilimitado
+    if (max === 0) return 100; // Bloqueado
+    return (current / max) * 100;
   };
 
-  const getUsageColor = (current: number, limit: number) => {
-    if (limit === -1) return "text-green-600";
-    const percentage = (current / limit) * 100;
-    if (percentage >= 90) return "text-red-600";
-    if (percentage >= 75) return "text-yellow-600";
-    return "text-green-600";
+  const getProgressColor = (current: number, max: number) => {
+    if (max === -1) return "bg-green-500"; // Ilimitado
+    if (max === 0) return "bg-red-500"; // Bloqueado
+    const percentage = (current / max) * 100;
+    if (percentage >= 90) return "bg-red-500";
+    if (percentage >= 70) return "bg-yellow-500";
+    return "bg-green-500";
   };
-
-  const hasLimitReached = usageStats.some(stat => 
-    stat.limit !== -1 && stat.current >= stat.limit
-  );
 
   return (
     <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          Uso e Cotas
+        </h2>
+        <p className="text-gray-600">
+          Acompanhe o uso dos recursos da sua assinatura
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Agentes */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Bot className="h-5 w-5 text-blue-500" />
+                Agentes
+              </CardTitle>
+              <Badge variant={currentPlan === 'premium' ? 'default' : 'secondary'}>
+                {currentPlan === 'premium' ? 'Todos Incluídos' : 'Indisponível'}
+              </Badge>
+            </div>
+            <CardDescription>
+              {quotas.maxAgents === -1 ? 'Ilimitado' : 
+               quotas.maxAgents === 0 ? 'Nenhum agente disponível' :
+               `${currentUsage.agents} de ${quotas.maxAgents} agentes`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {currentPlan === 'premium' ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-green-600">
+                  <CheckCircle className="h-4 w-4" />
+                  Chatbot incluído
+                </div>
+                <div className="flex items-center gap-2 text-sm text-green-600">
+                  <CheckCircle className="h-4 w-4" />
+                  Voice Assistant incluído
+                </div>
+                <div className="flex items-center gap-2 text-sm text-green-600">
+                  <CheckCircle className="h-4 w-4" />
+                  WhatsApp Bot incluído
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm text-gray-500">
+                Faça upgrade para acessar os agentes
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Chamadas de API */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Zap className="h-5 w-5 text-yellow-500" />
+                Chamadas de API
+              </CardTitle>
+              <Badge variant={quotas.maxApiCalls === -1 ? 'default' : 'secondary'}>
+                {quotas.maxApiCalls === -1 ? 'Ilimitado' : 'Limitado'}
+              </Badge>
+            </div>
+            <CardDescription>
+              {quotas.maxApiCalls === -1 ? 'Uso ilimitado' : 
+               quotas.maxApiCalls === 0 ? 'Nenhuma chamada disponível' :
+               `${currentUsage.apiCalls} de ${quotas.maxApiCalls} chamadas`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {quotas.maxApiCalls === -1 ? (
+              <div className="text-sm text-green-600">
+                Chamadas ilimitadas de API
+              </div>
+            ) : quotas.maxApiCalls === 0 ? (
+              <div className="text-sm text-gray-500">
+                Faça upgrade para usar a API
+              </div>
+            ) : (
+              <Progress 
+                value={getProgressValue(currentUsage.apiCalls, quotas.maxApiCalls)} 
+                className="h-2"
+              />
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Integrações */}
+        <Card>
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Settings className="h-5 w-5 text-purple-500" />
+                Integrações
+              </CardTitle>
+              <Badge variant={quotas.maxIntegrations === -1 ? 'default' : 'secondary'}>
+                {quotas.maxIntegrations === -1 ? 'Ilimitado' : 'Limitado'}
+              </Badge>
+            </div>
+            <CardDescription>
+              {quotas.maxIntegrations === -1 ? 'Integrações ilimitadas' : 
+               quotas.maxIntegrations === 0 ? 'Nenhuma integração disponível' :
+               `${currentUsage.integrations} de ${quotas.maxIntegrations} integrações`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {quotas.maxIntegrations === -1 ? (
+              <div className="text-sm text-green-600">
+                Todas as integrações disponíveis
+              </div>
+            ) : quotas.maxIntegrations === 0 ? (
+              <div className="text-sm text-gray-500">
+                Faça upgrade para usar integrações
+              </div>
+            ) : (
+              <Progress 
+                value={getProgressValue(currentUsage.integrations, quotas.maxIntegrations)} 
+                className="h-2"
+              />
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Features Status */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <span>Status de Uso - Plano {currentPlan}</span>
-            <Badge variant="outline" className="capitalize">
-              {currentPlan}
-            </Badge>
-          </CardTitle>
+          <CardTitle>Recursos Disponíveis</CardTitle>
           <CardDescription>
-            Acompanhe seu uso atual e limites do plano
+            Recursos incluídos no seu plano atual
           </CardDescription>
         </CardHeader>
-        
-        <CardContent className="space-y-6">
-          {/* Usage Statistics */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {usageStats.map((stat, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium flex items-center gap-1">
-                    <span>{stat.icon}</span>
-                    {stat.label}
-                  </span>
-                  <span className={`text-sm font-mono ${getUsageColor(stat.current, stat.limit)}`}>
-                    {stat.current}/{stat.limit === -1 ? <Infinity className="w-4 h-4 inline" /> : stat.limit}
-                  </span>
-                </div>
-                {stat.limit !== -1 && (
-                  <Progress 
-                    value={getUsagePercentage(stat.current, stat.limit)} 
-                    className="h-2"
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Features */}
-          <div>
-            <h4 className="text-sm font-medium mb-3">Recursos Disponíveis</h4>
-            <div className="grid grid-cols-2 gap-2">
-              {features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  {feature.available ? (
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                  ) : (
-                    <XCircle className="w-4 h-4 text-gray-400" />
-                  )}
-                  <span className={`text-sm ${feature.available ? 'text-gray-900' : 'text-gray-400'}`}>
-                    {feature.label}
-                  </span>
-                </div>
-              ))}
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex items-center gap-2">
+              <CheckCircle className={`h-4 w-4 ${quotas.hasAdvancedAnalytics ? 'text-green-500' : 'text-gray-400'}`} />
+              <span className={`text-sm ${quotas.hasAdvancedAnalytics ? 'text-green-600' : 'text-gray-500'}`}>
+                Analytics Avançados
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className={`h-4 w-4 ${quotas.hasPrioritySupport ? 'text-green-500' : 'text-gray-400'}`} />
+              <span className={`text-sm ${quotas.hasPrioritySupport ? 'text-green-600' : 'text-gray-500'}`}>
+                Suporte Prioritário
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className={`h-4 w-4 ${quotas.hasCustomIntegrations ? 'text-green-500' : 'text-gray-400'}`} />
+              <span className={`text-sm ${quotas.hasCustomIntegrations ? 'text-green-600' : 'text-gray-500'}`}>
+                Integrações Customizadas
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className={`h-4 w-4 ${quotas.canExportData ? 'text-green-500' : 'text-gray-400'}`} />
+              <span className={`text-sm ${quotas.canExportData ? 'text-green-600' : 'text-gray-500'}`}>
+                Exportação de Dados
+              </span>
             </div>
           </div>
-
-          {/* Upgrade Alert */}
-          {hasLimitReached && showUpgradeAlert && (
-            <Alert>
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                Você atingiu o limite de alguns recursos. Considere fazer upgrade para continuar usando todos os recursos.
-              </AlertDescription>
-            </Alert>
-          )}
         </CardContent>
       </Card>
     </div>

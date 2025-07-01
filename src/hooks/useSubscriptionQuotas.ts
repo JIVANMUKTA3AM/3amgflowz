@@ -15,36 +15,18 @@ export interface SubscriptionQuotas {
 
 const planQuotas: Record<string, SubscriptionQuotas> = {
   free: {
-    maxAgents: 1,
-    maxApiCalls: 100,
-    maxIntegrations: 1,
+    maxAgents: 0,
+    maxApiCalls: 0,
+    maxIntegrations: 0,
     hasAdvancedAnalytics: false,
     hasPrioritySupport: false,
     hasCustomIntegrations: false,
     canExportData: false,
   },
-  basic: {
-    maxAgents: 5,
-    maxApiCalls: 1000,
-    maxIntegrations: 5,
-    hasAdvancedAnalytics: false,
-    hasPrioritySupport: false,
-    hasCustomIntegrations: false,
-    canExportData: true,
-  },
   premium: {
-    maxAgents: 20,
-    maxApiCalls: 10000,
-    maxIntegrations: 20,
-    hasAdvancedAnalytics: true,
-    hasPrioritySupport: true,
-    hasCustomIntegrations: false,
-    canExportData: true,
-  },
-  enterprise: {
-    maxAgents: -1, // unlimited
-    maxApiCalls: -1, // unlimited
-    maxIntegrations: -1, // unlimited
+    maxAgents: 3, // Todos os 3 agentes incluídos
+    maxApiCalls: -1, // Ilimitado
+    maxIntegrations: -1, // Ilimitado
     hasAdvancedAnalytics: true,
     hasPrioritySupport: true,
     hasCustomIntegrations: true,
@@ -57,8 +39,9 @@ export const useSubscriptionQuotas = () => {
   const { subscription } = useSubscriptionManagement();
 
   const currentPlan = subscription?.plan_type || profile?.plan || 'free';
+  const mappedPlan = currentPlan === 'free' ? 'free' : 'premium';
 
-  const quotas = planQuotas[currentPlan] || planQuotas.free;
+  const quotas = planQuotas[mappedPlan] || planQuotas.free;
 
   const checkQuota = (resource: keyof SubscriptionQuotas, currentUsage: number = 0) => {
     const limit = quotas[resource];
@@ -74,7 +57,7 @@ export const useSubscriptionQuotas = () => {
 
   return {
     quotas,
-    currentPlan,
+    currentPlan: mappedPlan,
     checkQuota,
     isFeatureAvailable,
     canCreateAgent: () => checkQuota('maxAgents', 0),

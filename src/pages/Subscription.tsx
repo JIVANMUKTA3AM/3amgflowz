@@ -24,7 +24,7 @@ const Subscription = () => {
     if (success) {
       toast({
         title: "Assinatura ativada!",
-        description: "Sua assinatura foi ativada com sucesso.",
+        description: "Sua assinatura foi ativada com sucesso. Todos os agentes estão disponíveis.",
       });
     } else if (canceled) {
       toast({
@@ -46,7 +46,7 @@ const Subscription = () => {
               Assinaturas e Planos
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-6">
-              Gerencie sua assinatura e explore nossos planos para desbloquear todo o potencial da plataforma
+              Plano único e simples: todos os agentes por R$ 499/mês
             </p>
             
             {/* Link para gerenciamento */}
@@ -76,9 +76,9 @@ const Subscription = () => {
             <TabsContent value="usage" className="space-y-6">
               <QuotaStatus 
                 currentUsage={{
-                  agents: 2,
-                  apiCalls: 150,
-                  integrations: 1
+                  agents: 3, // Todos os agentes incluídos
+                  apiCalls: 0, // Será atualizado com dados reais
+                  integrations: 0 // Será atualizado com dados reais
                 }}
               />
             </TabsContent>
