@@ -4,16 +4,16 @@ import { useLocation, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SubscriptionStatus from "@/components/SubscriptionStatus";
-import SubscriptionCard from "@/components/SubscriptionCard";
+import SubscriptionCheckout from "@/components/subscription/SubscriptionCheckout";
+import QuotaStatus from "@/components/subscription/QuotaStatus";
 import { useWorkflow } from "@/hooks/useWorkflow";
-import { useSubscription } from "@/hooks/useSubscription";
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Subscription = () => {
   const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
-  const { createCheckout } = useSubscription();
   const location = useLocation();
 
   useEffect(() => {
@@ -35,48 +35,6 @@ const Subscription = () => {
     }
   }, [location]);
 
-  const plans = [
-    {
-      title: "Básico",
-      description: "Perfeito para pequenas empresas",
-      price: "R$ 49",
-      period: "mês",
-      features: [
-        "5 agentes IA",
-        "1.000 interações/mês",
-        "Integrações básicas",
-        "Suporte por email"
-      ]
-    },
-    {
-      title: "Premium",
-      description: "Para empresas em crescimento",
-      price: "R$ 149",
-      period: "mês",
-      features: [
-        "20 agentes IA",
-        "10.000 interações/mês",
-        "Todas as integrações",
-        "Analytics avançados",
-        "Suporte prioritário"
-      ],
-      isPopular: true
-    },
-    {
-      title: "Enterprise",
-      description: "Para grandes organizações",
-      price: "R$ 399",
-      period: "mês",
-      features: [
-        "Agentes ilimitados",
-        "Interações ilimitadas",
-        "Integrações customizadas",
-        "Suporte 24/7",
-        "Gerente dedicado"
-      ]
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
@@ -85,10 +43,10 @@ const Subscription = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Escolha seu Plano
+              Assinaturas e Planos
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-6">
-              Desbloqueie todo o potencial da plataforma com nossos planos flexíveis
+              Gerencie sua assinatura e explore nossos planos para desbloquear todo o potencial da plataforma
             </p>
             
             {/* Link para gerenciamento */}
@@ -100,26 +58,31 @@ const Subscription = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="md:col-span-2">
+          <Tabs defaultValue="plans" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 mb-8">
+              <TabsTrigger value="plans">Planos</TabsTrigger>
+              <TabsTrigger value="status">Minha Assinatura</TabsTrigger>
+              <TabsTrigger value="usage">Uso e Cotas</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="plans" className="space-y-6">
+              <SubscriptionCheckout />
+            </TabsContent>
+            
+            <TabsContent value="status" className="space-y-6">
               <SubscriptionStatus />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {plans.map((plan, index) => (
-              <SubscriptionCard
-                key={index}
-                title={plan.title}
-                description={plan.description}
-                price={plan.price}
-                period={plan.period}
-                features={plan.features}
-                isPopular={plan.isPopular}
-                onSubscribe={() => createCheckout(plan.title.toLowerCase())}
+            </TabsContent>
+            
+            <TabsContent value="usage" className="space-y-6">
+              <QuotaStatus 
+                currentUsage={{
+                  agents: 2,
+                  apiCalls: 150,
+                  integrations: 1
+                }}
               />
-            ))}
-          </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 

@@ -6,9 +6,9 @@ import { toast } from "@/components/ui/use-toast";
 
 export interface UserProfile {
   id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
   avatar_url?: string;
   role: 'admin' | 'user' | 'moderator';
   plan: 'free' | 'basic' | 'premium' | 'enterprise';
