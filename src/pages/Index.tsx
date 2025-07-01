@@ -13,24 +13,128 @@ import UserMenu from "@/components/UserMenu";
 
 const Index = () => {
   const { user } = useAuth();
-  const { profile } = useProfile();
+  const { profile, isLoading } = useProfile();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (user && profile) {
-      // Se o usuário está logado, redireciona para o dashboard do cliente
-      navigate("/client-dashboard");
+    if (user && profile && !isLoading) {
+      // Se é admin, pode acessar tanto admin quanto client dashboard
+      if (profile.role === 'admin') {
+        // Admin pode ficar na página inicial ou ir para dashboard
+        return;
+      }
+      
+      // Se é cliente regular, redireciona para client dashboard
+      if (profile.role === 'client' || !profile.role) {
+        navigate("/client-dashboard");
+      }
     }
-  }, [user, profile, navigate]);
+  }, [user, profile, isLoading, navigate]);
 
-  if (user) {
-    return null; // Irá redirecionar
+  // Se está carregando, mostra loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
   }
 
+  // Se não está logado, mostra página de apresentação
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-blue-50/30">
+        {/* Header para visitantes */}
+        <header className="bg-white shadow-sm border-b">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between h-16">
+              <Link to="/" className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg"></div>
+                <span className="font-bold text-xl text-gray-900">AgentFlow</span>
+              </Link>
+
+              <div className="flex items-center space-x-4">
+                <Link to="/auth">
+                  <Button>Entrar</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </header>
+        
+        <main className="container mx-auto px-4 py-16">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Automação Inteligente para Provedores
+            </h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+              Transforme seu atendimento com nossos agentes de IA especializados
+            </p>
+            <Link to="/auth">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                Começar Agora
+              </Button>
+            </Link>
+          </div>
+
+          {/* Cards de recursos */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-blue-600" />
+                  Atendimento Geral
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Agente especializado em atendimento ao cliente, suporte e informações gerais
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-green-600" />
+                  Suporte Técnico
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Resolução de problemas técnicos, configurações e troubleshooting especializado
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-purple-600" />
+                  Vendas
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Agente comercial para vendas, consultas de planos e conversão de leads
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    );
+  }
+
+  // Se é admin logado, mostra painel administrativo
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-blue-50/30">
-      {/* Header simples para página de monitoramento */}
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -40,36 +144,24 @@ const Index = () => {
             </Link>
 
             <div className="flex items-center space-x-4">
-              {user && <UserMenu />}
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                className="md:hidden"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </Button>
+              <UserMenu />
             </div>
           </div>
         </div>
       </header>
       
       <main className="container mx-auto px-4 py-16">
-        {/* Painel de Status Geral */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Painel de Monitoramento
+            Painel Administrativo
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Monitore clientes, assinaturas e desempenho da plataforma
           </p>
         </div>
 
-        {/* Métricas Resumidas */}
         <DashboardMetrics />
 
-        {/* Cards de Status da Plataforma */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -124,7 +216,6 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Acesso Rápido */}
         <Card className="mt-12 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Acesso Rápido</CardTitle>
@@ -135,12 +226,12 @@ const Index = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <button
-                onClick={() => navigate("/subscription")}
+                onClick={() => navigate("/client-dashboard")}
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
               >
-                <h3 className="font-semibold mb-2">Gerenciar Assinaturas</h3>
+                <h3 className="font-semibold mb-2">Visão do Cliente</h3>
                 <p className="text-sm text-gray-600">
-                  Visualize e gerencie todas as assinaturas ativas
+                  Acesse a interface do cliente para testes
                 </p>
               </button>
               
