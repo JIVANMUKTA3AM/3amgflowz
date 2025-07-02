@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,9 +18,6 @@ import TestChat from "@/pages/TestChat";
 import ClientDashboard from "@/pages/ClientDashboard";
 import ResetPassword from "@/pages/ResetPassword";
 import NotFound from "@/pages/NotFound";
-import AdminDashboard from "@/pages/AdminDashboard";
-import AgentConfigurations from "@/pages/AgentConfigurations";
-import UserManagement from "@/pages/UserManagement";
 
 const queryClient = new QueryClient();
 
@@ -53,22 +51,6 @@ const App = () => (
               <ProtectedRoute>
                 <RoleBasedRouter />
               </ProtectedRoute>
-            } />
-            
-            <Route path="/admin" element={
-              <AdminRoute>
-                <AdminDashboard />
-              </AdminRoute>
-            } />
-            <Route path="/admin/agents" element={
-              <AdminRoute>
-                <AgentConfigurations />
-              </AdminRoute>
-            } />
-            <Route path="/admin/users" element={
-              <AdminRoute>
-                <UserManagement />
-              </AdminRoute>
             } />
             
             <Route path="*" element={<NotFound />} />
