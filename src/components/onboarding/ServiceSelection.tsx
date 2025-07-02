@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { MessageCircle, Phone, Mail, Users, Bot } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MessageCircle, Users, Router, Webhook, ArrowRight } from "lucide-react";
 
 interface ServiceSelectionProps {
   selectedServices: string[];
@@ -12,124 +12,121 @@ interface ServiceSelectionProps {
 }
 
 const ServiceSelection = ({ selectedServices, onUpdate, onNext }: ServiceSelectionProps) => {
-  const [localSelected, setLocalSelected] = useState<string[]>(selectedServices);
+  const [selected, setSelected] = useState<string[]>(selectedServices);
 
   const services = [
     {
-      id: 'whatsapp',
-      name: 'WhatsApp Business',
-      description: 'Atendimento automatizado via WhatsApp',
-      icon: MessageCircle,
-      color: 'from-green-500 to-green-600',
-      features: ['Mensagens automáticas', 'Chatbot inteligente', 'Integração com CRM']
-    },
-    {
-      id: 'crm',
-      name: 'CRM Integration',
-      description: 'Conecte com Pipedrive, RD Station e outros',
+      id: "atendimento",
+      name: "Agente de Atendimento",
+      description: "Atendimento geral ao cliente via chat, com respostas inteligentes e redirecionamento",
       icon: Users,
-      color: 'from-blue-500 to-blue-600',
-      features: ['Sincronização de leads', 'Automação de vendas', 'Relatórios avançados']
+      features: ["Respostas automáticas", "Classificação de tickets", "Horário comercial", "Base de conhecimento"],
+      recommended: true
     },
     {
-      id: 'olt',
-      name: 'OLT Management',
-      description: 'Gestão automática de OLTs',
-      icon: Router,
-      color: 'from-purple-500 to-purple-600',
-      features: ['Monitoramento 24/7', 'Alertas automáticos', 'Múltiplas OLTs']
+      id: "tecnico", 
+      name: "Suporte Técnico",
+      description: "Agente especializado em resolver problemas técnicos e configurações",
+      icon: Bot,
+      features: ["Diagnósticos automatizados", "Scripts de solução", "Escalação inteligente", "Documentação técnica"],
+      recommended: true
     },
     {
-      id: 'webhook',
-      name: 'Webhooks & APIs',
-      description: 'Integrações customizadas',
-      icon: Webhook,
-      color: 'from-orange-500 to-orange-600',
-      features: ['APIs REST', 'Webhooks personalizados', 'Integrações customizadas']
+      id: "comercial",
+      name: "Agente Comercial",
+      description: "Vendas e qualificação de leads com foco em conversão",
+      icon: MessageCircle,
+      features: ["Qualificação de leads", "Apresentação de planos", "Agendamento", "Follow-up automático"],
+      recommended: false
     }
   ];
 
   const handleServiceToggle = (serviceId: string) => {
-    const updated = localSelected.includes(serviceId)
-      ? localSelected.filter(id => id !== serviceId)
-      : [...localSelected, serviceId];
-    setLocalSelected(updated);
+    const newSelected = selected.includes(serviceId)
+      ? selected.filter(id => id !== serviceId)
+      : [...selected, serviceId];
+    setSelected(newSelected);
   };
 
   const handleNext = () => {
-    onUpdate(localSelected);
+    onUpdate(selected);
     onNext();
   };
 
   return (
-    <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-      <CardHeader className="bg-gradient-to-r from-3amg-purple/10 to-3amg-blue/10 rounded-t-lg">
-        <CardTitle className="text-2xl text-3amg-purple">
-          Escolha os Serviços que Deseja Ativar
-        </CardTitle>
-        <p className="text-gray-600">
-          Selecione os serviços que você gostaria de configurar. Você pode adicionar mais serviços depois.
-        </p>
-      </CardHeader>
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {services.map((service) => {
-            const Icon = service.icon;
-            const isSelected = localSelected.includes(service.id);
-            
-            return (
-              <div
-                key={service.id}
-                className={`relative p-6 rounded-xl border-2 cursor-pointer transition-all duration-300 hover:shadow-lg ${
-                  isSelected 
-                    ? 'border-3amg-purple bg-gradient-to-br from-3amg-purple/5 to-3amg-blue/5' 
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-                onClick={() => handleServiceToggle(service.id)}
-              >
-                <div className="flex items-start gap-4">
-                  <Checkbox
-                    checked={isSelected}
-                    onChange={() => handleServiceToggle(service.id)}
-                    className="mt-1"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${service.color} flex items-center justify-center text-white shadow-lg`}>
-                        <Icon className="w-6 h-6" />
+    <div className="space-y-6">
+      <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Selecione os Agentes que deseja ativar</CardTitle>
+          <p className="text-center text-gray-600">
+            Você pode ativar quantos agentes precisar. Todos estão inclusos no seu plano.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6">
+            {services.map((service) => {
+              const Icon = service.icon;
+              const isSelected = selected.includes(service.id);
+              
+              return (
+                <div
+                  key={service.id}
+                  className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
+                    isSelected 
+                      ? 'border-blue-500 bg-blue-50' 
+                      : 'border-gray-200 bg-white hover:border-gray-300'
+                  }`}
+                  onClick={() => handleServiceToggle(service.id)}
+                >
+                  {service.recommended && (
+                    <div className="absolute -top-2 left-4 bg-green-500 text-white px-2 py-1 rounded text-xs font-medium">
+                      Recomendado
+                    </div>
+                  )}
+                  
+                  <div className="flex items-start gap-4">
+                    <Checkbox
+                      checked={isSelected}
+                      onChange={() => handleServiceToggle(service.id)}
+                      className="mt-1"
+                    />
+                    
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Icon className="w-6 h-6 text-blue-600" />
+                        <h3 className="text-lg font-semibold">{service.name}</h3>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{service.name}</h3>
-                        <p className="text-sm text-gray-600">{service.description}</p>
+                      
+                      <p className="text-gray-600 mb-4">{service.description}</p>
+                      
+                      <div className="grid grid-cols-2 gap-2">
+                        {service.features.map((feature, index) => (
+                          <div key={index} className="text-sm text-gray-500 flex items-center gap-1">
+                            <div className="w-1 h-1 bg-blue-500 rounded-full"></div>
+                            {feature}
+                          </div>
+                        ))}
                       </div>
                     </div>
-                    <ul className="space-y-1">
-                      {service.features.map((feature, index) => (
-                        <li key={index} className="text-sm text-gray-600 flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-3amg-purple"></div>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="flex justify-end">
-          <Button 
-            onClick={handleNext}
-            disabled={localSelected.length === 0}
-            className="bg-gradient-3amg hover:opacity-90 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
-          >
-            Continuar
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+              );
+            })}
+          </div>
+          
+          <div className="mt-8 text-center">
+            <Button 
+              onClick={handleNext}
+              disabled={selected.length === 0}
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            >
+              Continuar com {selected.length} agente{selected.length !== 1 ? 's' : ''}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

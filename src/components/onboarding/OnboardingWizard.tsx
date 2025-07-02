@@ -4,31 +4,44 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProfile } from "@/hooks/useProfile";
 import ServiceSelection from "./ServiceSelection";
-import IntegrationsConfig from "./IntegrationsConfig";
-import OLTConfiguration from "./OLTConfiguration";
-import ReviewAndActivate from "./ReviewAndActivate";
+import AgentConfiguration from "./AgentConfiguration";
+import IntegrationsSetup from "./IntegrationsSetup";
+import FinalActivation from "./FinalActivation";
 
 export interface OnboardingData {
   selectedServices: string[];
-  whatsappConfig?: any;
-  crmConfig?: any;
-  oltConfigs?: any[];
-  webhookConfig?: any;
+  agentConfigs: {
+    atendimento?: any;
+    tecnico?: any;
+    comercial?: any;
+  };
+  integrations: {
+    whatsapp?: any;
+    oltConfig?: any[];
+  };
 }
 
 const OnboardingWizard = () => {
+  const { user } = useAuth();
+  const { profile, updateProfile } = useProfile();
+  const navigate = useNavigate();
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     selectedServices: [],
-    oltConfigs: []
+    agentConfigs: {},
+    integrations: {}
   });
 
   const steps = [
-    { id: 1, title: "Serviços", description: "Escolha os serviços que deseja ativar" },
-    { id: 2, title: "Integrações", description: "Configure as APIs dos serviços" },
-    { id: 3, title: "OLTs", description: "Configure suas OLTs (se aplicável)" },
+    { id: 1, title: "Serviços", description: "Escolha os agentes que deseja ativar" },
+    { id: 2, title: "Configuração", description: "Configure seus agentes de IA" },
+    { id: 3, title: "Integrações", description: "Configure WhatsApp e OLTs" },
     { id: 4, title: "Ativação", description: "Revisar e ativar automações" }
   ];
 
@@ -52,6 +65,25 @@ const OnboardingWizard = () => {
     setOnboardingData(prev => ({ ...prev, ...data }));
   };
 
+  const handleComplete = async () => {
+    try {
+      // Atualizar perfil para marcar onboarding como completo
+      await updateProfile({
+        agent_settings: {
+          ...profile?.agent_settings,
+          onboarding_completed: true,
+          configured_services: onboardingData.selectedServices,
+          setup_date: new Date().toISOString()
+        }
+      });
+
+      // Redirecionar para dashboard do cliente
+      navigate("/client-dashboard");
+    } catch (error) {
+      console.error("Erro ao completar onboarding:", error);
+    }
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -64,28 +96,29 @@ const OnboardingWizard = () => {
         );
       case 2:
         return (
-          <IntegrationsConfig
+          <AgentConfiguration
             selectedServices={onboardingData.selectedServices}
-            onboardingData={onboardingData}
-            onUpdate={updateOnboardingData}
+            agentConfigs={onboardingData.agentConfigs}
+            onUpdate={(configs) => updateOnboardingData({ agentConfigs: configs })}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
         );
       case 3:
         return (
-          <OLTConfiguration
+          <IntegrationsSetup
             selectedServices={onboardingData.selectedServices}
-            oltConfigs={onboardingData.oltConfigs || []}
-            onUpdate={(configs) => updateOnboardingData({ oltConfigs: configs })}
+            integrations={onboardingData.integrations}
+            onUpdate={(integrations) => updateOnboardingData({ integrations })}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
         );
       case 4:
         return (
-          <ReviewAndActivate
+          <FinalActivation
             onboardingData={onboardingData}
+            onComplete={handleComplete}
             onPrevious={handlePrevious}
           />
         );
@@ -95,12 +128,12 @@ const OnboardingWizard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-3amg-purple/10 via-white to-3amg-blue/10 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-3amg bg-clip-text text-transparent mb-4">
-            Bem-vindo à 3AMG!
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+            Bem-vindo ao AgentFlow!
           </h1>
           <p className="text-xl text-gray-600">
             Vamos configurar sua plataforma em alguns passos simples
@@ -114,7 +147,7 @@ const OnboardingWizard = () => {
               <span className="text-sm font-medium text-gray-600">
                 Etapa {currentStep} de {totalSteps}
               </span>
-              <span className="text-sm font-medium text-3amg-purple">
+              <span className="text-sm font-medium text-blue-600">
                 {Math.round(progress)}% concluído
               </span>
             </div>
@@ -127,7 +160,7 @@ const OnboardingWizard = () => {
                     completedSteps.includes(step.id) 
                       ? 'bg-green-500 text-white' 
                       : currentStep === step.id 
-                        ? 'bg-gradient-3amg text-white' 
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
                         : 'bg-gray-200 text-gray-600'
                   }`}>
                     {completedSteps.includes(step.id) ? (
