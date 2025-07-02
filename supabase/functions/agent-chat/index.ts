@@ -232,8 +232,16 @@ async function callOpenAI(agentConfig: any, userMessage: string) {
   
   console.log('Making OpenAI API call with model:', agentConfig.model);
   
+  // Map model names correctly
+  let modelName = agentConfig.model;
+  if (agentConfig.model === 'gpt-4-omni') {
+    modelName = 'gpt-4o';
+  } else if (agentConfig.model === 'gpt-4.1-2025-04-14') {
+    modelName = 'gpt-4o'; // Fallback to available model
+  }
+  
   const requestBody = {
-    model: agentConfig.model === 'gpt-4-omni' ? 'gpt-4o' : agentConfig.model,
+    model: modelName,
     messages: [
       { role: 'system', content: agentConfig.prompt },
       { role: 'user', content: userMessage }
@@ -276,8 +284,16 @@ async function callClaude(agentConfig: any, userMessage: string) {
   
   console.log('Making Anthropic API call with model:', agentConfig.model);
   
+  // Map model names correctly
+  let modelName = agentConfig.model;
+  if (agentConfig.model === 'claude-opus-4-20250514') {
+    modelName = 'claude-3-5-sonnet-20241022'; // Fallback to available model
+  } else if (agentConfig.model === 'claude-sonnet-4-20250514') {
+    modelName = 'claude-3-5-sonnet-20241022'; // Fallback to available model
+  }
+  
   const requestBody = {
-    model: agentConfig.model,
+    model: modelName,
     system: agentConfig.prompt,
     messages: [
       { role: 'user', content: userMessage }
