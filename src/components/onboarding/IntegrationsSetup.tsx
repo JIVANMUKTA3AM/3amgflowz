@@ -17,14 +17,17 @@ interface IntegrationsSetupProps {
 }
 
 const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, onPrevious }: IntegrationsSetupProps) => {
-  const [configs, setConfigs] = useState(integrations);
+  const [configs, setConfigs] = useState({
+    whatsapp: integrations.whatsapp || {},
+    oltConfig: integrations.oltConfig || []
+  });
   const [testResults, setTestResults] = useState<{[key: string]: 'success' | 'error' | 'testing'}>({});
 
   const handleConfigChange = (integration: string, field: string, value: any) => {
     const newConfigs = {
       ...configs,
       [integration]: {
-        ...configs[integration],
+        ...configs[integration as keyof typeof configs],
         [field]: value
       }
     };
@@ -36,7 +39,7 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
     
     // Simular teste de conexão
     setTimeout(() => {
-      const isValid = configs.whatsapp?.token && configs.whatsapp?.phoneId;
+      const isValid = configs.whatsapp?.accessToken && configs.whatsapp?.phoneNumberId;
       setTestResults({...testResults, whatsapp: isValid ? 'success' : 'error'});
     }, 2000);
   };
@@ -47,28 +50,36 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
     // Simular teste de conexão OLT
     setTimeout(() => {
       const olt = configs.oltConfig?.[index];
-      const isValid = olt?.ip && olt?.username && olt?.password;
+      const isValid = olt?.ipAddress && olt?.username && olt?.password;
       setTestResults({...testResults, [`olt_${index}`]: isValid ? 'success' : 'error'});
     }, 2000);
   };
 
   const addOLT = () => {
-    const newOltConfig = configs.oltConfig || [];
+    const newOltConfig = [...(configs.oltConfig || [])];
     newOltConfig.push({
+      id: `olt_${Date.now()}`,
       name: `OLT ${newOltConfig.length + 1}`,
-      ip: '',
+      brand: 'Huawei',
+      model: 'MA5608T',
+      ipAddress: '',
       username: '',
-      password: '',
-      type: 'huawei'
+      password: ''
     });
     
-    handleConfigChange('oltConfig', 'oltConfig', newOltConfig);
+    setConfigs({
+      ...configs,
+      oltConfig: newOltConfig
+    });
   };
 
   const removeOLT = (index: number) => {
     const newOltConfig = [...(configs.oltConfig || [])];
     newOltConfig.splice(index, 1);
-    handleConfigChange('oltConfig', 'oltConfig', newOltConfig);
+    setConfigs({
+      ...configs,
+      oltConfig: newOltConfig
+    });
   };
 
   const handleNext = () => {
@@ -110,8 +121,8 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
                 <Input
                   id="whatsapp-token"
                   type="password"
-                  value={configs.whatsapp?.token || ''}
-                  onChange={(e) => handleConfigChange('whatsapp', 'token', e.target.value)}
+                  value={configs.whatsapp?.accessToken || ''}
+                  onChange={(e) => handleConfigChange('whatsapp', 'accessToken', e.target.value)}
                   placeholder="Token da API do WhatsApp Business"
                 />
               </div>
@@ -120,8 +131,8 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
                 <Label htmlFor="phone-id">Phone Number ID</Label>
                 <Input
                   id="phone-id"
-                  value={configs.whatsapp?.phoneId || ''}
-                  onChange={(e) => handleConfigChange('whatsapp', 'phoneId', e.target.value)}
+                  value={configs.whatsapp?.phoneNumberId || ''}
+                  onChange={(e) => handleConfigChange('whatsapp', 'phoneNumberId', e.target.value)}
                   placeholder="ID do número de telefone"
                 />
               </div>
@@ -130,13 +141,12 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
                 <Label htmlFor="webhook-url">Webhook URL</Label>
                 <Input
                   id="webhook-url"
-                  value={configs.whatsapp?.webhookUrl || ''}
+                  value={configs.whatsapp?.webhookUrl || 'https://sua-vps.com/webhook/whatsapp'}
                   onChange={(e) => handleConfigChange('whatsapp', 'webhookUrl', e.target.value)}
                   placeholder="URL que receberá as mensagens"
-                  disabled
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Esta URL será gerada automaticamente após a configuração
+                  Esta URL deve apontar para sua VPS onde o n8n está rodando
                 </p>
               </div>
 
@@ -176,7 +186,7 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
 
             <div className="space-y-4">
               {(configs.oltConfig || []).map((olt: any, index: number) => (
-                <Card key={index} className="p-4">
+                <Card key={olt.id || index} className="p-4">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-medium">OLT {index + 1}</h4>
                     <Button 
@@ -197,7 +207,7 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
                         onChange={(e) => {
                           const newOltConfig = [...(configs.oltConfig || [])];
                           newOltConfig[index] = {...olt, name: e.target.value};
-                          handleConfigChange('oltConfig', 'oltConfig', newOltConfig);
+                          setConfigs({...configs, oltConfig: newOltConfig});
                         }}
                         placeholder="Nome identificador"
                       />
@@ -206,11 +216,11 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
                     <div>
                       <Label>IP da OLT</Label>
                       <Input
-                        value={olt.ip || ''}
+                        value={olt.ipAddress || ''}
                         onChange={(e) => {
                           const newOltConfig = [...(configs.oltConfig || [])];
-                          newOltConfig[index] = {...olt, ip: e.target.value};
-                          handleConfigChange('oltConfig', 'oltConfig', newOltConfig);
+                          newOltConfig[index] = {...olt, ipAddress: e.target.value};
+                          setConfigs({...configs, oltConfig: newOltConfig});
                         }}
                         placeholder="192.168.1.1"
                       />
@@ -223,7 +233,7 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
                         onChange={(e) => {
                           const newOltConfig = [...(configs.oltConfig || [])];
                           newOltConfig[index] = {...olt, username: e.target.value};
-                          handleConfigChange('oltConfig', 'oltConfig', newOltConfig);
+                          setConfigs({...configs, oltConfig: newOltConfig});
                         }}
                         placeholder="admin"
                       />
@@ -237,7 +247,7 @@ const IntegrationsSetup = ({ selectedServices, integrations, onUpdate, onNext, o
                         onChange={(e) => {
                           const newOltConfig = [...(configs.oltConfig || [])];
                           newOltConfig[index] = {...olt, password: e.target.value};
-                          handleConfigChange('oltConfig', 'oltConfig', newOltConfig);
+                          setConfigs({...configs, oltConfig: newOltConfig});
                         }}
                         placeholder="••••••••"
                       />

@@ -556,6 +556,48 @@ export type Database = {
           },
         ]
       }
+      onboarding_configurations: {
+        Row: {
+          agent_configs: Json
+          created_at: string
+          crm_config: Json | null
+          id: string
+          is_completed: boolean
+          olt_configs: Json | null
+          selected_services: Json
+          updated_at: string
+          user_id: string
+          webhook_config: Json | null
+          whatsapp_config: Json | null
+        }
+        Insert: {
+          agent_configs?: Json
+          created_at?: string
+          crm_config?: Json | null
+          id?: string
+          is_completed?: boolean
+          olt_configs?: Json | null
+          selected_services?: Json
+          updated_at?: string
+          user_id: string
+          webhook_config?: Json | null
+          whatsapp_config?: Json | null
+        }
+        Update: {
+          agent_configs?: Json
+          created_at?: string
+          crm_config?: Json | null
+          id?: string
+          is_completed?: boolean
+          olt_configs?: Json | null
+          selected_services?: Json
+          updated_at?: string
+          user_id?: string
+          webhook_config?: Json | null
+          whatsapp_config?: Json | null
+        }
+        Relationships: []
+      }
       organizations: {
         Row: {
           created_at: string

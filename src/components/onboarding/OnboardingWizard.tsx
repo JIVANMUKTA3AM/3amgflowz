@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -7,6 +6,7 @@ import { CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
 import ServiceSelection from "./ServiceSelection";
 import AgentConfiguration from "./AgentConfiguration";
 import IntegrationsSetup from "./IntegrationsSetup";
@@ -52,6 +52,7 @@ export interface OnboardingData {
 const OnboardingWizard = () => {
   const { user } = useAuth();
   const { profile, updateProfile } = useProfile();
+  const { config, saveConfig, completeOnboarding } = useOnboardingConfig();
   const navigate = useNavigate();
   
   const [currentStep, setCurrentStep] = useState(1);
@@ -61,6 +62,24 @@ const OnboardingWizard = () => {
     agentConfigs: {},
     integrations: {}
   });
+
+  // Carregar dados salvos quando disponível
+  useEffect(() => {
+    if (config) {
+      setOnboardingData({
+        selectedServices: config.selected_services || [],
+        agentConfigs: config.agent_configs || {},
+        integrations: {
+          whatsapp: config.whatsapp_config,
+          oltConfig: config.olt_configs
+        },
+        whatsappConfig: config.whatsapp_config,
+        crmConfig: config.crm_config,
+        webhookConfig: config.webhook_config,
+        oltConfigs: config.olt_configs
+      });
+    }
+  }, [config]);
 
   const steps = [
     { id: 1, title: "Serviços", description: "Escolha os agentes que deseja ativar" },
@@ -74,6 +93,17 @@ const OnboardingWizard = () => {
 
   const handleNext = () => {
     if (currentStep < totalSteps) {
+      // Salvar dados antes de avançar
+      saveConfig({
+        selected_services: onboardingData.selectedServices,
+        agent_configs: onboardingData.agentConfigs,
+        whatsapp_config: onboardingData.whatsappConfig,
+        crm_config: onboardingData.crmConfig,
+        webhook_config: onboardingData.webhookConfig,
+        olt_configs: onboardingData.oltConfigs,
+        is_completed: false
+      });
+
       setCompletedSteps([...completedSteps, currentStep]);
       setCurrentStep(currentStep + 1);
     }
@@ -91,6 +121,16 @@ const OnboardingWizard = () => {
 
   const handleComplete = async () => {
     try {
+      // Completar onboarding no banco
+      await completeOnboarding({
+        selected_services: onboardingData.selectedServices,
+        agent_configs: onboardingData.agentConfigs,
+        whatsapp_config: onboardingData.whatsappConfig,
+        crm_config: onboardingData.crmConfig,
+        webhook_config: onboardingData.webhookConfig,
+        olt_configs: onboardingData.oltConfigs
+      });
+
       // Atualizar perfil para marcar onboarding como completo
       await updateProfile({
         agent_settings: {
@@ -133,7 +173,11 @@ const OnboardingWizard = () => {
           <IntegrationsSetup
             selectedServices={onboardingData.selectedServices}
             integrations={onboardingData.integrations}
-            onUpdate={(integrations) => updateOnboardingData({ integrations })}
+            onUpdate={(integrations) => updateOnboardingData({ 
+              integrations,
+              whatsappConfig: integrations.whatsapp,
+              oltConfigs: integrations.oltConfig 
+            })}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
