@@ -6,9 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
 import { AgentConfiguration } from "@/hooks/useAgentConfigurations";
 import { useAIProviders } from "@/hooks/useAIProviders";
-import AIProviderSelector from "./AIProviderSelector";
+import ModelSelector from "./ModelSelector";
 
 interface AgentConfigurationFormProps {
   configuration?: AgentConfiguration;
@@ -24,7 +26,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
     name: "",
     agent_type: "",
     prompt: "",
-    model: "gpt-4.1-2025-04-14", // Modelo mais recente como padrão
+    model: "gpt-4.1-2025-04-14",
     temperature: 0.7,
     max_tokens: 1000,
     is_active: true,
@@ -42,7 +44,6 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
         is_active: configuration.is_active,
       });
     } else {
-      // Se não há configuração, usar o primeiro modelo recomendado
       const recommendedModels = getRecommendedModels();
       if (recommendedModels.length > 0) {
         setFormData(prev => ({ ...prev, model: recommendedModels[0] }));
@@ -82,7 +83,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="name">Nome do Agente</Label>
@@ -124,24 +125,23 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
             />
           </div>
 
-          <AIProviderSelector
+          <ModelSelector
             selectedModel={formData.model}
             onModelChange={(model) => handleChange("model", model)}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="temperature">Temperatura</Label>
-              <Input
-                id="temperature"
-                type="number"
-                min="0"
-                max="2"
-                step="0.1"
-                value={formData.temperature}
-                onChange={(e) => handleChange("temperature", parseFloat(e.target.value))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label>Temperatura: {formData.temperature}</Label>
+              <Slider
+                value={[formData.temperature]}
+                onValueChange={([value]) => handleChange("temperature", value)}
+                min={0}
+                max={2}
+                step={0.1}
+                className="w-full"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-500">
                 0 = Mais preciso, 2 = Mais criativo
               </p>
             </div>
@@ -163,12 +163,10 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
           </div>
 
           <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
+            <Switch
               id="is_active"
               checked={formData.is_active}
-              onChange={(e) => handleChange("is_active", e.target.checked)}
-              className="rounded"
+              onCheckedChange={(checked) => handleChange("is_active", checked)}
             />
             <Label htmlFor="is_active">Agente ativo</Label>
           </div>
