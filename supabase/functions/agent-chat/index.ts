@@ -20,16 +20,25 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Processing agent chat request...');
+    console.log('=== AGENT CHAT REQUEST START ===');
     
     const requestData = await req.json();
-    console.log('Request data:', requestData);
+    console.log('Request data received:', JSON.stringify(requestData, null, 2));
     
     const { agent_configuration_id, user_message, session_id }: ChatRequest = requestData;
     
     if (!agent_configuration_id || !user_message || !session_id) {
       console.error('Missing required parameters:', { agent_configuration_id, user_message, session_id });
-      throw new Error('Missing required parameters: agent_configuration_id, user_message, and session_id are required');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Parâmetros obrigatórios ausentes',
+          agent_response: "Erro: parâmetros obrigatórios não fornecidos.",
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
     
     // Initialize Supabase client
@@ -38,13 +47,23 @@ serve(async (req) => {
     
     if (!supabaseUrl || !supabaseKey) {
       console.error('Missing Supabase configuration');
-      throw new Error('Supabase configuration not found');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Configuração do Supabase não encontrada',
+          agent_response: "Erro de configuração do servidor.",
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
     
     const supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('Supabase client initialized');
+    console.log('Supabase client initialized successfully');
     
     // Get agent configuration
+    console.log('Fetching agent configuration for ID:', agent_configuration_id);
     const { data: agentConfig, error: configError } = await supabase
       .from('agent_configurations')
       .select('*')
@@ -54,15 +73,38 @@ serve(async (req) => {
     
     if (configError) {
       console.error('Error fetching agent config:', configError);
-      throw new Error(`Agent configuration error: ${configError.message}`);
+      return new Response(
+        JSON.stringify({ 
+          error: `Erro na configuração do agente: ${configError.message}`,
+          agent_response: "Agente não encontrado ou inativo.",
+        }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
     
     if (!agentConfig) {
       console.error('Agent configuration not found');
-      throw new Error('Agent configuration not found or inactive');
+      return new Response(
+        JSON.stringify({ 
+          error: 'Configuração do agente não encontrada',
+          agent_response: "Agente não encontrado ou inativo.",
+        }),
+        {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
     
-    console.log('Agent config found:', agentConfig.name, agentConfig.model);
+    console.log('Agent config found:', {
+      name: agentConfig.name,
+      model: agentConfig.model,
+      temperature: agentConfig.temperature,
+      max_tokens: agentConfig.max_tokens
+    });
     
     const startTime = Date.now();
     
@@ -71,15 +113,17 @@ serve(async (req) => {
     let tokensUsed = 0;
     
     try {
-      if (agentConfig.model.startsWith('gpt-') || agentConfig.model.includes('openai')) {
+      console.log('Calling AI provider for model:', agentConfig.model);
+      
+      if (agentConfig.model.includes('gpt') || agentConfig.model.includes('openai')) {
         console.log('Using OpenAI API');
         aiResponse = await callOpenAI(agentConfig, user_message);
         tokensUsed = aiResponse.usage?.total_tokens || 0;
-      } else if (agentConfig.model.startsWith('claude-') || agentConfig.model.includes('anthropic')) {
+      } else if (agentConfig.model.includes('claude') || agentConfig.model.includes('anthropic')) {
         console.log('Using Anthropic API');
         aiResponse = await callClaude(agentConfig, user_message);
         tokensUsed = (aiResponse.usage?.input_tokens || 0) + (aiResponse.usage?.output_tokens || 0);
-      } else if (agentConfig.model.startsWith('gemini-') || agentConfig.model.includes('google')) {
+      } else if (agentConfig.model.includes('gemini') || agentConfig.model.includes('google')) {
         console.log('Using Google API');
         aiResponse = await callGemini(agentConfig, user_message);
         tokensUsed = aiResponse.usage?.total_tokens || 0;
@@ -88,15 +132,30 @@ serve(async (req) => {
         aiResponse = await callOpenAI(agentConfig, user_message);
         tokensUsed = aiResponse.usage?.total_tokens || 0;
       }
+      
+      console.log('AI response received successfully');
     } catch (apiError) {
       console.error('API call error:', apiError);
-      throw new Error(`AI API error: ${apiError.message}`);
+      return new Response(
+        JSON.stringify({ 
+          error: `Erro na API de IA: ${apiError.message}`,
+          agent_response: "Erro ao se comunicar com o modelo de IA. Verifique se as chaves da API estão configuradas corretamente.",
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
     
     const responseTime = Date.now() - startTime;
     const agentResponseText = extractResponseText(aiResponse, agentConfig.model);
     
-    console.log('AI response generated in', responseTime, 'ms');
+    console.log('Response generated successfully:', {
+      responseTime: `${responseTime}ms`,
+      tokensUsed,
+      responseLength: agentResponseText.length
+    });
     
     // Get user ID from the auth header
     const authHeader = req.headers.get('authorization') || '';
@@ -107,7 +166,7 @@ serve(async (req) => {
       try {
         const { data: userData } = await supabase.auth.getUser(token);
         userId = userData.user?.id;
-        console.log('User ID found:', userId);
+        console.log('User ID found for conversation logging:', userId);
       } catch (authError) {
         console.warn('Auth error, continuing without user ID:', authError);
       }
@@ -128,11 +187,13 @@ serve(async (req) => {
             tokens_used: tokensUsed,
             model_used: agentConfig.model,
           });
-        console.log('Conversation saved to database');
+        console.log('Conversation saved to database successfully');
       } catch (dbError) {
         console.warn('Database save error, continuing:', dbError);
       }
     }
+    
+    console.log('=== AGENT CHAT REQUEST SUCCESS ===');
     
     return new Response(
       JSON.stringify({
@@ -146,11 +207,14 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error('Error in agent-chat function:', error);
+    console.error('=== AGENT CHAT REQUEST ERROR ===');
+    console.error('Error details:', error);
+    console.error('Error stack:', error.stack);
+    
     return new Response(
       JSON.stringify({ 
-        error: error.message,
-        agent_response: "Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente.",
+        error: `Erro interno do servidor: ${error.message}`,
+        agent_response: "Desculpe, ocorreu um erro interno. Tente novamente em alguns instantes.",
       }),
       {
         status: 500,
@@ -163,10 +227,22 @@ serve(async (req) => {
 async function callOpenAI(agentConfig: any, userMessage: string) {
   const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
   if (!openaiApiKey) {
-    throw new Error('OpenAI API key not configured');
+    throw new Error('Chave da API OpenAI não configurada');
   }
   
-  console.log('Calling OpenAI with model:', agentConfig.model);
+  console.log('Making OpenAI API call with model:', agentConfig.model);
+  
+  const requestBody = {
+    model: agentConfig.model === 'gpt-4-omni' ? 'gpt-4o' : agentConfig.model,
+    messages: [
+      { role: 'system', content: agentConfig.prompt },
+      { role: 'user', content: userMessage }
+    ],
+    temperature: agentConfig.temperature || 0.7,
+    max_tokens: agentConfig.max_tokens || 1000,
+  };
+  
+  console.log('OpenAI request body:', JSON.stringify(requestBody, null, 2));
   
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -174,33 +250,43 @@ async function callOpenAI(agentConfig: any, userMessage: string) {
       'Authorization': `Bearer ${openaiApiKey}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      model: agentConfig.model,
-      messages: [
-        { role: 'system', content: agentConfig.prompt },
-        { role: 'user', content: userMessage }
-      ],
-      temperature: agentConfig.temperature || 0.7,
-      max_tokens: agentConfig.max_tokens || 1000,
-    }),
+    body: JSON.stringify(requestBody),
   });
   
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('OpenAI API error:', response.status, errorText);
-    throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+    console.error('OpenAI API error response:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText
+    });
+    throw new Error(`Erro da API OpenAI: ${response.status} - ${errorText}`);
   }
   
-  return await response.json();
+  const result = await response.json();
+  console.log('OpenAI API response received successfully');
+  return result;
 }
 
 async function callClaude(agentConfig: any, userMessage: string) {
   const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
   if (!anthropicApiKey) {
-    throw new Error('Anthropic API key not configured');
+    throw new Error('Chave da API Anthropic não configurada');
   }
   
-  console.log('Calling Anthropic with model:', agentConfig.model);
+  console.log('Making Anthropic API call with model:', agentConfig.model);
+  
+  const requestBody = {
+    model: agentConfig.model,
+    system: agentConfig.prompt,
+    messages: [
+      { role: 'user', content: userMessage }
+    ],
+    temperature: agentConfig.temperature || 0.7,
+    max_tokens: agentConfig.max_tokens || 1000,
+  };
+  
+  console.log('Anthropic request body:', JSON.stringify(requestBody, null, 2));
   
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -209,73 +295,81 @@ async function callClaude(agentConfig: any, userMessage: string) {
       'Content-Type': 'application/json',
       'anthropic-version': '2023-06-01',
     },
-    body: JSON.stringify({
-      model: agentConfig.model,
-      system: agentConfig.prompt,
-      messages: [
-        { role: 'user', content: userMessage }
-      ],
-      temperature: agentConfig.temperature || 0.7,
-      max_tokens: agentConfig.max_tokens || 1000,
-    }),
+    body: JSON.stringify(requestBody),
   });
   
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('Anthropic API error:', response.status, errorText);
-    throw new Error(`Anthropic API error: ${response.status} - ${errorText}`);
+    console.error('Anthropic API error response:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText
+    });
+    throw new Error(`Erro da API Anthropic: ${response.status} - ${errorText}`);
   }
   
-  return await response.json();
+  const result = await response.json();
+  console.log('Anthropic API response received successfully');
+  return result;
 }
 
 async function callGemini(agentConfig: any, userMessage: string) {
   const googleApiKey = Deno.env.get('GOOGLE_API_KEY');
   if (!googleApiKey) {
-    throw new Error('Google API key not configured');
+    throw new Error('Chave da API Google não configurada');
   }
   
-  console.log('Calling Google with model:', agentConfig.model);
+  console.log('Making Google API call with model:', agentConfig.model);
+  
+  const requestBody = {
+    contents: [{
+      parts: [{
+        text: `${agentConfig.prompt}\n\nUser: ${userMessage}`
+      }]
+    }],
+    generationConfig: {
+      temperature: agentConfig.temperature || 0.7,
+      maxOutputTokens: agentConfig.max_tokens || 1000,
+    },
+  };
+  
+  console.log('Google request body:', JSON.stringify(requestBody, null, 2));
   
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${agentConfig.model}:generateContent?key=${googleApiKey}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      contents: [{
-        parts: [{
-          text: `${agentConfig.prompt}\n\nUser: ${userMessage}`
-        }]
-      }],
-      generationConfig: {
-        temperature: agentConfig.temperature || 0.7,
-        maxOutputTokens: agentConfig.max_tokens || 1000,
-      },
-    }),
+    body: JSON.stringify(requestBody),
   });
   
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('Google API error:', response.status, errorText);
-    throw new Error(`Google API error: ${response.status} - ${errorText}`);
+    console.error('Google API error response:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText
+    });
+    throw new Error(`Erro da API Google: ${response.status} - ${errorText}`);
   }
   
-  return await response.json();
+  const result = await response.json();
+  console.log('Google API response received successfully');
+  return result;
 }
 
 function extractResponseText(aiResponse: any, model: string): string {
   try {
-    if (model.startsWith('gpt-') || model.includes('openai')) {
-      return aiResponse.choices?.[0]?.message?.content || 'Erro ao processar resposta';
-    } else if (model.startsWith('claude-') || model.includes('anthropic')) {
-      return aiResponse.content?.[0]?.text || 'Erro ao processar resposta';
-    } else if (model.startsWith('gemini-') || model.includes('google')) {
-      return aiResponse.candidates?.[0]?.content?.parts?.[0]?.text || 'Erro ao processar resposta';
+    if (model.includes('gpt') || model.includes('openai')) {
+      return aiResponse.choices?.[0]?.message?.content || 'Erro ao processar resposta da OpenAI';
+    } else if (model.includes('claude') || model.includes('anthropic')) {
+      return aiResponse.content?.[0]?.text || 'Erro ao processar resposta do Claude';
+    } else if (model.includes('gemini') || model.includes('google')) {
+      return aiResponse.candidates?.[0]?.content?.parts?.[0]?.text || 'Erro ao processar resposta do Gemini';
     }
   } catch (error) {
     console.error('Error extracting response text:', error);
   }
   
-  return 'Erro ao processar resposta do modelo';
+  return 'Erro ao processar resposta do modelo de IA';
 }
