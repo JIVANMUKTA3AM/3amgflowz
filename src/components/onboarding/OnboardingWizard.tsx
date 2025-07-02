@@ -203,9 +203,18 @@ const OnboardingWizard = () => {
           <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
             Bem-vindo ao AgentFlow!
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 mb-4">
             Vamos configurar sua plataforma em alguns passos simples
           </p>
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/test-chat')}
+              className="gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
+            >
+              🧪 Testar Chat com IA
+            </Button>
+          </div>
         </div>
 
         {/* Progress */}
