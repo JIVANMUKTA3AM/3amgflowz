@@ -47,6 +47,11 @@ const App = () => (
                 <ClientDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/subscription" element={
+              <ProtectedRoute>
+                <Subscription />
+              </ProtectedRoute>
+            } />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <RoleBasedRouter />
