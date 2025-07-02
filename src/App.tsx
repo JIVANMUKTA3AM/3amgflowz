@@ -18,6 +18,7 @@ import TestChat from "@/pages/TestChat";
 import ClientDashboard from "@/pages/ClientDashboard";
 import ResetPassword from "@/pages/ResetPassword";
 import NotFound from "@/pages/NotFound";
+import Subscription from "@/pages/Subscription";
 
 const queryClient = new QueryClient();
 
