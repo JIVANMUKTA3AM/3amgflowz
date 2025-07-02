@@ -10,7 +10,7 @@ import AgentConfigurationForm from "@/components/agents/AgentConfigurationForm";
 
 const TestChat = () => {
   const navigate = useNavigate();
-  const { configurations, createConfiguration, updateConfiguration, isLoading } = useAgentConfigurations();
+  const { configurations = [], createConfiguration, updateConfiguration, isLoading } = useAgentConfigurations();
   const [showForm, setShowForm] = useState(false);
   const [editingConfig, setEditingConfig] = useState(null);
 
