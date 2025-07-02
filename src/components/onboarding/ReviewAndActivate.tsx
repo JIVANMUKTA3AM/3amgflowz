@@ -81,7 +81,7 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
           <p className="text-xl text-gray-600 mb-6">
             Suas automações foram ativadas com sucesso. Redirecionando para o dashboard...
           </p>
-          <div className="flex items-center justify-center gap-2 text-3amg-purple">
+          <div className="flex items-center justify-center gap-2 text-purple-600">
             <Loader2 className="w-5 h-5 animate-spin" />
             <span>Carregando dashboard...</span>
           </div>
@@ -92,8 +92,8 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
 
   return (
     <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-      <CardHeader className="bg-gradient-to-r from-3amg-purple/10 to-3amg-blue/10 rounded-t-lg">
-        <CardTitle className="text-2xl text-3amg-purple">
+      <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-t-lg">
+        <CardTitle className="text-2xl text-purple-700">
           Revisão e Ativação
         </CardTitle>
         <p className="text-gray-600">
@@ -177,10 +177,10 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
             <CardContent>
               <div className="space-y-3">
                 {onboardingData.oltConfigs.map((olt, index) => (
-                  <div key={olt.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={olt.id || index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium">{olt.name || `OLT ${index + 1}`}</p>
-                      <p className="text-sm text-gray-600">{olt.brand} {olt.model} - {olt.ipAddress}</p>
+                      <p className="text-sm text-gray-600">{olt.brand} {olt.model} - {olt.ipAddress || olt.ip}</p>
                     </div>
                     <Badge variant="outline">{olt.brand}</Badge>
                   </div>
@@ -209,10 +209,10 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
         )}
 
         {/* Activation Info */}
-        <Card className="bg-gradient-to-r from-3amg-purple/5 to-3amg-blue/5 border-3amg-purple/20">
+        <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-gradient-3amg rounded-xl flex items-center justify-center text-white">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center text-white">
                 <Zap className="w-6 h-6" />
               </div>
               <div>
@@ -242,7 +242,7 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
           <Button 
             onClick={handleActivate}
             disabled={isActivating}
-            className="bg-gradient-3amg hover:opacity-90 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:opacity-90 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
           >
             {isActivating ? (
               <>

@@ -23,6 +23,30 @@ export interface OnboardingData {
     whatsapp?: any;
     oltConfig?: any[];
   };
+  whatsappConfig?: {
+    phoneNumberId?: string;
+    accessToken?: string;
+    webhookUrl?: string;
+  };
+  crmConfig?: {
+    type?: string;
+    apiKey?: string;
+    domain?: string;
+  };
+  webhookConfig?: {
+    url?: string;
+    secret?: string;
+  };
+  oltConfigs?: Array<{
+    id?: string;
+    name?: string;
+    brand?: string;
+    model?: string;
+    ipAddress?: string;
+    ip?: string;
+    username?: string;
+    password?: string;
+  }>;
 }
 
 const OnboardingWizard = () => {
