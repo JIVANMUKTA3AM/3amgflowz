@@ -108,7 +108,7 @@ serve(async (req) => {
     
     const startTime = Date.now();
     
-    // Determine which AI provider to use based on model
+    // Determine which AI provider to use and call it
     let aiResponse;
     let tokensUsed = 0;
     
@@ -237,9 +237,9 @@ async function callOpenAI(agentConfig: any, userMessage: string) {
   if (agentConfig.model === 'gpt-4.1-2025-04-14') {
     modelName = 'gpt-4o'; // Use available model
   } else if (agentConfig.model === 'o3-2025-04-16') {
-    modelName = 'o1-preview'; // Map to available reasoning model
+    modelName = 'gpt-4o'; // Map to available model for now
   } else if (agentConfig.model === 'o4-mini-2025-04-16') {
-    modelName = 'o1-mini'; // Map to available fast reasoning model
+    modelName = 'gpt-4o-mini'; // Map to available model
   }
   
   const requestBody = {
@@ -292,6 +292,10 @@ async function callClaude(agentConfig: any, userMessage: string) {
     modelName = 'claude-3-5-sonnet-20241022'; // Use available model
   } else if (agentConfig.model === 'claude-sonnet-4-20250514') {
     modelName = 'claude-3-5-sonnet-20241022'; // Use available model  
+  } else if (agentConfig.model === 'claude-3-5-haiku-20241022') {
+    modelName = 'claude-3-5-haiku-20241022';
+  } else if (agentConfig.model === 'claude-3-5-sonnet-20241022') {
+    modelName = 'claude-3-5-sonnet-20241022';
   }
   
   const requestBody = {
@@ -339,6 +343,18 @@ async function callGemini(agentConfig: any, userMessage: string) {
   
   console.log('Making Google API call with model:', agentConfig.model);
   
+  // Map model names correctly for Gemini
+  let modelName = agentConfig.model;
+  if (agentConfig.model === 'gemini-1.5-pro-002' || agentConfig.model === 'gemini-1.5-pro') {
+    modelName = 'gemini-1.5-pro';
+  } else if (agentConfig.model === 'gemini-1.5-flash-002' || agentConfig.model === 'gemini-1.5-flash') {
+    modelName = 'gemini-1.5-flash';
+  } else if (agentConfig.model === 'gemini-1.0-pro') {
+    modelName = 'gemini-1.0-pro';
+  } else {
+    modelName = 'gemini-1.5-flash'; // Default fallback
+  }
+  
   const requestBody = {
     contents: [{
       parts: [{
@@ -353,7 +369,7 @@ async function callGemini(agentConfig: any, userMessage: string) {
   
   console.log('Google request body:', JSON.stringify(requestBody, null, 2));
   
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${agentConfig.model}:generateContent?key=${googleApiKey}`, {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${googleApiKey}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
