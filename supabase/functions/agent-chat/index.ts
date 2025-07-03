@@ -1,4 +1,5 @@
 
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -115,7 +116,7 @@ serve(async (req) => {
     try {
       console.log('Calling AI provider for model:', agentConfig.model);
       
-      if (agentConfig.model.includes('gpt') || agentConfig.model.includes('o3') || agentConfig.model.includes('o4')) {
+      if (agentConfig.model.includes('gpt') || agentConfig.model.includes('o1') || agentConfig.model.includes('o3') || agentConfig.model.includes('o4')) {
         console.log('Using OpenAI API');
         aiResponse = await callOpenAI(agentConfig, user_message);
         tokensUsed = aiResponse.usage?.total_tokens || 0;
@@ -126,7 +127,7 @@ serve(async (req) => {
       } else if (agentConfig.model.includes('gemini') || agentConfig.model.includes('google')) {
         console.log('Using Google API');
         aiResponse = await callGemini(agentConfig, user_message);
-        tokensUsed = aiResponse.usage?.total_tokens || 0;
+        tokensUsed = aiResponse.usageMetadata?.totalTokenCount || 0;
       } else {
         console.log('Unknown model, defaulting to OpenAI');
         aiResponse = await callOpenAI(agentConfig, user_message);
@@ -232,14 +233,16 @@ async function callOpenAI(agentConfig: any, userMessage: string) {
   
   console.log('Making OpenAI API call with model:', agentConfig.model);
   
-  // Map model names correctly for OpenAI
+  // Map model names to available OpenAI models
   let modelName = agentConfig.model;
   if (agentConfig.model === 'gpt-4.1-2025-04-14') {
-    modelName = 'gpt-4o'; // Use available model
+    modelName = 'gpt-4o';
   } else if (agentConfig.model === 'o3-2025-04-16') {
-    modelName = 'gpt-4o'; // Map to available model for now
+    modelName = 'gpt-4o';
   } else if (agentConfig.model === 'o4-mini-2025-04-16') {
-    modelName = 'gpt-4o-mini'; // Map to available model
+    modelName = 'gpt-4o-mini';
+  } else if (!agentConfig.model.startsWith('gpt-')) {
+    modelName = 'gpt-4o-mini'; // Default fallback
   }
   
   const requestBody = {
@@ -286,16 +289,14 @@ async function callClaude(agentConfig: any, userMessage: string) {
   
   console.log('Making Anthropic API call with model:', agentConfig.model);
   
-  // Map model names correctly for Claude
+  // Map model names to available Claude models
   let modelName = agentConfig.model;
   if (agentConfig.model === 'claude-opus-4-20250514') {
-    modelName = 'claude-3-5-sonnet-20241022'; // Use available model
-  } else if (agentConfig.model === 'claude-sonnet-4-20250514') {
-    modelName = 'claude-3-5-sonnet-20241022'; // Use available model  
-  } else if (agentConfig.model === 'claude-3-5-haiku-20241022') {
-    modelName = 'claude-3-5-haiku-20241022';
-  } else if (agentConfig.model === 'claude-3-5-sonnet-20241022') {
     modelName = 'claude-3-5-sonnet-20241022';
+  } else if (agentConfig.model === 'claude-sonnet-4-20250514') {
+    modelName = 'claude-3-5-sonnet-20241022';
+  } else if (!agentConfig.model.startsWith('claude-')) {
+    modelName = 'claude-3-5-haiku-20241022'; // Default fallback
   }
   
   const requestBody = {
@@ -343,15 +344,13 @@ async function callGemini(agentConfig: any, userMessage: string) {
   
   console.log('Making Google API call with model:', agentConfig.model);
   
-  // Map model names correctly for Gemini
+  // Map model names to available Gemini models
   let modelName = agentConfig.model;
-  if (agentConfig.model === 'gemini-1.5-pro-002' || agentConfig.model === 'gemini-1.5-pro') {
+  if (agentConfig.model === 'gemini-1.5-pro-002') {
     modelName = 'gemini-1.5-pro';
-  } else if (agentConfig.model === 'gemini-1.5-flash-002' || agentConfig.model === 'gemini-1.5-flash') {
+  } else if (agentConfig.model === 'gemini-1.5-flash-002') {
     modelName = 'gemini-1.5-flash';
-  } else if (agentConfig.model === 'gemini-1.0-pro') {
-    modelName = 'gemini-1.0-pro';
-  } else {
+  } else if (!agentConfig.model.startsWith('gemini-')) {
     modelName = 'gemini-1.5-flash'; // Default fallback
   }
   
@@ -394,7 +393,7 @@ async function callGemini(agentConfig: any, userMessage: string) {
 
 function extractResponseText(aiResponse: any, model: string): string {
   try {
-    if (model.includes('gpt') || model.includes('o3') || model.includes('o4')) {
+    if (model.includes('gpt') || model.includes('o1') || model.includes('o3') || model.includes('o4')) {
       return aiResponse.choices?.[0]?.message?.content || 'Erro ao processar resposta da OpenAI';
     } else if (model.includes('claude') || model.includes('anthropic')) {
       return aiResponse.content?.[0]?.text || 'Erro ao processar resposta do Claude';
@@ -407,3 +406,4 @@ function extractResponseText(aiResponse: any, model: string): string {
   
   return 'Erro ao processar resposta do modelo de IA';
 }
+
