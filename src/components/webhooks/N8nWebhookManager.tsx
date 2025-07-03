@@ -29,7 +29,7 @@ const N8nWebhookManager = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // URL base do endpoint webhook
-  const webhookEndpointUrl = `${window.location.origin.replace('https://', 'https://').replace('http://', 'https://')}/functions/v1/webhook-receiver`;
+  const webhookEndpointUrl = `https://llssfiurupclhpiaozug.supabase.co/functions/v1/webhook-receiver`;
 
   useEffect(() => {
     loadWebhookConfigs();
