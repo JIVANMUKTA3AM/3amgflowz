@@ -115,7 +115,7 @@ serve(async (req) => {
     try {
       console.log('Calling AI provider for model:', agentConfig.model);
       
-      if (agentConfig.model.includes('gpt') || agentConfig.model.includes('openai')) {
+      if (agentConfig.model.includes('gpt') || agentConfig.model.includes('o3') || agentConfig.model.includes('o4')) {
         console.log('Using OpenAI API');
         aiResponse = await callOpenAI(agentConfig, user_message);
         tokensUsed = aiResponse.usage?.total_tokens || 0;
@@ -232,12 +232,14 @@ async function callOpenAI(agentConfig: any, userMessage: string) {
   
   console.log('Making OpenAI API call with model:', agentConfig.model);
   
-  // Map model names correctly
+  // Map model names correctly for OpenAI
   let modelName = agentConfig.model;
-  if (agentConfig.model === 'gpt-4-omni') {
-    modelName = 'gpt-4o';
-  } else if (agentConfig.model === 'gpt-4.1-2025-04-14') {
-    modelName = 'gpt-4o'; // Fallback to available model
+  if (agentConfig.model === 'gpt-4.1-2025-04-14') {
+    modelName = 'gpt-4o'; // Use available model
+  } else if (agentConfig.model === 'o3-2025-04-16') {
+    modelName = 'o1-preview'; // Map to available reasoning model
+  } else if (agentConfig.model === 'o4-mini-2025-04-16') {
+    modelName = 'o1-mini'; // Map to available fast reasoning model
   }
   
   const requestBody = {
@@ -284,12 +286,12 @@ async function callClaude(agentConfig: any, userMessage: string) {
   
   console.log('Making Anthropic API call with model:', agentConfig.model);
   
-  // Map model names correctly
+  // Map model names correctly for Claude
   let modelName = agentConfig.model;
   if (agentConfig.model === 'claude-opus-4-20250514') {
-    modelName = 'claude-3-5-sonnet-20241022'; // Fallback to available model
+    modelName = 'claude-3-5-sonnet-20241022'; // Use available model
   } else if (agentConfig.model === 'claude-sonnet-4-20250514') {
-    modelName = 'claude-3-5-sonnet-20241022'; // Fallback to available model
+    modelName = 'claude-3-5-sonnet-20241022'; // Use available model  
   }
   
   const requestBody = {
@@ -376,7 +378,7 @@ async function callGemini(agentConfig: any, userMessage: string) {
 
 function extractResponseText(aiResponse: any, model: string): string {
   try {
-    if (model.includes('gpt') || model.includes('openai')) {
+    if (model.includes('gpt') || model.includes('o3') || model.includes('o4')) {
       return aiResponse.choices?.[0]?.message?.content || 'Erro ao processar resposta da OpenAI';
     } else if (model.includes('claude') || model.includes('anthropic')) {
       return aiResponse.content?.[0]?.text || 'Erro ao processar resposta do Claude';
