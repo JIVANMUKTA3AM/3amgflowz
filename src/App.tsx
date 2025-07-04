@@ -13,6 +13,7 @@ import RoleBasedRouter from "@/components/RoleBasedRouter";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
+import AdminWebhooks from "@/pages/AdminWebhooks";
 import Onboarding from "@/pages/Onboarding";
 import TestChat from "@/pages/TestChat";
 import ClientDashboard from "@/pages/ClientDashboard";
@@ -56,6 +57,13 @@ const App = () => (
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <RoleBasedRouter />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin-webhooks" element={
+              <ProtectedRoute>
+                <AdminRoute>
+                  <AdminWebhooks />
+                </AdminRoute>
               </ProtectedRoute>
             } />
             

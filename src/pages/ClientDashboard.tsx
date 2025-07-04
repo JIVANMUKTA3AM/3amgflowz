@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { BarChart3, MessageCircle, Users, Settings, Webhook } from "lucide-react";
+import { BarChart3, MessageCircle, Users, Settings } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClientHeader from "@/components/client/ClientHeader";
 import MetricsCards from "@/components/client/MetricsCards";
@@ -9,7 +9,6 @@ import ChannelsOverview from "@/components/client/ChannelsOverview";
 import ChatTab from "@/components/client/ChatTab";
 import LogsTab from "@/components/client/LogsTab";
 import SettingsTab from "@/components/client/SettingsTab";
-import WebhooksTab from "@/components/client/WebhooksTab";
 
 const ClientDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -75,7 +74,7 @@ const ClientDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur-sm shadow-lg border border-white/50">
+          <TabsList className="grid w-full grid-cols-4 bg-white/80 backdrop-blur-sm shadow-lg border border-white/50">
             <TabsTrigger 
               value="overview" 
               className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
@@ -96,13 +95,6 @@ const ClientDashboard = () => {
             >
               <Users className="h-4 w-4" />
               Conversas
-            </TabsTrigger>
-            <TabsTrigger 
-              value="webhooks" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
-            >
-              <Webhook className="h-4 w-4" />
-              Webhooks
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
@@ -131,10 +123,6 @@ const ClientDashboard = () => {
               conversations={mockConversations} 
               configurations={mockConfigurations} 
             />
-          </TabsContent>
-
-          <TabsContent value="webhooks" className="mt-8">
-            <WebhooksTab />
           </TabsContent>
 
           <TabsContent value="settings" className="mt-8">
