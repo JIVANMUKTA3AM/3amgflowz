@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSimpleUserProfile } from "@/hooks/useSimpleUserProfile";
@@ -37,14 +36,31 @@ const UserMenu = () => {
   const handleSignOut = async () => {
     try {
       console.log('Iniciando logout...');
+      
+      // Primeiro limpar o estado local
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Executar logout no Supabase
       await signOut();
+      
       console.log('Logout realizado com sucesso');
-      // Forçar redirecionamento para a página de login
-      window.location.href = "/auth";
+      
+      // Forçar redirecionamento após um pequeno delay
+      setTimeout(() => {
+        window.location.href = "/auth";
+      }, 100);
+      
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
-      // Mesmo com erro, tentar redirecionar
-      window.location.href = "/auth";
+      
+      // Mesmo com erro, limpar storage e redirecionar
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      setTimeout(() => {
+        window.location.href = "/auth";
+      }, 100);
     }
   };
 
@@ -117,10 +133,10 @@ const UserMenu = () => {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Badge className={getRoleColor(displayProfile.user_role_type || 'geral')} variant="secondary">
+                <Badge className={`${displayProfile.user_role_type === 'admin' ? 'bg-red-100 text-red-800' : displayProfile.user_role_type === 'tecnico' ? 'bg-blue-100 text-blue-800' : displayProfile.user_role_type === 'comercial' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`} variant="secondary">
                   {(displayProfile.user_role_type || 'geral').charAt(0).toUpperCase() + (displayProfile.user_role_type || 'geral').slice(1)}
                 </Badge>
-                <Badge className={getPlanColor(displayProfile.plan)} variant="secondary">
+                <Badge className={`${displayProfile.plan === 'enterprise' ? 'bg-purple-100 text-purple-800' : displayProfile.plan === 'premium' ? 'bg-yellow-100 text-yellow-800' : displayProfile.plan === 'basic' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`} variant="secondary">
                   {displayProfile.plan.charAt(0).toUpperCase() + displayProfile.plan.slice(1)}
                 </Badge>
               </div>
@@ -158,7 +174,7 @@ const UserMenu = () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem 
             onClick={handleSignOut} 
-            className="text-red-600 focus:text-red-600 focus:bg-red-50 font-medium"
+            className="text-red-600 focus:text-red-600 focus:bg-red-50 font-medium cursor-pointer"
           >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Sair (Trocar Usuário)</span>

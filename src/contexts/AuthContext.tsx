@@ -97,20 +97,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null);
       setSession(null);
       
-      // Executar logout no Supabase
-      const { error } = await supabase.auth.signOut();
+      // Executar logout no Supabase com configuração explícita
+      const { error } = await supabase.auth.signOut({
+        scope: 'global' // Força logout em todas as sessões
+      });
       
       if (error) {
         console.error('Erro no logout do Supabase:', error);
+        throw error;
       } else {
         console.log('Logout do Supabase realizado com sucesso');
       }
       
-      // Limpar localStorage se necessário
-      localStorage.removeItem('supabase.auth.token');
-      
     } catch (error) {
       console.error('Erro durante o logout:', error);
+      throw error;
     }
   };
 
