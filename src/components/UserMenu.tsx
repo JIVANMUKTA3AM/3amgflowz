@@ -75,6 +75,7 @@ const UserMenu = () => {
   const displayProfile = profile || {
     first_name: user.email?.split('@')[0] || 'Usuário',
     last_name: '',
+    avatar_url: undefined,
     user_role_type: 'geral',
     plan: 'free',
     role: 'user'

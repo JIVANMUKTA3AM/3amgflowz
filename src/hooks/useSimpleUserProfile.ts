@@ -43,6 +43,7 @@ export const useSimpleUserProfile = () => {
             id: user.id,
             first_name: user.email?.split('@')[0] || 'Usuário',
             last_name: '',
+            avatar_url: undefined,
             user_role_type: 'geral',
             plan: 'free',
             role: 'user'
@@ -53,6 +54,7 @@ export const useSimpleUserProfile = () => {
             id: profileData.id,
             first_name: user.email?.split('@')[0] || 'Usuário',
             last_name: '',
+            avatar_url: undefined,
             user_role_type: profileData.user_role_type || 'geral',
             plan: profileData.plan || 'free',
             role: profileData.role || 'user'
@@ -65,6 +67,7 @@ export const useSimpleUserProfile = () => {
           id: user.id,
           first_name: user.email?.split('@')[0] || 'Usuário',
           last_name: '',
+          avatar_url: undefined,
           user_role_type: 'geral',
           plan: 'free',
           role: 'user'
