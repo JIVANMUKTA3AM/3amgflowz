@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CheckCircle, Loader2, MessageCircle, Users, Router, Webhook, Zap } from "lucide-react";
+import { ArrowLeft, CheckCircle, Loader2, MessageCircle, Webhook, Zap, Send } from "lucide-react";
 import { OnboardingData } from "./OnboardingWizard";
 import { toast } from "@/components/ui/use-toast";
 
@@ -18,15 +18,13 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
 
   const serviceIcons = {
     whatsapp: MessageCircle,
-    crm: Users,
-    olt: Router,
+    telegram: Send,
     webhook: Webhook
   };
 
   const serviceNames = {
     whatsapp: 'WhatsApp Business',
-    crm: 'CRM Integration',
-    olt: 'OLT Management',
+    telegram: 'Telegram Bot',
     webhook: 'Webhooks & APIs'
   };
 
@@ -97,7 +95,7 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
           Revisão e Ativação
         </CardTitle>
         <p className="text-gray-600">
-          Revise suas configurações e ative suas automações
+          Revise suas configurações e ative suas automations
         </p>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
@@ -141,50 +139,25 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
           </Card>
         )}
 
-        {/* CRM Config */}
-        {onboardingData.selectedServices.includes('crm') && onboardingData.crmConfig && (
+        {/* Telegram Config */}
+        {onboardingData.selectedServices.includes('telegram') && onboardingData.telegramConfig && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-blue-800">
-                <Users className="w-5 h-5" />
-                CRM Integration
+                <Send className="w-5 h-5" />
+                Telegram Bot
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="font-medium">Tipo:</span>
-                  <p className="text-gray-600">{onboardingData.crmConfig.type || 'Não selecionado'}</p>
+                  <span className="font-medium">Bot Token:</span>
+                  <p className="text-gray-600">{onboardingData.telegramConfig.botToken ? '••••••••' : 'Não configurado'}</p>
                 </div>
                 <div>
-                  <span className="font-medium">Domínio:</span>
-                  <p className="text-gray-600">{onboardingData.crmConfig.domain || 'Não configurado'}</p>
+                  <span className="font-medium">Bot Username:</span>
+                  <p className="text-gray-600">{onboardingData.telegramConfig.botUsername || 'Não configurado'}</p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* OLT Configs */}
-        {onboardingData.selectedServices.includes('olt') && onboardingData.oltConfigs && onboardingData.oltConfigs.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-800">
-                <Router className="w-5 h-5" />
-                OLTs Configuradas ({onboardingData.oltConfigs.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {onboardingData.oltConfigs.map((olt, index) => (
-                  <div key={olt.id || index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium">{olt.name || `OLT ${index + 1}`}</p>
-                      <p className="text-sm text-gray-600">{olt.brand} {olt.model} - {olt.ipAddress || olt.ip}</p>
-                    </div>
-                    <Badge variant="outline">{olt.brand}</Badge>
-                  </div>
-                ))}
               </div>
             </CardContent>
           </Card>
