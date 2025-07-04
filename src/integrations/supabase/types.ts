@@ -124,6 +124,7 @@ export type Database = {
           is_active: boolean
           last_sync_at: string | null
           settings: Json | null
+          telegram_config: Json | null
           updated_at: string
           webhook_endpoints: Json | null
         }
@@ -137,6 +138,7 @@ export type Database = {
           is_active?: boolean
           last_sync_at?: string | null
           settings?: Json | null
+          telegram_config?: Json | null
           updated_at?: string
           webhook_endpoints?: Json | null
         }
@@ -150,6 +152,7 @@ export type Database = {
           is_active?: boolean
           last_sync_at?: string | null
           settings?: Json | null
+          telegram_config?: Json | null
           updated_at?: string
           webhook_endpoints?: Json | null
         }
@@ -901,6 +904,39 @@ export type Database = {
           stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      telegram_configurations: {
+        Row: {
+          bot_token: string
+          bot_username: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          updated_at: string
+          user_id: string
+          webhook_url: string | null
+        }
+        Insert: {
+          bot_token: string
+          bot_username?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id: string
+          webhook_url?: string | null
+        }
+        Update: {
+          bot_token?: string
+          bot_username?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          user_id?: string
+          webhook_url?: string | null
         }
         Relationships: []
       }

@@ -1,31 +1,18 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle, ArrowRight, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { useProfile } from "@/hooks/useProfile";
-import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
+import { useState } from "react";
 import ServiceSelection from "./ServiceSelection";
-import AgentConfiguration from "./AgentConfiguration";
-import IntegrationsSetup from "./IntegrationsSetup";
-import FinalActivation from "./FinalActivation";
+import IntegrationsConfig from "./IntegrationsConfig";
 
 export interface OnboardingData {
   selectedServices: string[];
-  agentConfigs: {
-    atendimento?: any;
-    tecnico?: any;
-    comercial?: any;
-  };
-  integrations: {
-    whatsapp?: any;
-    oltConfig?: any[];
-  };
   whatsappConfig?: {
     phoneNumberId?: string;
     accessToken?: string;
+    webhookUrl?: string;
+    verifyToken?: string;
+  };
+  telegramConfig?: {
+    botToken?: string;
+    botUsername?: string;
     webhookUrl?: string;
   };
   crmConfig?: {
@@ -37,229 +24,61 @@ export interface OnboardingData {
     url?: string;
     secret?: string;
   };
-  oltConfigs?: Array<{
-    id?: string;
-    name?: string;
-    brand?: string;
-    model?: string;
-    ipAddress?: string;
-    ip?: string;
-    username?: string;
-    password?: string;
-  }>;
+  agentConfigs: {
+    atendimento: boolean;
+    comercial: boolean;
+    suporte_tecnico: boolean;
+  };
+  oltConfigs?: any[];
 }
 
 const OnboardingWizard = () => {
-  const { user } = useAuth();
-  const { profile, updateProfile } = useProfile();
-  const { config, saveConfig, completeOnboarding } = useOnboardingConfig();
-  const navigate = useNavigate();
-  
-  const [currentStep, setCurrentStep] = useState(1);
-  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [step, setStep] = useState(1);
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     selectedServices: [],
-    agentConfigs: {},
-    integrations: {}
+    agentConfigs: {
+      atendimento: false,
+      comercial: false,
+      suporte_tecnico: false,
+    },
   });
 
-  // Carregar dados salvos quando disponível
-  useEffect(() => {
-    if (config) {
-      setOnboardingData({
-        selectedServices: config.selected_services || [],
-        agentConfigs: config.agent_configs || {},
-        integrations: {
-          whatsapp: config.whatsapp_config,
-          oltConfig: config.olt_configs
-        },
-        whatsappConfig: config.whatsapp_config,
-        crmConfig: config.crm_config,
-        webhookConfig: config.webhook_config,
-        oltConfigs: config.olt_configs
-      });
-    }
-  }, [config]);
-
-  const steps = [
-    { id: 1, title: "Serviços", description: "Escolha os agentes que deseja ativar" },
-    { id: 2, title: "Configuração", description: "Configure seus agentes de IA" },
-    { id: 3, title: "Integrações", description: "Configure WhatsApp e OLTs" },
-    { id: 4, title: "Ativação", description: "Revisar e ativar automações" }
-  ];
-
-  const totalSteps = steps.length;
-  const progress = (currentStep / totalSteps) * 100;
-
   const handleNext = () => {
-    if (currentStep < totalSteps) {
-      // Salvar dados antes de avançar
-      saveConfig({
-        selected_services: onboardingData.selectedServices,
-        agent_configs: onboardingData.agentConfigs,
-        whatsapp_config: onboardingData.whatsappConfig,
-        crm_config: onboardingData.crmConfig,
-        webhook_config: onboardingData.webhookConfig,
-        olt_configs: onboardingData.oltConfigs,
-        is_completed: false
-      });
-
-      setCompletedSteps([...completedSteps, currentStep]);
-      setCurrentStep(currentStep + 1);
-    }
+    setStep((prev) => prev + 1);
   };
 
   const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    setStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const updateOnboardingData = (data: Partial<OnboardingData>) => {
-    setOnboardingData(prev => ({ ...prev, ...data }));
-  };
-
-  const handleComplete = async () => {
-    try {
-      // Completar onboarding no banco
-      await completeOnboarding({
-        selected_services: onboardingData.selectedServices,
-        agent_configs: onboardingData.agentConfigs,
-        whatsapp_config: onboardingData.whatsappConfig,
-        crm_config: onboardingData.crmConfig,
-        webhook_config: onboardingData.webhookConfig,
-        olt_configs: onboardingData.oltConfigs
-      });
-
-      // Atualizar perfil para marcar onboarding como completo
-      await updateProfile({
-        agent_settings: {
-          ...profile?.agent_settings,
-          onboarding_completed: true,
-          configured_services: onboardingData.selectedServices,
-          setup_date: new Date().toISOString()
-        }
-      });
-
-      // Redirecionar para dashboard do cliente
-      navigate("/client-dashboard");
-    } catch (error) {
-      console.error("Erro ao completar onboarding:", error);
-    }
-  };
-
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <ServiceSelection
-            selectedServices={onboardingData.selectedServices}
-            onUpdate={(services) => updateOnboardingData({ selectedServices: services })}
-            onNext={handleNext}
-          />
-        );
-      case 2:
-        return (
-          <AgentConfiguration
-            selectedServices={onboardingData.selectedServices}
-            agentConfigs={onboardingData.agentConfigs}
-            onUpdate={(configs) => updateOnboardingData({ agentConfigs: configs })}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
-        );
-      case 3:
-        return (
-          <IntegrationsSetup
-            selectedServices={onboardingData.selectedServices}
-            integrations={onboardingData.integrations}
-            onUpdate={(integrations) => updateOnboardingData({ 
-              integrations,
-              whatsappConfig: integrations.whatsapp,
-              oltConfigs: integrations.oltConfig 
-            })}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-          />
-        );
-      case 4:
-        return (
-          <FinalActivation
-            onboardingData={onboardingData}
-            onComplete={handleComplete}
-            onPrevious={handlePrevious}
-          />
-        );
-      default:
-        return null;
-    }
+  const handleUpdate = (data: Partial<OnboardingData>) => {
+    setOnboardingData((prev) => ({
+      ...prev,
+      ...data,
+    }));
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            Bem-vindo ao AgentFlow!
-          </h1>
-          <p className="text-xl text-gray-600 mb-4">
-            Vamos configurar sua plataforma em alguns passos simples
-          </p>
-          <div className="flex justify-center">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/test-chat')}
-              className="gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700"
-            >
-              🧪 Testar Chat com IA
-            </Button>
-          </div>
-        </div>
+    <>
+      {step === 1 && (
+        <ServiceSelection
+          selectedServices={onboardingData.selectedServices}
+          onServicesChange={(services) => handleUpdate({ selectedServices: services })}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+        />
+      )}
 
-        {/* Progress */}
-        <Card className="mb-8 border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-gray-600">
-                Etapa {currentStep} de {totalSteps}
-              </span>
-              <span className="text-sm font-medium text-blue-600">
-                {Math.round(progress)}% concluído
-              </span>
-            </div>
-            <Progress value={progress} className="mb-6" />
-            
-            <div className="flex items-center justify-between">
-              {steps.map((step) => (
-                <div key={step.id} className="flex flex-col items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium mb-2 transition-all duration-300 ${
-                    completedSteps.includes(step.id) 
-                      ? 'bg-green-500 text-white' 
-                      : currentStep === step.id 
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
-                        : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {completedSteps.includes(step.id) ? (
-                      <CheckCircle className="w-5 h-5" />
-                    ) : (
-                      step.id
-                    )}
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-gray-900">{step.title}</p>
-                    <p className="text-xs text-gray-500 max-w-20">{step.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Step Content */}
-        {renderStepContent()}
-      </div>
-    </div>
+      {step === 2 && (
+        <IntegrationsConfig
+          selectedServices={onboardingData.selectedServices}
+          onboardingData={onboardingData}
+          onUpdate={handleUpdate}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+        />
+      )}
+    </>
   );
 };
 

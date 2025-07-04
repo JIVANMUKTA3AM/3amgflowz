@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, ArrowLeft, MessageCircle, Users, Webhook } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageCircle, Users, Webhook, Send } from "lucide-react";
 import { OnboardingData } from "./OnboardingWizard";
 
 interface IntegrationsConfigProps {
@@ -18,12 +18,14 @@ interface IntegrationsConfigProps {
 
 const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext, onPrevious }: IntegrationsConfigProps) => {
   const [whatsappConfig, setWhatsappConfig] = useState(onboardingData.whatsappConfig || {});
+  const [telegramConfig, setTelegramConfig] = useState(onboardingData.telegramConfig || {});
   const [crmConfig, setCrmConfig] = useState(onboardingData.crmConfig || {});
   const [webhookConfig, setWebhookConfig] = useState(onboardingData.webhookConfig || {});
 
   const handleNext = () => {
     onUpdate({
       whatsappConfig,
+      telegramConfig,
       crmConfig,
       webhookConfig
     });
@@ -67,14 +69,64 @@ const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext
             placeholder="URL do webhook para receber mensagens"
           />
         </div>
+        <div>
+          <Label htmlFor="wa-verify-token">Webhook Verify Token</Label>
+          <Input
+            id="wa-verify-token"
+            value={whatsappConfig.verifyToken || ''}
+            onChange={(e) => setWhatsappConfig({...whatsappConfig, verifyToken: e.target.value})}
+            placeholder="Token para verificação do webhook"
+          />
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const renderTelegramConfig = () => (
+    <Card className="mb-6">
+      <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-t-lg">
+        <CardTitle className="flex items-center gap-2 text-blue-800">
+          <Send className="w-5 h-5" />
+          Telegram Bot
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6 space-y-4">
+        <div>
+          <Label htmlFor="tg-token">Bot Token</Label>
+          <Input
+            id="tg-token"
+            type="password"
+            value={telegramConfig.botToken || ''}
+            onChange={(e) => setTelegramConfig({...telegramConfig, botToken: e.target.value})}
+            placeholder="Token do seu bot do Telegram"
+          />
+        </div>
+        <div>
+          <Label htmlFor="tg-username">Nome do Bot (opcional)</Label>
+          <Input
+            id="tg-username"
+            value={telegramConfig.botUsername || ''}
+            onChange={(e) => setTelegramConfig({...telegramConfig, botUsername: e.target.value})}
+            placeholder="@meubot"
+          />
+        </div>
+        <div>
+          <Label htmlFor="tg-webhook">Webhook URL</Label>
+          <Input
+            id="tg-webhook"
+            value={telegramConfig.webhookUrl || ''}
+            onChange={(e) => setTelegramConfig({...telegramConfig, webhookUrl: e.target.value})}
+            placeholder="URL do webhook para receber mensagens do Telegram"
+          />
+        </div>
       </CardContent>
     </Card>
   );
 
   const renderCRMConfig = () => (
     <Card className="mb-6">
-      <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg">
-        <CardTitle className="flex items-center gap-2 text-blue-800">
+      <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-t-lg">
+        <CardTitle className="flex items-center gap-2 text-purple-800">
           <Users className="w-5 h-5" />
           CRM Integration
         </CardTitle>
@@ -91,28 +143,41 @@ const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext
               <SelectItem value="rdstation">RD Station</SelectItem>
               <SelectItem value="hubspot">HubSpot</SelectItem>
               <SelectItem value="salesforce">Salesforce</SelectItem>
+              <SelectItem value="interno">CRM Interno (Recomendado)</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        <div>
-          <Label htmlFor="crm-api-key">API Key</Label>
-          <Input
-            id="crm-api-key"
-            type="password"
-            value={crmConfig.apiKey || ''}
-            onChange={(e) => setCrmConfig({...crmConfig, apiKey: e.target.value})}
-            placeholder="Sua API Key do CRM"
-          />
-        </div>
-        <div>
-          <Label htmlFor="crm-domain">Domínio/URL Base</Label>
-          <Input
-            id="crm-domain"
-            value={crmConfig.domain || ''}
-            onChange={(e) => setCrmConfig({...crmConfig, domain: e.target.value})}
-            placeholder="ex: suaempresa.pipedrive.com"
-          />
-        </div>
+        {crmConfig.type && crmConfig.type !== 'interno' && (
+          <>
+            <div>
+              <Label htmlFor="crm-api-key">API Key</Label>
+              <Input
+                id="crm-api-key"
+                type="password"
+                value={crmConfig.apiKey || ''}
+                onChange={(e) => setCrmConfig({...crmConfig, apiKey: e.target.value})}
+                placeholder="Sua API Key do CRM"
+              />
+            </div>
+            <div>
+              <Label htmlFor="crm-domain">Domínio/URL Base</Label>
+              <Input
+                id="crm-domain"
+                value={crmConfig.domain || ''}
+                onChange={(e) => setCrmConfig({...crmConfig, domain: e.target.value})}
+                placeholder="ex: suaempresa.pipedrive.com"
+              />
+            </div>
+          </>
+        )}
+        {crmConfig.type === 'interno' && (
+          <div className="p-4 bg-green-50 rounded-lg">
+            <p className="text-sm text-green-700">
+              ✅ Usando CRM interno - Todos os dados ficam no seu banco de dados do Supabase.
+              Sem necessidade de configurações adicionais!
+            </p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
@@ -161,6 +226,7 @@ const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext
       </CardHeader>
       <CardContent className="p-6">
         {selectedServices.includes('whatsapp') && renderWhatsAppConfig()}
+        {selectedServices.includes('telegram') && renderTelegramConfig()}
         {selectedServices.includes('crm') && renderCRMConfig()}
         {selectedServices.includes('webhook') && renderWebhookConfig()}
 
