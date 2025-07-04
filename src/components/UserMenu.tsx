@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useSimpleUserProfile } from "@/hooks/useSimpleUserProfile";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -29,7 +29,7 @@ import {
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
-  const { profile } = useUserProfile();
+  const { profile, isLoading } = useSimpleUserProfile();
   const navigate = useNavigate();
   const [showProfileDialog, setShowProfileDialog] = useState(false);
   const [showOrgDialog, setShowOrgDialog] = useState(false);
@@ -68,17 +68,27 @@ const UserMenu = () => {
     }
   };
 
-  if (!user || !profile) return null;
+  // Sempre mostrar o menu, mesmo se não tiver perfil carregado
+  if (!user) return null;
+
+  // Dados de fallback se o perfil não carregar
+  const displayProfile = profile || {
+    first_name: user.email?.split('@')[0] || 'Usuário',
+    last_name: '',
+    user_role_type: 'geral',
+    plan: 'free',
+    role: 'user'
+  };
 
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={profile.avatar_url} alt={profile.first_name} />
-              <AvatarFallback>
-                {profile.first_name?.[0]}{profile.last_name?.[0]}
+            <Avatar className="h-10 w-10 border-2 border-blue-200">
+              <AvatarImage src={displayProfile.avatar_url} alt={displayProfile.first_name} />
+              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+                {displayProfile.first_name?.[0]}{displayProfile.last_name?.[0] || user.email?.[1]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </Button>
@@ -87,30 +97,30 @@ const UserMenu = () => {
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-2">
               <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src={profile.avatar_url} alt={profile.first_name} />
-                  <AvatarFallback>
-                    {profile.first_name?.[0]}{profile.last_name?.[0]}
+                <Avatar className="h-12 w-12 border-2 border-blue-200">
+                  <AvatarImage src={displayProfile.avatar_url} alt={displayProfile.first_name} />
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+                    {displayProfile.first_name?.[0]}{displayProfile.last_name?.[0] || user.email?.[1]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <p className="text-sm font-medium leading-none">
-                    {profile.first_name} {profile.last_name}
+                    {displayProfile.first_name} {displayProfile.last_name}
                   </p>
                   <p className="text-xs leading-none text-muted-foreground mt-1">
                     {user.email}
                   </p>
-                  <p className="text-xs text-blue-600 mt-1">
+                  <p className="text-xs text-blue-600 mt-1 font-medium">
                     Usuário atual: {user.email}
                   </p>
                 </div>
               </div>
               <div className="flex gap-2">
-                <Badge className={getRoleColor(profile.user_role_type || 'geral')} variant="secondary">
-                  {(profile.user_role_type || 'geral').charAt(0).toUpperCase() + (profile.user_role_type || 'geral').slice(1)}
+                <Badge className={getRoleColor(displayProfile.user_role_type || 'geral')} variant="secondary">
+                  {(displayProfile.user_role_type || 'geral').charAt(0).toUpperCase() + (displayProfile.user_role_type || 'geral').slice(1)}
                 </Badge>
-                <Badge className={getPlanColor(profile.plan)} variant="secondary">
-                  {profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1)}
+                <Badge className={getPlanColor(displayProfile.plan)} variant="secondary">
+                  {displayProfile.plan.charAt(0).toUpperCase() + displayProfile.plan.slice(1)}
                 </Badge>
               </div>
             </div>
@@ -127,7 +137,7 @@ const UserMenu = () => {
             <span>Organizações</span>
           </DropdownMenuItem>
           
-          {(profile.role === 'admin' || profile.user_role_type === 'admin') && (
+          {(displayProfile.role === 'admin' || displayProfile.user_role_type === 'admin') && (
             <DropdownMenuItem onClick={() => navigate("/subscription-management")}>
               <Crown className="mr-2 h-4 w-4" />
               <span>Painel Admin</span>
@@ -145,7 +155,10 @@ const UserMenu = () => {
           </DropdownMenuItem>
           
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600">
+          <DropdownMenuItem 
+            onClick={handleSignOut} 
+            className="text-red-600 focus:text-red-600 focus:bg-red-50 font-medium"
+          >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Sair (Trocar Usuário)</span>
           </DropdownMenuItem>
