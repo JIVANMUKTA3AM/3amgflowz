@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, ArrowLeft, MessageCircle, Users, Webhook, Send, Database } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageCircle, Webhook, Send, Database } from "lucide-react";
 
 interface ServiceSelectionProps {
   selectedServices: string[];
@@ -27,13 +27,6 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       description: 'Configure um bot no Telegram para atendimento automático',
       icon: <Send className="w-8 h-8 text-blue-600" />,
       popular: true
-    },
-    {
-      id: 'crm',
-      name: 'CRM Integrado',
-      description: 'Use nosso CRM interno ou conecte com seu CRM externo',
-      icon: <Users className="w-8 h-8 text-purple-600" />,
-      popular: false
     },
     {
       id: 'webhook',

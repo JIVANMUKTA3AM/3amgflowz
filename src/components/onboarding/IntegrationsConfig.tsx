@@ -4,8 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, ArrowLeft, MessageCircle, Users, Webhook, Send } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageCircle, Webhook, Send } from "lucide-react";
 import { OnboardingData } from "./OnboardingWizard";
 
 interface IntegrationsConfigProps {
@@ -19,14 +18,12 @@ interface IntegrationsConfigProps {
 const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext, onPrevious }: IntegrationsConfigProps) => {
   const [whatsappConfig, setWhatsappConfig] = useState(onboardingData.whatsappConfig || {});
   const [telegramConfig, setTelegramConfig] = useState(onboardingData.telegramConfig || {});
-  const [crmConfig, setCrmConfig] = useState(onboardingData.crmConfig || {});
   const [webhookConfig, setWebhookConfig] = useState(onboardingData.webhookConfig || {});
 
   const handleNext = () => {
     onUpdate({
       whatsappConfig,
       telegramConfig,
-      crmConfig,
       webhookConfig
     });
     onNext();
@@ -123,65 +120,6 @@ const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext
     </Card>
   );
 
-  const renderCRMConfig = () => (
-    <Card className="mb-6">
-      <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-t-lg">
-        <CardTitle className="flex items-center gap-2 text-purple-800">
-          <Users className="w-5 h-5" />
-          CRM Integration
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6 space-y-4">
-        <div>
-          <Label htmlFor="crm-type">Tipo de CRM</Label>
-          <Select value={crmConfig.type || ''} onValueChange={(value) => setCrmConfig({...crmConfig, type: value})}>
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione o CRM" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="pipedrive">Pipedrive</SelectItem>
-              <SelectItem value="rdstation">RD Station</SelectItem>
-              <SelectItem value="hubspot">HubSpot</SelectItem>
-              <SelectItem value="salesforce">Salesforce</SelectItem>
-              <SelectItem value="interno">CRM Interno (Recomendado)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        {crmConfig.type && crmConfig.type !== 'interno' && (
-          <>
-            <div>
-              <Label htmlFor="crm-api-key">API Key</Label>
-              <Input
-                id="crm-api-key"
-                type="password"
-                value={crmConfig.apiKey || ''}
-                onChange={(e) => setCrmConfig({...crmConfig, apiKey: e.target.value})}
-                placeholder="Sua API Key do CRM"
-              />
-            </div>
-            <div>
-              <Label htmlFor="crm-domain">Domínio/URL Base</Label>
-              <Input
-                id="crm-domain"
-                value={crmConfig.domain || ''}
-                onChange={(e) => setCrmConfig({...crmConfig, domain: e.target.value})}
-                placeholder="ex: suaempresa.pipedrive.com"
-              />
-            </div>
-          </>
-        )}
-        {crmConfig.type === 'interno' && (
-          <div className="p-4 bg-green-50 rounded-lg">
-            <p className="text-sm text-green-700">
-              ✅ Usando CRM interno - Todos os dados ficam no seu banco de dados do Supabase.
-              Sem necessidade de configurações adicionais!
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-
   const renderWebhookConfig = () => (
     <Card className="mb-6">
       <CardHeader className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-t-lg">
@@ -227,7 +165,6 @@ const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext
       <CardContent className="p-6">
         {selectedServices.includes('whatsapp') && renderWhatsAppConfig()}
         {selectedServices.includes('telegram') && renderTelegramConfig()}
-        {selectedServices.includes('crm') && renderCRMConfig()}
         {selectedServices.includes('webhook') && renderWebhookConfig()}
 
         <div className="flex justify-between pt-6">

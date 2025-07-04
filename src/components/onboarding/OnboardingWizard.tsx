@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import ServiceSelection from "./ServiceSelection";
 import IntegrationsConfig from "./IntegrationsConfig";
@@ -14,11 +15,6 @@ export interface OnboardingData {
     botToken?: string;
     botUsername?: string;
     webhookUrl?: string;
-  };
-  crmConfig?: {
-    type?: string;
-    apiKey?: string;
-    domain?: string;
   };
   webhookConfig?: {
     url?: string;
