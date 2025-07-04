@@ -7,7 +7,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Activity, TrendingUp, Shield, Menu, X } from "lucide-react";
+import { Users, Activity, TrendingUp, Shield, Menu, X, Settings, Database, Webhook, Zap, Bot, MessageSquare, BarChart3, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import UserMenu from "@/components/UserMenu";
@@ -226,42 +226,186 @@ const Index = () => {
           </Card>
         </div>
 
+        {/* Seção de Acesso Rápido Expandida */}
         <Card className="mt-12 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle>Acesso Rápido</CardTitle>
+            <CardTitle>Acesso Rápido - Funcionalidades Principais</CardTitle>
             <CardDescription>
-              Links diretos para as principais funcionalidades
+              Links diretos para as principais funcionalidades administrativas
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Row 1 - Principais */}
               <button
-                onClick={() => navigate("/client-dashboard")}
-                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+                onClick={() => navigate("/admin-webhooks")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-blue-50 border-blue-200"
               >
-                <h3 className="font-semibold mb-2">Visão do Cliente</h3>
-                <p className="text-sm text-gray-600">
-                  Acesse a interface do cliente para testes
+                <div className="flex items-center gap-3 mb-2">
+                  <Zap className="h-5 w-5 text-blue-600" />
+                  <h3 className="font-semibold text-blue-800">🚀 Testar Agentes</h3>
+                </div>
+                <p className="text-sm text-blue-600">
+                  Configure e teste agentes com webhooks
                 </p>
               </button>
               
               <button
                 onClick={() => navigate("/dashboard")}
-                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-purple-50 border-purple-200"
               >
-                <h3 className="font-semibold mb-2">Dashboard Completo</h3>
-                <p className="text-sm text-gray-600">
+                <div className="flex items-center gap-3 mb-2">
+                  <BarChart3 className="h-5 w-5 text-purple-600" />
+                  <h3 className="font-semibold text-purple-800">Dashboard Completo</h3>
+                </div>
+                <p className="text-sm text-purple-600">
                   Acesse o painel administrativo completo
                 </p>
               </button>
-              
+
               <button
-                onClick={() => navigate("/admin-webhooks")}
-                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-blue-50 border-blue-200"
+                onClick={() => navigate("/client-dashboard")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-green-50 border-green-200"
               >
-                <h3 className="font-semibold mb-2 text-blue-800">🚀 Testar Agentes</h3>
-                <p className="text-sm text-blue-600">
-                  Configure e teste agentes com webhooks
+                <div className="flex items-center gap-3 mb-2">
+                  <Users className="h-5 w-5 text-green-600" />
+                  <h3 className="font-semibold text-green-800">Visão do Cliente</h3>
+                </div>
+                <p className="text-sm text-green-600">
+                  Acesse a interface do cliente para testes
+                </p>
+              </button>
+
+              {/* Row 2 - Gerenciamento */}
+              <button
+                onClick={() => navigate("/agentes")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Bot className="h-5 w-5 text-orange-600" />
+                  <h3 className="font-semibold">Gerenciar Agentes</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Configure e monitore agentes de IA
+                </p>
+              </button>
+
+              <button
+                onClick={() => navigate("/integracoes")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Webhook className="h-5 w-5 text-indigo-600" />
+                  <h3 className="font-semibold">Integrações</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Conecte com CRM, WhatsApp e outros serviços
+                </p>
+              </button>
+
+              <button
+                onClick={() => navigate("/fluxos")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Activity className="h-5 w-5 text-teal-600" />
+                  <h3 className="font-semibold">Fluxos & Automações</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Configure workflows e automações
+                </p>
+              </button>
+
+              {/* Row 3 - Configurações */}
+              <button
+                onClick={() => navigate("/database-management")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Database className="h-5 w-5 text-red-600" />
+                  <h3 className="font-semibold">Banco de Dados</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Gerenciar dados e configurações do sistema
+                </p>
+              </button>
+
+              <button
+                onClick={() => navigate("/test-chat")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <MessageSquare className="h-5 w-5 text-pink-600" />
+                  <h3 className="font-semibold">Chat de Teste</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Teste conversas com os agentes
+                </p>
+              </button>
+
+              <button
+                onClick={() => navigate("/subscription-management")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <CreditCard className="h-5 w-5 text-yellow-600" />
+                  <h3 className="font-semibold">Assinaturas</h3>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Gerenciar planos e cobranças
+                </p>
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Seção de Documentação e Suporte */}
+        <Card className="mt-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle>Documentação e Configurações Avançadas</CardTitle>
+            <CardDescription>
+              Acesse documentação técnica e configurações do sistema
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <button
+                onClick={() => navigate("/documentacao")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-gray-50"
+              >
+                <h3 className="font-semibold mb-2">📚 Documentação</h3>
+                <p className="text-sm text-gray-600">
+                  Guias e documentação técnica
+                </p>
+              </button>
+
+              <button
+                onClick={() => navigate("/arquitetura")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-gray-50"
+              >
+                <h3 className="font-semibold mb-2">🏗️ Arquitetura</h3>
+                <p className="text-sm text-gray-600">
+                  Visão geral da arquitetura do sistema
+                </p>
+              </button>
+
+              <button
+                onClick={() => navigate("/modelo-dados")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-gray-50"
+              >
+                <h3 className="font-semibold mb-2">🗃️ Modelo de Dados</h3>
+                <p className="text-sm text-gray-600">
+                  Estrutura do banco de dados
+                </p>
+              </button>
+
+              <button
+                onClick={() => navigate("/n8n-management")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-gray-50"
+              >
+                <h3 className="font-semibold mb-2">⚙️ N8N Management</h3>
+                <p className="text-sm text-gray-600">
+                  Gerenciar automações N8N
                 </p>
               </button>
             </div>
