@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CheckCircle, Loader2, MessageCircle, Webhook, Zap, Send } from "lucide-react";
+import { ArrowLeft, CheckCircle, Loader2, MessageCircle, Send, Users, Headphones, Wrench, Zap } from "lucide-react";
 import { OnboardingData } from "./OnboardingWizard";
 import { toast } from "@/components/ui/use-toast";
 
@@ -19,13 +19,17 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
   const serviceIcons = {
     whatsapp: MessageCircle,
     telegram: Send,
-    webhook: Webhook
+    atendimento: Users,
+    comercial: Headphones,
+    suporte_tecnico: Wrench
   };
 
   const serviceNames = {
     whatsapp: 'WhatsApp Business',
     telegram: 'Telegram Bot',
-    webhook: 'Webhooks & APIs'
+    atendimento: 'Atendimento Geral',
+    comercial: 'Comercial',
+    suporte_tecnico: 'Suporte Técnico'
   };
 
   const handleActivate = async () => {
@@ -95,7 +99,7 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
           Revisão e Ativação
         </CardTitle>
         <p className="text-gray-600">
-          Revise suas configurações e ative suas automations
+          Revise suas configurações e ative suas automações
         </p>
       </CardHeader>
       <CardContent className="p-6 space-y-6">
@@ -163,24 +167,6 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
           </Card>
         )}
 
-        {/* Webhook Config */}
-        {onboardingData.selectedServices.includes('webhook') && onboardingData.webhookConfig && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-orange-800">
-                <Webhook className="w-5 h-5" />
-                Webhook Configuration
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm">
-                <span className="font-medium">URL:</span>
-                <p className="text-gray-600">{onboardingData.webhookConfig.url || 'Não configurado'}</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Activation Info */}
         <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
           <CardContent className="p-6">
@@ -194,7 +180,7 @@ const ReviewAndActivate = ({ onboardingData, onPrevious }: ReviewAndActivateProp
                   <li>• Suas configurações serão salvas com segurança</li>
                   <li>• As automações n8n serão ativadas automaticamente</li>
                   <li>• Conexões com APIs serão testadas</li>
-                  <li>• Webhooks serão configurados</li>
+                  <li>• Agentes de IA serão configurados</li>
                   <li>• Você receberá acesso completo ao dashboard</li>
                 </ul>
               </div>

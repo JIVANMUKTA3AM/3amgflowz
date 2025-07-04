@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, ArrowLeft, MessageCircle, Webhook, Send } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageCircle, Send } from "lucide-react";
 import { OnboardingData } from "./OnboardingWizard";
 
 interface IntegrationsConfigProps {
@@ -18,16 +18,44 @@ interface IntegrationsConfigProps {
 const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext, onPrevious }: IntegrationsConfigProps) => {
   const [whatsappConfig, setWhatsappConfig] = useState(onboardingData.whatsappConfig || {});
   const [telegramConfig, setTelegramConfig] = useState(onboardingData.telegramConfig || {});
-  const [webhookConfig, setWebhookConfig] = useState(onboardingData.webhookConfig || {});
 
   const handleNext = () => {
     onUpdate({
       whatsappConfig,
-      telegramConfig,
-      webhookConfig
+      telegramConfig
     });
     onNext();
   };
+
+  const hasIntegrationsToConfig = selectedServices.includes('whatsapp') || selectedServices.includes('telegram');
+
+  // Se não há integrações para configurar, pula esta etapa
+  if (!hasIntegrationsToConfig) {
+    return (
+      <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
+        <CardContent className="p-6 text-center">
+          <p className="text-gray-600 mb-6">Nenhuma integração selecionada para configurar.</p>
+          <div className="flex justify-between">
+            <Button 
+              onClick={onPrevious}
+              variant="outline"
+              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Voltar
+            </Button>
+            <Button 
+              onClick={onNext}
+              className="bg-gradient-3amg hover:opacity-90 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
+            >
+              Continuar
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const renderWhatsAppConfig = () => (
     <Card className="mb-6">
@@ -120,38 +148,6 @@ const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext
     </Card>
   );
 
-  const renderWebhookConfig = () => (
-    <Card className="mb-6">
-      <CardHeader className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-t-lg">
-        <CardTitle className="flex items-center gap-2 text-orange-800">
-          <Webhook className="w-5 h-5" />
-          Webhook Configuration
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6 space-y-4">
-        <div>
-          <Label htmlFor="webhook-url">Webhook URL</Label>
-          <Input
-            id="webhook-url"
-            value={webhookConfig.url || ''}
-            onChange={(e) => setWebhookConfig({...webhookConfig, url: e.target.value})}
-            placeholder="https://sua-api.com/webhook"
-          />
-        </div>
-        <div>
-          <Label htmlFor="webhook-secret">Secret (opcional)</Label>
-          <Input
-            id="webhook-secret"
-            type="password"
-            value={webhookConfig.secret || ''}
-            onChange={(e) => setWebhookConfig({...webhookConfig, secret: e.target.value})}
-            placeholder="Secret para validação do webhook"
-          />
-        </div>
-      </CardContent>
-    </Card>
-  );
-
   return (
     <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
       <CardHeader className="bg-gradient-to-r from-3amg-purple/10 to-3amg-blue/10 rounded-t-lg">
@@ -165,7 +161,6 @@ const IntegrationsConfig = ({ selectedServices, onboardingData, onUpdate, onNext
       <CardContent className="p-6">
         {selectedServices.includes('whatsapp') && renderWhatsAppConfig()}
         {selectedServices.includes('telegram') && renderTelegramConfig()}
-        {selectedServices.includes('webhook') && renderWebhookConfig()}
 
         <div className="flex justify-between pt-6">
           <Button 

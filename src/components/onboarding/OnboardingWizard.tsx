@@ -2,6 +2,8 @@
 import { useState } from "react";
 import ServiceSelection from "./ServiceSelection";
 import IntegrationsConfig from "./IntegrationsConfig";
+import AgentConfiguration from "./AgentConfiguration";
+import ReviewAndActivate from "./ReviewAndActivate";
 
 export interface OnboardingData {
   selectedServices: string[];
@@ -16,16 +18,11 @@ export interface OnboardingData {
     botUsername?: string;
     webhookUrl?: string;
   };
-  webhookConfig?: {
-    url?: string;
-    secret?: string;
-  };
   agentConfigs: {
     atendimento: boolean;
     comercial: boolean;
     suporte_tecnico: boolean;
   };
-  oltConfigs?: any[];
 }
 
 const OnboardingWizard = () => {
@@ -71,6 +68,23 @@ const OnboardingWizard = () => {
           onboardingData={onboardingData}
           onUpdate={handleUpdate}
           onNext={handleNext}
+          onPrevious={handlePrevious}
+        />
+      )}
+
+      {step === 3 && (
+        <AgentConfiguration
+          selectedServices={onboardingData.selectedServices}
+          agentConfigs={onboardingData.agentConfigs}
+          onUpdate={handleUpdate}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+        />
+      )}
+
+      {step === 4 && (
+        <ReviewAndActivate
+          onboardingData={onboardingData}
           onPrevious={handlePrevious}
         />
       )}

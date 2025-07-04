@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, ArrowLeft, MessageCircle, Webhook, Send, Database } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageCircle, Send, Users, Headphones, Wrench } from "lucide-react";
 
 interface ServiceSelectionProps {
   selectedServices: string[];
@@ -27,12 +27,29 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       description: 'Configure um bot no Telegram para atendimento automático',
       icon: <Send className="w-8 h-8 text-blue-600" />,
       popular: true
+    }
+  ];
+
+  const agents = [
+    {
+      id: 'atendimento',
+      name: 'Atendimento Geral',
+      description: 'Atendimento ao cliente, dúvidas gerais e direcionamento',
+      icon: <Users className="w-8 h-8 text-purple-600" />,
+      popular: true
     },
     {
-      id: 'webhook',
-      name: 'Webhooks Personalizados',
-      description: 'Conecte com qualquer sistema através de webhooks',
-      icon: <Webhook className="w-8 h-8 text-orange-600" />,
+      id: 'comercial',
+      name: 'Comercial',
+      description: 'Vendas, propostas e negociação de planos',
+      icon: <Headphones className="w-8 h-8 text-orange-600" />,
+      popular: true
+    },
+    {
+      id: 'suporte_tecnico',
+      name: 'Suporte Técnico',
+      description: 'Suporte técnico e resolução de problemas',
+      icon: <Wrench className="w-8 h-8 text-red-600" />,
       popular: false
     }
   ];
@@ -49,63 +66,94 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
     <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
       <CardHeader className="bg-gradient-to-r from-3amg-purple/10 to-3amg-blue/10 rounded-t-lg">
         <CardTitle className="text-2xl text-3amg-purple">
-          Selecione os Serviços
+          Configure sua Automação
         </CardTitle>
         <p className="text-gray-600">
-          Escolha quais integrações você gostaria de configurar
+          Escolha os canais de comunicação e tipos de agentes que deseja ativar
         </p>
       </CardHeader>
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          {services.map((service) => (
-            <div
-              key={service.id}
-              className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                selectedServices.includes(service.id)
-                  ? 'border-3amg-purple bg-gradient-to-br from-3amg-purple/5 to-3amg-blue/5'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-              onClick={() => handleServiceToggle(service.id)}
-            >
-              {service.popular && (
-                <div className="absolute top-2 right-2">
-                  <span className="bg-gradient-3amg text-white text-xs px-2 py-1 rounded-full">
-                    Popular
-                  </span>
-                </div>
-              )}
-              
-              <div className="flex items-start gap-4">
-                <Checkbox
-                  checked={selectedServices.includes(service.id)}
-                  onChange={() => handleServiceToggle(service.id)}
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    {service.icon}
-                    <h3 className="font-semibold text-lg">{service.name}</h3>
+      <CardContent className="p-6 space-y-8">
+        {/* Canais de Comunicação */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Canais de Comunicação</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {services.map((service) => (
+              <div
+                key={service.id}
+                className={`relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                  selectedServices.includes(service.id)
+                    ? 'border-3amg-purple bg-gradient-to-br from-3amg-purple/5 to-3amg-blue/5'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => handleServiceToggle(service.id)}
+              >
+                {service.popular && (
+                  <div className="absolute top-2 right-2">
+                    <span className="bg-gradient-3amg text-white text-xs px-2 py-1 rounded-full">
+                      Popular
+                    </span>
                   </div>
-                  <p className="text-gray-600 text-sm">{service.description}</p>
+                )}
+                
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    checked={selectedServices.includes(service.id)}
+                    onChange={() => handleServiceToggle(service.id)}
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      {service.icon}
+                      <h4 className="font-semibold">{service.name}</h4>
+                    </div>
+                    <p className="text-gray-600 text-sm">{service.description}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {selectedServices.length > 0 && (
-          <div className="p-4 bg-blue-50 rounded-lg mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Database className="w-5 h-5 text-blue-600" />
-              <h4 className="font-medium text-blue-800">CRM Interno Incluído</h4>
-            </div>
-            <p className="text-sm text-blue-700">
-              Seu sistema já inclui um CRM completo com todas as funcionalidades:
-              gestão de leads, tickets de suporte, propostas comerciais e histórico de conversas.
-            </p>
+        {/* Tipos de Agentes */}
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Tipos de Agentes</h3>
+          <div className="grid grid-cols-1 gap-4">
+            {agents.map((agent) => (
+              <div
+                key={agent.id}
+                className={`relative p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                  selectedServices.includes(agent.id)
+                    ? 'border-3amg-purple bg-gradient-to-br from-3amg-purple/5 to-3amg-blue/5'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => handleServiceToggle(agent.id)}
+              >
+                {agent.popular && (
+                  <div className="absolute top-2 right-2">
+                    <span className="bg-gradient-3amg text-white text-xs px-2 py-1 rounded-full">
+                      Popular
+                    </span>
+                  </div>
+                )}
+                
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    checked={selectedServices.includes(agent.id)}
+                    onChange={() => handleServiceToggle(agent.id)}
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      {agent.icon}
+                      <h4 className="font-semibold">{agent.name}</h4>
+                    </div>
+                    <p className="text-gray-600 text-sm">{agent.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between pt-6">
           <Button 
             onClick={onPrevious}
             variant="outline"
