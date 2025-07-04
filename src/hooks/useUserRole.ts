@@ -20,7 +20,7 @@ export const useUserRole = () => {
 
       try {
         // Verificar se o usuário é admin (você pode definir emails específicos ou usar uma tabela)
-        const adminEmails = ['gustavo.steve@hotmail.com']; // Adicione seus emails de admin aqui
+        const adminEmails = ['gustavo.steve@hotmail.com', '3amg777@gmail.com']; // Adicionei ambos os emails
         
         if (adminEmails.includes(user.email || '')) {
           setRole('admin');

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from "@/hooks/useProfile";
+import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,27 +14,33 @@ import UserMenu from "@/components/UserMenu";
 
 const Index = () => {
   const { user } = useAuth();
-  const { profile, isLoading } = useProfile();
+  const { profile, isLoading: profileLoading } = useProfile();
+  const { role: userRole, loading: roleLoading } = useUserRole();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (user && profile && !isLoading) {
-      // Se é admin, pode acessar tanto admin quanto client dashboard
-      if (profile.role === 'admin') {
-        // Admin pode ficar na página inicial ou ir para dashboard
-        return;
+    // Aguardar que tanto o perfil quanto o role sejam carregados
+    if (user && !profileLoading && !roleLoading) {
+      console.log('User role:', userRole);
+      console.log('Profile role:', profile?.role);
+      
+      // Priorizar o userRole (baseado no email) para admins
+      if (userRole === 'admin') {
+        console.log('Usuário é admin, mantendo na página inicial com acesso admin');
+        return; // Admin fica na página inicial com acesso completo
       }
       
       // Se é usuário regular (não admin), redireciona para client dashboard
-      if (profile.role === 'user' || !profile.role) {
+      if (userRole === 'client' || profile?.role === 'user') {
+        console.log('Redirecionando usuário regular para client dashboard');
         navigate("/client-dashboard");
       }
     }
-  }, [user, profile, isLoading, navigate]);
+  }, [user, profile, profileLoading, userRole, roleLoading, navigate]);
 
   // Se está carregando, mostra loading
-  if (isLoading) {
+  if (profileLoading || roleLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -144,6 +151,9 @@ const Index = () => {
             </Link>
 
             <div className="flex items-center space-x-4">
+              <div className="text-sm text-green-600 font-medium">
+                Modo Admin Ativo
+              </div>
               <UserMenu />
             </div>
           </div>
@@ -246,12 +256,12 @@ const Index = () => {
               </button>
               
               <button
-                onClick={() => navigate("/agentes")}
-                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
+                onClick={() => navigate("/admin-webhooks")}
+                className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-blue-50 border-blue-200"
               >
-                <h3 className="font-semibold mb-2">Gerenciar Agentes</h3>
-                <p className="text-sm text-gray-600">
-                  Configure e monitore agentes de IA
+                <h3 className="font-semibold mb-2 text-blue-800">🚀 Testar Agentes</h3>
+                <p className="text-sm text-blue-600">
+                  Configure e teste agentes com webhooks
                 </p>
               </button>
             </div>
