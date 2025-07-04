@@ -35,8 +35,17 @@ const UserMenu = () => {
   const [showOrgDialog, setShowOrgDialog] = useState(false);
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate("/auth");
+    try {
+      console.log('Iniciando logout...');
+      await signOut();
+      console.log('Logout realizado com sucesso');
+      // Forçar redirecionamento para a página de login
+      window.location.href = "/auth";
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      // Mesmo com erro, tentar redirecionar
+      window.location.href = "/auth";
+    }
   };
 
   const getRoleColor = (role: string) => {
@@ -91,11 +100,14 @@ const UserMenu = () => {
                   <p className="text-xs leading-none text-muted-foreground mt-1">
                     {user.email}
                   </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    Usuário atual: {user.email}
+                  </p>
                 </div>
               </div>
               <div className="flex gap-2">
-                <Badge className={getRoleColor(profile.user_role_type)} variant="secondary">
-                  {profile.user_role_type.charAt(0).toUpperCase() + profile.user_role_type.slice(1)}
+                <Badge className={getRoleColor(profile.user_role_type || 'geral')} variant="secondary">
+                  {(profile.user_role_type || 'geral').charAt(0).toUpperCase() + (profile.user_role_type || 'geral').slice(1)}
                 </Badge>
                 <Badge className={getPlanColor(profile.plan)} variant="secondary">
                   {profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1)}
@@ -133,9 +145,9 @@ const UserMenu = () => {
           </DropdownMenuItem>
           
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleSignOut}>
+          <DropdownMenuItem onClick={handleSignOut} className="text-red-600 focus:text-red-600">
             <LogOut className="mr-2 h-4 w-4" />
-            <span>Sair</span>
+            <span>Sair (Trocar Usuário)</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

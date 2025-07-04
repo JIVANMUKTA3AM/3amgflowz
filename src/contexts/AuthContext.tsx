@@ -38,6 +38,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
+        
+        if (event === 'SIGNED_OUT') {
+          console.log('Usuário saiu, limpando estado...');
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+        
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -81,7 +90,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    console.log('Executando signOut...');
+    
+    try {
+      // Limpar estado local primeiro
+      setUser(null);
+      setSession(null);
+      
+      // Executar logout no Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Erro no logout do Supabase:', error);
+      } else {
+        console.log('Logout do Supabase realizado com sucesso');
+      }
+      
+      // Limpar localStorage se necessário
+      localStorage.removeItem('supabase.auth.token');
+      
+    } catch (error) {
+      console.error('Erro durante o logout:', error);
+    }
   };
 
   const resetPassword = async (email: string) => {
