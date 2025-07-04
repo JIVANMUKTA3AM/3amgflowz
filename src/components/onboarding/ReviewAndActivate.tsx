@@ -1,11 +1,13 @@
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CheckCircle, Loader2, MessageCircle, Send, Users, Headphones, Wrench, Zap, AlertCircle } from "lucide-react";
 import { OnboardingData } from "./OnboardingWizard";
 import { toast } from "@/hooks/use-toast";
+import { onboardingActivationService } from "@/services/onboardingActivation";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ReviewAndActivateProps {
   onboardingData: OnboardingData;
@@ -17,6 +19,7 @@ interface ReviewAndActivateProps {
 const ReviewAndActivate = ({ onboardingData, onPrevious, onComplete, isCompleting }: ReviewAndActivateProps) => {
   const [activationStep, setActivationStep] = useState<string | null>(null);
   const [isCompleted, setIsCompleted] = useState(false);
+  const { user } = useAuth();
 
   const serviceIcons = {
     whatsapp: MessageCircle,
@@ -78,12 +81,30 @@ const ReviewAndActivate = ({ onboardingData, onPrevious, onComplete, isCompletin
       return;
     }
 
+    if (!user) {
+      toast({
+        title: "Erro de Autenticação",
+        description: "Usuário não autenticado. Faça login novamente.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setActivationStep('Salvando configurações...');
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setActivationStep('Ativando integrações...');
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Perform full activation using the service
+      const result = await onboardingActivationService.performFullActivation(
+        onboardingData, 
+        user.id
+      );
+      
+      if (!result.success) {
+        throw new Error(result.message);
+      }
       
       setActivationStep('Configurando webhooks...');
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -99,7 +120,7 @@ const ReviewAndActivate = ({ onboardingData, onPrevious, onComplete, isCompletin
       setActivationStep(null);
       toast({
         title: "Erro na Ativação",
-        description: "Houve um erro ao ativar suas automações. Tente novamente.",
+        description: error instanceof Error ? error.message : "Houve um erro ao ativar suas automações. Tente novamente.",
         variant: "destructive",
       });
     }
