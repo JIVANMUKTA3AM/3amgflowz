@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, ArrowLeft, Router, Plus, Trash2, Sparkles, Network, Database } from "lucide-react";
+import { ArrowRight, ArrowLeft, Router, Plus, Trash2, Sparkles, Network, Database, Loader2 } from "lucide-react";
 import { useOltConfigurations } from "@/hooks/useOltConfigurations";
+import { toast } from "@/hooks/use-toast";
 
 interface OLTConfig {
   id: string;
