@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -388,6 +387,7 @@ const OltConfig = () => {
                   <p>• <strong>API REST:</strong> Algumas OLTs oferecem APIs REST para operações avançadas</p>
                   <p>• <strong>Credenciais:</strong> Usuário e senha são necessários para autenticação nas APIs</p>
                   <p>• <strong>Segurança:</strong> As credenciais são armazenadas de forma segura e criptografada</p>
+                  <p>• <strong>VSOL:</strong> OLTs populares entre provedores menores, compatíveis com SNMP v2c/v3</p>
                   <div className="flex gap-2 mt-4">
                     <Button variant="outline" size="sm" asChild>
                       <a href="https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.snmp/" target="_blank">

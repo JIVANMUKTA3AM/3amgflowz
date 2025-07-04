@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -49,7 +48,8 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
     { value: 'zte', label: 'ZTE', models: ['C320', 'C300', 'C220', 'C600'] },
     { value: 'fiberhome', label: 'Fiberhome', models: ['AN5516-01', 'AN5516-04', 'AN5516-06'] },
     { value: 'parks', label: 'Parks', models: ['OLT 4800', 'OLT 8800', 'OLT 1600'] },
-    { value: 'datacom', label: 'Datacom', models: ['DM4100', 'DM4000', 'DM991'] }
+    { value: 'datacom', label: 'Datacom', models: ['DM4100', 'DM4000', 'DM991'] },
+    { value: 'vsol', label: 'VSOL', models: ['V1600D', 'V1600G', 'V2408G', 'V2724G', 'V3216G'] }
   ];
 
   const handleConfigChange = (index: number, field: keyof OLTConfig, value: string) => {
