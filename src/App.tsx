@@ -21,6 +21,7 @@ import ResetPassword from "@/pages/ResetPassword";
 import NotFound from "@/pages/NotFound";
 import Subscription from "@/pages/Subscription";
 import Agentes from "@/pages/Agentes";
+import BillingConfig from "@/pages/BillingConfig";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,51 @@ const App = () => (
             <Route path="/agentes" element={
               <ProtectedRoute>
                 <Agentes />
+              </ProtectedRoute>
+            } />
+            <Route path="/integracoes" element={
+              <ProtectedRoute>
+                <BillingConfig />
+              </ProtectedRoute>
+            } />
+            <Route path="/fluxos" element={
+              <ProtectedRoute>
+                <TestChat />
+              </ProtectedRoute>
+            } />
+            <Route path="/database-management" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/subscription-management" element={
+              <ProtectedRoute>
+                <Subscription />
+              </ProtectedRoute>
+            } />
+            <Route path="/documentacao" element={
+              <ProtectedRoute>
+                <NotFound />
+              </ProtectedRoute>
+            } />
+            <Route path="/arquitetura" element={
+              <ProtectedRoute>
+                <NotFound />
+              </ProtectedRoute>
+            } />
+            <Route path="/modelo-dados" element={
+              <ProtectedRoute>
+                <NotFound />
+              </ProtectedRoute>
+            } />
+            <Route path="/n8n-management" element={
+              <ProtectedRoute>
+                <NotFound />
+              </ProtectedRoute>
+            } />
+            <Route path="/pagamentos" element={
+              <ProtectedRoute>
+                <Subscription />
               </ProtectedRoute>
             } />
             
