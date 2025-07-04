@@ -3,6 +3,7 @@ import { useState } from "react";
 import ServiceSelection from "./ServiceSelection";
 import IntegrationsConfig from "./IntegrationsConfig";
 import AgentConfiguration from "./AgentConfiguration";
+import OLTConfiguration from "./OLTConfiguration";
 import ReviewAndActivate from "./ReviewAndActivate";
 
 export interface OnboardingData {
@@ -18,22 +19,16 @@ export interface OnboardingData {
     botUsername?: string;
     webhookUrl?: string;
   };
-  agentConfigs: {
-    atendimento: boolean;
-    comercial: boolean;
-    suporte_tecnico: boolean;
-  };
+  agentConfigs: any;
+  oltConfigs?: any[];
 }
 
 const OnboardingWizard = () => {
   const [step, setStep] = useState(1);
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     selectedServices: [],
-    agentConfigs: {
-      atendimento: false,
-      comercial: false,
-      suporte_tecnico: false,
-    },
+    agentConfigs: {},
+    oltConfigs: []
   });
 
   const handleNext = () => {
@@ -76,13 +71,23 @@ const OnboardingWizard = () => {
         <AgentConfiguration
           selectedServices={onboardingData.selectedServices}
           agentConfigs={onboardingData.agentConfigs}
-          onUpdate={handleUpdate}
+          onUpdate={(configs) => handleUpdate({ agentConfigs: configs })}
           onNext={handleNext}
           onPrevious={handlePrevious}
         />
       )}
 
       {step === 4 && (
+        <OLTConfiguration
+          selectedServices={onboardingData.selectedServices}
+          oltConfigs={onboardingData.oltConfigs || []}
+          onUpdate={(configs) => handleUpdate({ oltConfigs: configs })}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+        />
+      )}
+
+      {step === 5 && (
         <ReviewAndActivate
           onboardingData={onboardingData}
           onPrevious={handlePrevious}

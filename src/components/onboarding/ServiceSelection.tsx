@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, ArrowLeft, MessageCircle, Send, Users, Headphones, Wrench, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageCircle, Send, Users, Headphones, Wrench, Sparkles, Network } from "lucide-react";
 
 interface ServiceSelectionProps {
   selectedServices: string[];
@@ -29,6 +28,14 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       icon: <Send className="w-8 h-8 text-white" />,
       popular: true,
       gradient: 'from-blue-400 to-blue-600'
+    },
+    {
+      id: 'olt',
+      name: 'Monitoramento OLT',
+      description: 'Configure OLTs para diagnósticos automáticos e suporte técnico',
+      icon: <Network className="w-8 h-8 text-white" />,
+      popular: false,
+      gradient: 'from-cyan-400 to-cyan-600'
     }
   ];
 
