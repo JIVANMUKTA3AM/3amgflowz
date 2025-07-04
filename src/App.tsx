@@ -20,6 +20,7 @@ import ClientDashboard from "@/pages/ClientDashboard";
 import ResetPassword from "@/pages/ResetPassword";
 import NotFound from "@/pages/NotFound";
 import Subscription from "@/pages/Subscription";
+import Agentes from "@/pages/Agentes";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,11 @@ const App = () => (
                 <AdminRoute>
                   <AdminWebhooks />
                 </AdminRoute>
+              </ProtectedRoute>
+            } />
+            <Route path="/agentes" element={
+              <ProtectedRoute>
+                <Agentes />
               </ProtectedRoute>
             } />
             
