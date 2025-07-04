@@ -1066,6 +1066,42 @@ export type Database = {
         }
         Relationships: []
       }
+      webhook_events: {
+        Row: {
+          agent_id: string | null
+          agent_type: string | null
+          created_at: string
+          event_type: string
+          id: string
+          payload: Json | null
+          source: string | null
+          status: string | null
+          timestamp: string
+        }
+        Insert: {
+          agent_id?: string | null
+          agent_type?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          payload?: Json | null
+          source?: string | null
+          status?: string | null
+          timestamp?: string
+        }
+        Update: {
+          agent_id?: string | null
+          agent_type?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          source?: string | null
+          status?: string | null
+          timestamp?: string
+        }
+        Relationships: []
+      }
       webhook_logs: {
         Row: {
           erro_message: string | null
