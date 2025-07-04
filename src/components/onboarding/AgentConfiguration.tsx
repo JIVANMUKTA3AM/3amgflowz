@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,8 +17,11 @@ interface AgentConfigurationProps {
 }
 
 const AgentConfiguration = ({ selectedServices, agentConfigs, onUpdate, onNext, onPrevious }: AgentConfigurationProps) => {
-  const [configs, setConfigs] = useState(agentConfigs);
+  const [configs, setConfigs] = useState(agentConfigs || {});
   const [currentAgent, setCurrentAgent] = useState(0);
+
+  console.log('AgentConfiguration - selectedServices:', selectedServices);
+  console.log('AgentConfiguration - agentConfigs:', agentConfigs);
 
   const agentTemplates = {
     atendimento: {
@@ -56,8 +59,49 @@ const AgentConfiguration = ({ selectedServices, agentConfigs, onUpdate, onNext, 
     }
   };
 
+  // Filtrar apenas serviços de agentes válidos
+  const validAgentServices = selectedServices.filter(service => 
+    service in agentTemplates
+  );
+
+  console.log('Valid agent services:', validAgentServices);
+
+  // Inicializar configurações na montagem do componente
+  useEffect(() => {
+    const initialConfigs = { ...configs };
+    let hasChanges = false;
+
+    validAgentServices.forEach(serviceId => {
+      if (!initialConfigs[serviceId]) {
+        const template = agentTemplates[serviceId as keyof typeof agentTemplates];
+        initialConfigs[serviceId] = {
+          name: template?.name || '',
+          prompt: template?.defaultPrompt || '',
+          model: 'gpt-4o-mini',
+          temperature: 0.7
+        };
+        hasChanges = true;
+      }
+    });
+
+    if (hasChanges) {
+      setConfigs(initialConfigs);
+    }
+  }, [validAgentServices]);
+
+  // Garantir que currentAgent não seja maior que o número de serviços
+  useEffect(() => {
+    if (currentAgent >= validAgentServices.length && validAgentServices.length > 0) {
+      setCurrentAgent(0);
+    }
+  }, [validAgentServices.length, currentAgent]);
+
   const handleConfigChange = (field: string, value: any) => {
-    const serviceId = selectedServices[currentAgent];
+    if (validAgentServices.length === 0) return;
+    
+    const serviceId = validAgentServices[currentAgent];
+    if (!serviceId) return;
+
     const newConfigs = {
       ...configs,
       [serviceId]: {
@@ -66,17 +110,23 @@ const AgentConfiguration = ({ selectedServices, agentConfigs, onUpdate, onNext, 
       }
     };
     setConfigs(newConfigs);
+    console.log('Updated configs:', newConfigs);
   };
 
   const handleNext = () => {
-    // Validar configurações antes de prosseguir
-    const allConfigured = selectedServices.every(serviceId => {
+    console.log('Attempting to proceed with configs:', configs);
+    
+    // Validação mais flexível - só precisa ter nome e prompt básicos
+    const configuredServices = validAgentServices.filter(serviceId => {
       const config = configs[serviceId];
-      return config?.name && config?.prompt;
+      return config && config.name && config.prompt;
     });
 
-    if (!allConfigured) {
-      alert("Por favor, configure todos os agentes selecionados.");
+    console.log('Configured services:', configuredServices);
+    console.log('Valid agent services:', validAgentServices);
+
+    if (configuredServices.length !== validAgentServices.length) {
+      alert(`Por favor, configure todos os agentes selecionados. Configurados: ${configuredServices.length}, Necessários: ${validAgentServices.length}`);
       return;
     }
 
@@ -84,21 +134,20 @@ const AgentConfiguration = ({ selectedServices, agentConfigs, onUpdate, onNext, 
     onNext();
   };
 
-  const currentServiceId = selectedServices[currentAgent];
+  // Se não há serviços de agentes válidos, pular esta etapa
+  if (validAgentServices.length === 0) {
+    console.log('No valid agent services, proceeding to next step');
+    onNext();
+    return null;
+  }
+
+  const currentServiceId = validAgentServices[currentAgent];
   const currentTemplate = agentTemplates[currentServiceId as keyof typeof agentTemplates];
   const currentConfig = configs[currentServiceId] || {};
 
-  // Inicializar com valores padrão se não existir
-  if (!configs[currentServiceId]) {
-    setConfigs({
-      ...configs,
-      [currentServiceId]: {
-        name: currentTemplate?.name || '',
-        prompt: currentTemplate?.defaultPrompt || '',
-        model: 'gpt-4o-mini',
-        temperature: 0.7
-      }
-    });
+  if (!currentTemplate) {
+    console.error('No template found for service:', currentServiceId);
+    return null;
   }
 
   return (
@@ -119,9 +168,9 @@ const AgentConfiguration = ({ selectedServices, agentConfigs, onUpdate, onNext, 
         </CardHeader>
         
         <CardContent className="p-8 space-y-8">
-          {selectedServices.length > 1 && (
+          {validAgentServices.length > 1 && (
             <div className="flex justify-center gap-2">
-              {selectedServices.map((serviceId, index) => (
+              {validAgentServices.map((serviceId, index) => (
                 <Button
                   key={serviceId}
                   variant={currentAgent === index ? "default" : "outline"}
@@ -139,122 +188,120 @@ const AgentConfiguration = ({ selectedServices, agentConfigs, onUpdate, onNext, 
             </div>
           )}
 
-          {currentTemplate && (
-            <div className="space-y-8">
-              <div className={`flex items-center gap-4 p-6 bg-gradient-to-r ${currentTemplate.gradient} rounded-2xl shadow-xl`}>
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                  <currentTemplate.icon className="w-10 h-10 text-white" />
-                </div>
-                <div className="text-white">
-                  <h3 className="text-2xl font-bold">{currentTemplate.name}</h3>
-                  <p className="text-white/90 mt-1">Configure este agente conforme sua necessidade</p>
-                </div>
+          <div className="space-y-8">
+            <div className={`flex items-center gap-4 p-6 bg-gradient-to-r ${currentTemplate.gradient} rounded-2xl shadow-xl`}>
+              <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                <currentTemplate.icon className="w-10 h-10 text-white" />
               </div>
-
-              <div className="grid gap-8">
-                <Card className="border-2 border-purple-100 shadow-lg">
-                  <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50">
-                    <CardTitle className="flex items-center gap-2 text-purple-800">
-                      <Settings className="w-5 h-5" />
-                      Configurações Básicas
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6 space-y-6">
-                    <div>
-                      <Label htmlFor="agentName" className="text-lg font-semibold text-gray-700">Nome do Agente</Label>
-                      <Input
-                        id="agentName"
-                        value={currentConfig.name || currentTemplate.name}
-                        onChange={(e) => handleConfigChange('name', e.target.value)}
-                        placeholder="Nome que será exibido para os clientes"
-                        className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl text-lg p-4"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <Label htmlFor="model" className="text-lg font-semibold text-gray-700">Modelo de IA</Label>
-                        <Select 
-                          value={currentConfig.model || 'gpt-4o-mini'} 
-                          onValueChange={(value) => handleConfigChange('model', value)}
-                        >
-                          <SelectTrigger className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl p-4">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="gpt-4o-mini">GPT-4 Omni Mini (Rápido)</SelectItem>
-                            <SelectItem value="gpt-4o">GPT-4 Omni (Poderoso)</SelectItem>
-                            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (Econômico)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <Label htmlFor="temperature" className="text-lg font-semibold text-gray-700">Criatividade</Label>
-                        <Select 
-                          value={String(currentConfig.temperature || 0.7)} 
-                          onValueChange={(value) => handleConfigChange('temperature', parseFloat(value))}
-                        >
-                          <SelectTrigger className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl p-4">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="0.3">Mais Preciso</SelectItem>
-                            <SelectItem value="0.7">Balanceado</SelectItem>
-                            <SelectItem value="1.0">Mais Criativo</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-2 border-blue-100 shadow-lg">
-                  <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
-                    <CardTitle className="flex items-center gap-2 text-blue-800">
-                      <Zap className="w-5 h-5" />
-                      Personalidade e Comportamento
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div>
-                      <Label htmlFor="agentPrompt" className="text-lg font-semibold text-gray-700">Instruções do Agente</Label>
-                      <Textarea
-                        id="agentPrompt"
-                        value={currentConfig.prompt || currentTemplate.defaultPrompt}
-                        onChange={(e) => handleConfigChange('prompt', e.target.value)}
-                        rows={6}
-                        placeholder="Como o agente deve se comportar..."
-                        className="mt-2 border-2 border-blue-200 focus:border-blue-400 rounded-xl text-base p-4"
-                      />
-                      <p className="text-sm text-gray-500 mt-2">
-                        Descreva como o agente deve responder e se comportar com os clientes
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-2 border-green-100 shadow-lg">
-                  <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50">
-                    <CardTitle className="flex items-center gap-2 text-green-800">
-                      <MessageCircle className="w-5 h-5" />
-                      Exemplos de Respostas
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="space-y-3">
-                      {currentTemplate.examples.map((example, index) => (
-                        <div key={index} className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                          <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                          <span className="text-green-800 italic">"{example}"</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className="text-white">
+                <h3 className="text-2xl font-bold">{currentTemplate.name}</h3>
+                <p className="text-white/90 mt-1">Configure este agente conforme sua necessidade</p>
               </div>
             </div>
-          )}
+
+            <div className="grid gap-8">
+              <Card className="border-2 border-purple-100 shadow-lg">
+                <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50">
+                  <CardTitle className="flex items-center gap-2 text-purple-800">
+                    <Settings className="w-5 h-5" />
+                    Configurações Básicas
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 space-y-6">
+                  <div>
+                    <Label htmlFor="agentName" className="text-lg font-semibold text-gray-700">Nome do Agente</Label>
+                    <Input
+                      id="agentName"
+                      value={currentConfig.name || currentTemplate.name}
+                      onChange={(e) => handleConfigChange('name', e.target.value)}
+                      placeholder="Nome que será exibido para os clientes"
+                      className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl text-lg p-4"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label htmlFor="model" className="text-lg font-semibold text-gray-700">Modelo de IA</Label>
+                      <Select 
+                        value={currentConfig.model || 'gpt-4o-mini'} 
+                        onValueChange={(value) => handleConfigChange('model', value)}
+                      >
+                        <SelectTrigger className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl p-4">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="gpt-4o-mini">GPT-4 Omni Mini (Rápido)</SelectItem>
+                          <SelectItem value="gpt-4o">GPT-4 Omni (Poderoso)</SelectItem>
+                          <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo (Econômico)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="temperature" className="text-lg font-semibold text-gray-700">Criatividade</Label>
+                      <Select 
+                        value={String(currentConfig.temperature || 0.7)} 
+                        onValueChange={(value) => handleConfigChange('temperature', parseFloat(value))}
+                      >
+                        <SelectTrigger className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl p-4">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0.3">Mais Preciso</SelectItem>
+                          <SelectItem value="0.7">Balanceado</SelectItem>
+                          <SelectItem value="1.0">Mais Criativo</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 border-blue-100 shadow-lg">
+                <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
+                  <CardTitle className="flex items-center gap-2 text-blue-800">
+                    <Zap className="w-5 h-5" />
+                    Personalidade e Comportamento
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div>
+                    <Label htmlFor="agentPrompt" className="text-lg font-semibold text-gray-700">Instruções do Agente</Label>
+                    <Textarea
+                      id="agentPrompt"
+                      value={currentConfig.prompt || currentTemplate.defaultPrompt}
+                      onChange={(e) => handleConfigChange('prompt', e.target.value)}
+                      rows={6}
+                      placeholder="Como o agente deve se comportar..."
+                      className="mt-2 border-2 border-blue-200 focus:border-blue-400 rounded-xl text-base p-4"
+                    />
+                    <p className="text-sm text-gray-500 mt-2">
+                      Descreva como o agente deve responder e se comportar com os clientes
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 border-green-100 shadow-lg">
+                <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50">
+                  <CardTitle className="flex items-center gap-2 text-green-800">
+                    <MessageCircle className="w-5 h-5" />
+                    Exemplos de Respostas
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-3">
+                    {currentTemplate.examples.map((example, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                        <span className="text-green-800 italic">"{example}"</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
 
           <div className="flex justify-between items-center pt-8 border-t border-gray-200">
             <Button 
@@ -268,7 +315,7 @@ const AgentConfiguration = ({ selectedServices, agentConfigs, onUpdate, onNext, 
             
             <div className="text-center">
               <p className="text-sm text-gray-500 mb-2">
-                Agente {currentAgent + 1} de {selectedServices.length}
+                Agente {currentAgent + 1} de {validAgentServices.length}
               </p>
             </div>
             
