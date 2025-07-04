@@ -559,6 +559,54 @@ export type Database = {
           },
         ]
       }
+      olt_configurations: {
+        Row: {
+          brand: string
+          created_at: string | null
+          id: string
+          ip_address: string
+          is_active: boolean | null
+          model: string
+          name: string
+          password: string | null
+          port: string | null
+          snmp_community: string | null
+          updated_at: string | null
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          brand: string
+          created_at?: string | null
+          id?: string
+          ip_address: string
+          is_active?: boolean | null
+          model: string
+          name: string
+          password?: string | null
+          port?: string | null
+          snmp_community?: string | null
+          updated_at?: string | null
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          brand?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string
+          is_active?: boolean | null
+          model?: string
+          name?: string
+          password?: string | null
+          port?: string | null
+          snmp_community?: string | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       onboarding_configurations: {
         Row: {
           agent_configs: Json

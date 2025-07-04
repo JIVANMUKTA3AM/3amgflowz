@@ -1,4 +1,3 @@
-
 import { supabase } from "@/lib/supabase";
 import { toast } from "@/hooks/use-toast";
 
@@ -59,6 +58,87 @@ export class OnboardingActivationService {
     } catch (error) {
       console.error('Telegram activation error:', error);
       return { success: false, message: "Failed to activate Telegram bot" };
+    }
+  }
+
+  async saveOltConfigurations(oltConfigs: any[], userId: string): Promise<ActivationResult> {
+    try {
+      if (!oltConfigs || oltConfigs.length === 0) {
+        return { 
+          success: true, 
+          message: "No OLT configurations to save",
+          data: { saved_count: 0 }
+        };
+      }
+
+      const { supabase } = await import("@/lib/supabase");
+      
+      const configurationsToSave = oltConfigs.map(config => ({
+        user_id: userId,
+        name: config.name,
+        brand: config.brand,
+        model: config.model,
+        ip_address: config.ipAddress,
+        snmp_community: config.snmpCommunity || 'public',
+        username: config.username || null,
+        password: config.password || null,
+        port: config.port || '161',
+        is_active: true
+      }));
+
+      const { data, error } = await supabase
+        .from('olt_configurations')
+        .insert(configurationsToSave)
+        .select();
+
+      if (error) throw error;
+
+      // Trigger n8n webhook for each OLT configuration
+      for (const oltConfig of data) {
+        await this.triggerOltN8nWebhook(oltConfig);
+      }
+
+      return { 
+        success: true, 
+        message: `${data.length} OLT configurations saved successfully`,
+        data: { saved_configurations: data, saved_count: data.length }
+      };
+    } catch (error) {
+      console.error('Error saving OLT configurations:', error);
+      return { 
+        success: false, 
+        message: "Failed to save OLT configurations" 
+      };
+    }
+  }
+
+  private async triggerOltN8nWebhook(oltData: any): Promise<void> {
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      
+      const webhookData = {
+        event_type: 'olt_configured',
+        user_id: oltData.user_id,
+        timestamp: new Date().toISOString(),
+        olt_data: {
+          id: oltData.id,
+          name: oltData.name,
+          brand: oltData.brand,
+          model: oltData.model,
+          ip_address: oltData.ip_address,
+          snmp_community: oltData.snmp_community,
+          port: oltData.port,
+          is_active: oltData.is_active
+        }
+      };
+
+      await supabase.functions.invoke('trigger-n8n-webhook', {
+        body: webhookData
+      });
+
+      console.log('N8n webhook triggered for OLT:', oltData.name);
+    } catch (error) {
+      console.error('Error triggering OLT n8n webhook:', error);
     }
   }
 
@@ -167,6 +247,15 @@ export class OnboardingActivationService {
         results.push(telegramResult);
         if (!telegramResult.success) {
           throw new Error(telegramResult.message);
+        }
+      }
+
+      // Save OLT configurations
+      if (onboardingData.oltConfigs && onboardingData.oltConfigs.length > 0) {
+        const oltResult = await this.saveOltConfigurations(onboardingData.oltConfigs, userId);
+        results.push(oltResult);
+        if (!oltResult.success) {
+          throw new Error(oltResult.message);
         }
       }
 

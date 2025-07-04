@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRight, ArrowLeft, Router, Plus, Trash2, Sparkles, Network, Database } from "lucide-react";
+import { useOltConfigurations } from "@/hooks/useOltConfigurations";
 
 interface OLTConfig {
   id: string;
@@ -30,6 +31,8 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
   const [configs, setConfigs] = useState<OLTConfig[]>(
     oltConfigs.length > 0 ? oltConfigs : [createEmptyConfig()]
   );
+
+  const { saveConfiguration, isSaving } = useOltConfigurations();
 
   function createEmptyConfig(): OLTConfig {
     return {
@@ -74,9 +77,53 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
     }
   };
 
-  const handleNext = () => {
-    onUpdate(configs);
-    onNext();
+  const handleNext = async () => {
+    // Validate configurations before proceeding
+    const validConfigs = configs.filter(config => 
+      config.name && config.brand && config.model && config.ipAddress
+    );
+
+    if (validConfigs.length === 0) {
+      toast({
+        title: "Configuração incompleta",
+        description: "Configure pelo menos uma OLT antes de continuar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Save valid configurations to database
+    try {
+      for (const config of validConfigs) {
+        await new Promise((resolve, reject) => {
+          saveConfiguration({
+            name: config.name,
+            brand: config.brand,
+            model: config.model,
+            ip_address: config.ipAddress,
+            snmp_community: config.snmpCommunity,
+            username: config.username,
+            password: config.password,
+            port: config.port,
+            is_active: true
+          }, {
+            onSuccess: resolve,
+            onError: reject
+          });
+        });
+      }
+
+      // Update the onboarding data and proceed
+      onUpdate(validConfigs);
+      onNext();
+    } catch (error) {
+      console.error('Error saving OLT configurations:', error);
+      toast({
+        title: "Erro ao salvar",
+        description: "Houve um erro ao salvar as configurações de OLT. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -250,6 +297,7 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
               onClick={onPrevious}
               variant="outline"
               className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 hover:bg-gray-50"
+              disabled={isSaving}
             >
               <ArrowLeft className="w-4 h-4" />
               Voltar
@@ -263,10 +311,20 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
             
             <Button 
               onClick={handleNext}
+              disabled={isSaving}
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              Continuar
-              <ArrowRight className="w-4 h-4" />
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  Continuar
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </Button>
           </div>
         </CardContent>

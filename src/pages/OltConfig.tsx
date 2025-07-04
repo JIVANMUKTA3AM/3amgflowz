@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Router, Plus, Trash2, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import { useOltConfigurations } from "@/hooks/useOltConfigurations";
 
 interface OltConfig {
   id: string;
@@ -26,7 +27,17 @@ interface OltConfig {
 }
 
 const OltConfig = () => {
-  const [oltConfigs, setOltConfigs] = useState<OltConfig[]>([]);
+  const { 
+    configurations: oltConfigs, 
+    isLoading: configsLoading,
+    saveConfiguration,
+    isSaving,
+    updateConfiguration,
+    isUpdating,
+    deleteConfiguration,
+    isDeleting
+  } = useOltConfigurations();
+
   const [newOlt, setNewOlt] = useState<Partial<OltConfig>>({
     name: "",
     brand: "",
@@ -53,19 +64,6 @@ const OltConfig = () => {
     { value: "custom", label: "Personalizada", description: "Configuração customizada" }
   ];
 
-  useEffect(() => {
-    // Carregar configurações salvas
-    const saved = localStorage.getItem("olt_configs");
-    if (saved) {
-      setOltConfigs(JSON.parse(saved));
-    }
-  }, []);
-
-  const saveConfigs = (configs: OltConfig[]) => {
-    localStorage.setItem("olt_configs", JSON.stringify(configs));
-    setOltConfigs(configs);
-  };
-
   const handleAddOlt = () => {
     if (!newOlt.name || !newOlt.brand || !newOlt.host) {
       toast({
@@ -76,21 +74,17 @@ const OltConfig = () => {
       return;
     }
 
-    const olt: OltConfig = {
-      id: Date.now().toString(),
+    saveConfiguration({
       name: newOlt.name!,
       brand: newOlt.brand!,
-      host: newOlt.host!,
+      model: newOlt.brand!, // Use brand as model if no specific model
+      ip_address: newOlt.host!,
       port: newOlt.port || "161",
-      username: newOlt.username || "",
-      password: newOlt.password || "",
-      snmpCommunity: newOlt.snmpCommunity || "public",
-      apiUrl: newOlt.apiUrl || "",
-      isActive: true
-    };
-
-    const newConfigs = [...oltConfigs, olt];
-    saveConfigs(newConfigs);
+      username: newOlt.username,
+      password: newOlt.password,
+      snmp_community: newOlt.snmpCommunity || "public",
+      is_active: true
+    });
 
     // Reset form
     setNewOlt({
@@ -104,24 +98,13 @@ const OltConfig = () => {
       apiUrl: "",
       isActive: true
     });
-
-    toast({
-      title: "OLT adicionada!",
-      description: `${olt.name} foi configurada com sucesso`
-    });
   };
 
   const handleDeleteOlt = (id: string) => {
-    const newConfigs = oltConfigs.filter(olt => olt.id !== id);
-    saveConfigs(newConfigs);
-    
-    toast({
-      title: "OLT removida",
-      description: "Configuração deletada com sucesso"
-    });
+    deleteConfiguration(id);
   };
 
-  const handleTestConnection = async (olt: OltConfig) => {
+  const handleTestConnection = async (olt: any) => {
     setIsLoading(true);
     try {
       // Simular teste de conexão
@@ -143,11 +126,29 @@ const OltConfig = () => {
   };
 
   const toggleOltStatus = (id: string) => {
-    const newConfigs = oltConfigs.map(olt => 
-      olt.id === id ? { ...olt, isActive: !olt.isActive } : olt
-    );
-    saveConfigs(newConfigs);
+    const config = oltConfigs.find(olt => olt.id === id);
+    if (config) {
+      updateConfiguration({
+        id,
+        is_active: !config.is_active
+      });
+    }
   };
+
+  if (configsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
+        <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
+        <main className="container mx-auto px-4 py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Carregando configurações...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
@@ -192,18 +193,18 @@ const OltConfig = () => {
                         <div className="flex items-start justify-between">
                           <div>
                             <CardTitle className="flex items-center gap-2">
-                              {olt.isActive ? (
+                              {olt.is_active ? (
                                 <CheckCircle className="h-5 w-5 text-green-500" />
                               ) : (
                                 <AlertCircle className="h-5 w-5 text-gray-400" />
                               )}
                               {olt.name}
                             </CardTitle>
-                            <CardDescription>{olt.host}:{olt.port}</CardDescription>
+                            <CardDescription>{olt.ip_address}:{olt.port}</CardDescription>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge variant={olt.isActive ? "default" : "secondary"}>
-                              {olt.isActive ? "Ativa" : "Inativa"}
+                            <Badge variant={olt.is_active ? "default" : "secondary"}>
+                              {olt.is_active ? "Ativa" : "Inativa"}
                             </Badge>
                             <Badge variant="outline">
                               {oltBrands.find(b => b.value === olt.brand)?.label || olt.brand}
@@ -219,16 +220,8 @@ const OltConfig = () => {
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-600">SNMP Community:</span>
-                            <span className="font-mono">{olt.snmpCommunity}</span>
+                            <span className="font-mono">{olt.snmp_community}</span>
                           </div>
-                          {olt.apiUrl && (
-                            <div className="flex justify-between">
-                              <span className="text-gray-600">API URL:</span>
-                              <span className="font-mono text-xs truncate max-w-32" title={olt.apiUrl}>
-                                {olt.apiUrl}
-                              </span>
-                            </div>
-                          )}
                         </div>
 
                         <div className="flex items-center justify-between pt-2">
@@ -245,14 +238,16 @@ const OltConfig = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => toggleOltStatus(olt.id)}
+                              onClick={() => toggleOltStatus(olt.id!)}
+                              disabled={isUpdating}
                             >
-                              {olt.isActive ? "Desativar" : "Ativar"}
+                              {olt.is_active ? "Desativar" : "Ativar"}
                             </Button>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handleDeleteOlt(olt.id)}
+                              onClick={() => handleDeleteOlt(olt.id!)}
+                              disabled={isDeleting}
                             >
                               <Trash2 className="w-3 h-3" />
                             </Button>
@@ -371,9 +366,13 @@ const OltConfig = () => {
                     </div>
                   </div>
 
-                  <Button onClick={handleAddOlt} className="w-full">
+                  <Button 
+                    onClick={handleAddOlt} 
+                    className="w-full"
+                    disabled={isSaving}
+                  >
                     <Plus className="h-4 w-4 mr-2" />
-                    Adicionar OLT
+                    {isSaving ? "Salvando..." : "Adicionar OLT"}
                   </Button>
                 </CardContent>
               </Card>
