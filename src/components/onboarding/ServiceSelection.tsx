@@ -18,7 +18,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       id: 'whatsapp',
       name: 'WhatsApp Business',
       description: 'Receba e responda mensagens do WhatsApp automaticamente',
-      icon: <MessageCircle className="w-8 h-8 text-green-500" />,
+      icon: <MessageCircle className="w-8 h-8 text-white" />,
       popular: true,
       gradient: 'from-green-400 to-green-600'
     },
@@ -26,7 +26,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       id: 'telegram',
       name: 'Telegram Bot',
       description: 'Configure um bot no Telegram para atendimento automático',
-      icon: <Send className="w-8 h-8 text-blue-500" />,
+      icon: <Send className="w-8 h-8 text-white" />,
       popular: true,
       gradient: 'from-blue-400 to-blue-600'
     }
@@ -37,7 +37,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       id: 'atendimento',
       name: 'Atendimento Geral',
       description: 'Atendimento ao cliente, dúvidas gerais e direcionamento',
-      icon: <Users className="w-8 h-8 text-purple-500" />,
+      icon: <Users className="w-8 h-8 text-white" />,
       popular: true,
       gradient: 'from-purple-400 to-purple-600'
     },
@@ -45,7 +45,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       id: 'comercial',
       name: 'Comercial',
       description: 'Vendas, propostas e negociação de planos',
-      icon: <Headphones className="w-8 h-8 text-indigo-500" />,
+      icon: <Headphones className="w-8 h-8 text-white" />,
       popular: true,
       gradient: 'from-indigo-400 to-indigo-600'
     },
@@ -53,7 +53,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       id: 'suporte_tecnico',
       name: 'Suporte Técnico',
       description: 'Suporte técnico e resolução de problemas',
-      icon: <Wrench className="w-8 h-8 text-blue-500" />,
+      icon: <Wrench className="w-8 h-8 text-white" />,
       popular: false,
       gradient: 'from-blue-400 to-cyan-500'
     }
@@ -78,7 +78,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
                 Configure sua Automação Inteligente
               </CardTitle>
               <p className="text-purple-100 mt-2">
-                Selecione os canais e agentes que irão revolucionar seu atendimento
+                Bem-vindo ao <span className="font-bold text-yellow-300">3AMG FLOWS</span> - Selecione os canais e agentes que irão revolucionar seu atendimento
               </p>
             </div>
           </div>
