@@ -13,23 +13,50 @@ serve(async (req) => {
   }
 
   try {
-    const { event_type, user_id, timestamp, olt_data } = await req.json()
+    const { event_type, user_id, timestamp, olt_data, agent_type } = await req.json()
 
     console.log('Triggering n8n webhook with data:', {
       event_type,
       user_id,
       timestamp,
-      olt_data
+      olt_data,
+      agent_type
     })
 
-    // N8n webhook URL (você deve substituir pela URL real do seu webhook n8n)
-    const n8nWebhookUrl = 'https://your-n8n-instance.com/webhook/olt-configuration'
+    // N8n webhook URLs específicas para cada agente
+    const webhookUrls = {
+      'atendimento': Deno.env.get('N8N_WEBHOOK_ATENDIMENTO'),
+      'comercial': Deno.env.get('N8N_WEBHOOK_COMERCIAL'),
+      'suporte_tecnico': Deno.env.get('N8N_WEBHOOK_SUPORTE_TECNICO')
+    }
+
+    // Determinar qual webhook usar baseado no agent_type ou evento
+    let webhookUrl = ''
+    let targetAgent = agent_type
+
+    // Se não houver agent_type especificado, determinar baseado no evento
+    if (!targetAgent) {
+      if (event_type === 'novo_ticket' || event_type === 'conclusao_servico') {
+        targetAgent = 'suporte_tecnico'
+      } else if (event_type === 'venda_concluida' || event_type === 'cliente_cadastrado') {
+        targetAgent = 'comercial'
+      } else {
+        targetAgent = 'atendimento'
+      }
+    }
+
+    webhookUrl = webhookUrls[targetAgent as keyof typeof webhookUrls]
+
+    if (!webhookUrl) {
+      throw new Error(`Webhook URL não configurada para o agente: ${targetAgent}`)
+    }
     
     const webhookPayload = {
       event_type,
       user_id,
       timestamp,
-      olt_configuration: {
+      agent_type: targetAgent,
+      olt_configuration: olt_data ? {
         id: olt_data.id,
         name: olt_data.name,
         brand: olt_data.brand,
@@ -38,11 +65,13 @@ serve(async (req) => {
         snmp_community: olt_data.snmp_community,
         port: olt_data.port,
         is_active: olt_data.is_active
-      }
+      } : null
     }
 
+    console.log(`Sending to ${targetAgent} webhook:`, webhookUrl)
+
     // Send data to n8n webhook
-    const response = await fetch(n8nWebhookUrl, {
+    const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -60,7 +89,9 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: 'N8n webhook triggered successfully',
+        message: `N8n webhook ${targetAgent} triggered successfully`,
+        agent_type: targetAgent,
+        webhook_url: webhookUrl,
         n8n_response: result 
       }),
       { 
