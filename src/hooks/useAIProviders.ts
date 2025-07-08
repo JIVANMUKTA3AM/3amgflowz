@@ -58,6 +58,18 @@ export const AI_PROVIDERS: AIProvider[] = [
     maxTokens: 8192,
     category: "flagship"
   },
+  {
+    id: "deepseek",
+    name: "DeepSeek",
+    models: [
+      "deepseek-chat",
+      "deepseek-coder",
+      "deepseek-reasoner"
+    ],
+    supportsVision: false,
+    maxTokens: 8192,
+    category: "flagship"
+  },
 ];
 
 export const getModelInfo = (model: string) => {
@@ -88,6 +100,11 @@ export const getModelInfo = (model: string) => {
     "gemini-1.5-pro": { description: "Modelo Pro anterior", category: "legacy" },
     "gemini-1.5-flash": { description: "Modelo Flash anterior", category: "legacy" },
     "gemini-1.0-pro": { description: "Versão 1.0 básica", category: "legacy" },
+
+    // DeepSeek Models
+    "deepseek-chat": { description: "Modelo de chat geral", recommended: true, category: "flagship" },
+    "deepseek-coder": { description: "Especializado em programação", category: "coding" },
+    "deepseek-reasoner": { description: "Focado em raciocínio lógico", category: "reasoning" },
   };
   
   return {

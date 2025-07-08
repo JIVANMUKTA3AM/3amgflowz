@@ -1,5 +1,3 @@
-
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -128,6 +126,10 @@ serve(async (req) => {
         console.log('Using Google API');
         aiResponse = await callGemini(agentConfig, user_message);
         tokensUsed = aiResponse.usageMetadata?.totalTokenCount || 0;
+      } else if (agentConfig.model.includes('deepseek')) {
+        console.log('Using DeepSeek API');
+        aiResponse = await callDeepSeek(agentConfig, user_message);
+        tokensUsed = aiResponse.usage?.total_tokens || 0;
       } else {
         console.log('Unknown model, defaulting to OpenAI');
         aiResponse = await callOpenAI(agentConfig, user_message);
@@ -391,10 +393,54 @@ async function callGemini(agentConfig: any, userMessage: string) {
   return result;
 }
 
+async function callDeepSeek(agentConfig: any, userMessage: string) {
+  const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
+  if (!deepseekApiKey) {
+    throw new Error('Chave da API DeepSeek não configurada');
+  }
+  
+  console.log('Making DeepSeek API call with model:', agentConfig.model);
+  
+  const requestBody = {
+    model: agentConfig.model,
+    messages: [
+      { role: 'system', content: agentConfig.prompt },
+      { role: 'user', content: userMessage }
+    ],
+    temperature: agentConfig.temperature || 0.7,
+    max_tokens: agentConfig.max_tokens || 1000,
+  };
+  
+  console.log('DeepSeek request body:', JSON.stringify(requestBody, null, 2));
+  
+  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${deepseekApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  });
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('DeepSeek API error response:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText
+    });
+    throw new Error(`Erro da API DeepSeek: ${response.status} - ${errorText}`);
+  }
+  
+  const result = await response.json();
+  console.log('DeepSeek API response received successfully');
+  return result;
+}
+
 function extractResponseText(aiResponse: any, model: string): string {
   try {
-    if (model.includes('gpt') || model.includes('o1') || model.includes('o3') || model.includes('o4')) {
-      return aiResponse.choices?.[0]?.message?.content || 'Erro ao processar resposta da OpenAI';
+    if (model.includes('gpt') || model.includes('o1') || model.includes('o3') || model.includes('o4') || model.includes('deepseek')) {
+      return aiResponse.choices?.[0]?.message?.content || 'Erro ao processar resposta da OpenAI/DeepSeek';
     } else if (model.includes('claude') || model.includes('anthropic')) {
       return aiResponse.content?.[0]?.text || 'Erro ao processar resposta do Claude';
     } else if (model.includes('gemini') || model.includes('google')) {
@@ -406,4 +452,3 @@ function extractResponseText(aiResponse: any, model: string): string {
   
   return 'Erro ao processar resposta do modelo de IA';
 }
-
