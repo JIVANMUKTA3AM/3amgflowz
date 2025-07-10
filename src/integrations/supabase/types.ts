@@ -387,6 +387,57 @@ export type Database = {
           },
         ]
       }
+      historico_financeiro: {
+        Row: {
+          agent_id: string | null
+          created_at: string
+          dados_extras: Json | null
+          data_processamento: string | null
+          data_transacao: string
+          descricao: string
+          id: string
+          metodo_pagamento: string | null
+          referencia_id: string | null
+          referencia_tipo: string | null
+          status: string
+          tipo_transacao: string
+          user_id: string
+          valor: number
+        }
+        Insert: {
+          agent_id?: string | null
+          created_at?: string
+          dados_extras?: Json | null
+          data_processamento?: string | null
+          data_transacao?: string
+          descricao: string
+          id?: string
+          metodo_pagamento?: string | null
+          referencia_id?: string | null
+          referencia_tipo?: string | null
+          status?: string
+          tipo_transacao: string
+          user_id: string
+          valor: number
+        }
+        Update: {
+          agent_id?: string | null
+          created_at?: string
+          dados_extras?: Json | null
+          data_processamento?: string | null
+          data_transacao?: string
+          descricao?: string
+          id?: string
+          metodo_pagamento?: string | null
+          referencia_id?: string | null
+          referencia_tipo?: string | null
+          status?: string
+          tipo_transacao?: string
+          user_id?: string
+          valor?: number
+        }
+        Relationships: []
+      }
       integracoes_n8n: {
         Row: {
           created_at: string | null
@@ -428,8 +479,12 @@ export type Database = {
       }
       invoices: {
         Row: {
+          agent_id: string | null
           amount: number
+          cliente_nome: string | null
+          cliente_telefone: string | null
           created_at: string
+          dados_servico: Json | null
           description: string
           due_date: string
           id: string
@@ -439,13 +494,18 @@ export type Database = {
           payment_id: string | null
           payment_method: string | null
           payment_url: string | null
+          servico_tipo: string | null
           status: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          agent_id?: string | null
           amount: number
+          cliente_nome?: string | null
+          cliente_telefone?: string | null
           created_at?: string
+          dados_servico?: Json | null
           description: string
           due_date: string
           id?: string
@@ -455,13 +515,18 @@ export type Database = {
           payment_id?: string | null
           payment_method?: string | null
           payment_url?: string | null
+          servico_tipo?: string | null
           status?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          agent_id?: string | null
           amount?: number
+          cliente_nome?: string | null
+          cliente_telefone?: string | null
           created_at?: string
+          dados_servico?: Json | null
           description?: string
           due_date?: string
           id?: string
@@ -471,6 +536,7 @@ export type Database = {
           payment_id?: string | null
           payment_method?: string | null
           payment_url?: string | null
+          servico_tipo?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -519,6 +585,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mensalidades: {
+        Row: {
+          agent_id: string | null
+          cliente_email: string | null
+          cliente_nome: string
+          cliente_telefone: string | null
+          created_at: string
+          data_pagamento: string | null
+          data_vencimento: string
+          id: string
+          metodo_pagamento: string | null
+          observacoes: string | null
+          plano_tipo: string
+          status: string
+          updated_at: string
+          user_id: string
+          valor_mensal: number
+        }
+        Insert: {
+          agent_id?: string | null
+          cliente_email?: string | null
+          cliente_nome: string
+          cliente_telefone?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento: string
+          id?: string
+          metodo_pagamento?: string | null
+          observacoes?: string | null
+          plano_tipo: string
+          status?: string
+          updated_at?: string
+          user_id: string
+          valor_mensal: number
+        }
+        Update: {
+          agent_id?: string | null
+          cliente_email?: string | null
+          cliente_nome?: string
+          cliente_telefone?: string | null
+          created_at?: string
+          data_pagamento?: string | null
+          data_vencimento?: string
+          id?: string
+          metodo_pagamento?: string | null
+          observacoes?: string | null
+          plano_tipo?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          valor_mensal?: number
+        }
+        Relationships: []
       }
       n8n_execution_logs: {
         Row: {
