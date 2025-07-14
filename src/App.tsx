@@ -1,136 +1,58 @@
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import PasswordReset from './pages/PasswordReset';
+import PasswordUpdate from './pages/PasswordUpdate';
+import Agents from './pages/Agents';
+import AgentDetail from './pages/AgentDetail';
+import NewAgent from './pages/NewAgent';
+import EditAgent from './pages/EditAgent';
+import Invoices from './pages/Invoices';
+import NewInvoice from './pages/NewInvoice';
+import EditInvoice from './pages/EditInvoice';
+import SubscriptionManagement from './pages/SubscriptionManagement';
+import Payments from './pages/Payments';
+import PaymentMethod from './pages/PaymentMethod';
+import Webhooks from './pages/Webhooks';
+import NewWebhook from './pages/NewWebhook';
+import EditWebhook from './pages/EditWebhook';
+import Workflow from './pages/Workflow';
+import WebhookTesting from "@/pages/WebhookTesting";
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import AdminRoute from "@/components/AdminRoute";
-import RoleBasedRouter from "@/components/RoleBasedRouter";
-
-// Pages
-import Index from "@/pages/Index";
-import Auth from "@/pages/Auth";
-import Dashboard from "@/pages/Dashboard";
-import AdminWebhooks from "@/pages/AdminWebhooks";
-import Onboarding from "@/pages/Onboarding";
-import TestChat from "@/pages/TestChat";
-import ClientDashboard from "@/pages/ClientDashboard";
-import ResetPassword from "@/pages/ResetPassword";
-import NotFound from "@/pages/NotFound";
-import Subscription from "@/pages/Subscription";
-import Agentes from "@/pages/Agentes";
-import BillingConfig from "@/pages/BillingConfig";
-import CRM from "@/pages/CRM";
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/onboarding" element={
-              <ProtectedRoute>
-                <Onboarding />
-              </ProtectedRoute>
-            } />
-            <Route path="/test-chat" element={
-              <ProtectedRoute>
-                <TestChat />
-              </ProtectedRoute>
-            } />
-            <Route path="/client-dashboard" element={
-              <ProtectedRoute>
-                <ClientDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/subscription" element={
-              <ProtectedRoute>
-                <Subscription />
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <RoleBasedRouter />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin-webhooks" element={
-              <ProtectedRoute>
-                <AdminRoute>
-                  <AdminWebhooks />
-                </AdminRoute>
-              </ProtectedRoute>
-            } />
-            <Route path="/agentes" element={
-              <ProtectedRoute>
-                <Agentes />
-              </ProtectedRoute>
-            } />
-            <Route path="/integracoes" element={
-              <ProtectedRoute>
-                <BillingConfig />
-              </ProtectedRoute>
-            } />
-            <Route path="/fluxos" element={
-              <ProtectedRoute>
-                <TestChat />
-              </ProtectedRoute>
-            } />
-            <Route path="/database-management" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/subscription-management" element={
-              <ProtectedRoute>
-                <Subscription />
-              </ProtectedRoute>
-            } />
-            <Route path="/documentacao" element={
-              <ProtectedRoute>
-                <NotFound />
-              </ProtectedRoute>
-            } />
-            <Route path="/arquitetura" element={
-              <ProtectedRoute>
-                <NotFound />
-              </ProtectedRoute>
-            } />
-            <Route path="/modelo-dados" element={
-              <ProtectedRoute>
-                <NotFound />
-              </ProtectedRoute>
-            } />
-            <Route path="/n8n-management" element={
-              <ProtectedRoute>
-                <NotFound />
-              </ProtectedRoute>
-            } />
-            <Route path="/pagamentos" element={
-              <ProtectedRoute>
-                <Subscription />
-              </ProtectedRoute>
-            } />
-            <Route path="/crm" element={
-              <ProtectedRoute>
-                <CRM />
-              </ProtectedRoute>
-            } />
-            
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/password-reset" element={<PasswordReset />} />
+        <Route path="/password-update" element={<PasswordUpdate />} />
+        <Route path="/agents" element={<Agents />} />
+        <Route path="/agents/:id" element={<AgentDetail />} />
+        <Route path="/new-agent" element={<NewAgent />} />
+        <Route path="/edit-agent/:id" element={<EditAgent />} />
+        <Route path="/invoices" element={<Invoices />} />
+        <Route path="/new-invoice" element={<NewInvoice />} />
+        <Route path="/edit-invoice/:id" element={<EditInvoice />} />
+        <Route path="/subscription-management" element={<SubscriptionManagement />} />
+        <Route path="/pagamentos" element={<Payments />} />
+        <Route path="/pagamento-metodo" element={<PaymentMethod />} />
+        <Route path="/webhooks" element={<Webhooks />} />
+        <Route path="/new-webhook" element={<NewWebhook />} />
+        <Route path="/edit-webhook/:id" element={<EditWebhook />} />
+        <Route path="/workflow" element={<Workflow />} />
+        <Route path="/webhook-testing" element={<WebhookTesting />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;
