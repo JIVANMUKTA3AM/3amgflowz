@@ -22,6 +22,7 @@ import NotFound from "@/pages/NotFound";
 import Subscription from "@/pages/Subscription";
 import Agentes from "@/pages/Agentes";
 import BillingConfig from "@/pages/BillingConfig";
+import CRM from "@/pages/CRM";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,11 @@ const App = () => (
             <Route path="/pagamentos" element={
               <ProtectedRoute>
                 <Subscription />
+              </ProtectedRoute>
+            } />
+            <Route path="/crm" element={
+              <ProtectedRoute>
+                <CRM />
               </ProtectedRoute>
             } />
             
