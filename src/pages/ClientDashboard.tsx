@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { BarChart3, MessageCircle, Users, Settings } from "lucide-react";
+import { BarChart3, MessageCircle, Users, Settings, Users2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClientHeader from "@/components/client/ClientHeader";
 import MetricsCards from "@/components/client/MetricsCards";
@@ -9,9 +9,16 @@ import ChannelsOverview from "@/components/client/ChannelsOverview";
 import ChatTab from "@/components/client/ChatTab";
 import LogsTab from "@/components/client/LogsTab";
 import SettingsTab from "@/components/client/SettingsTab";
+import CRMMetrics from "@/components/crm/CRMMetrics";
+import ClientsList from "@/components/crm/ClientsList";
+import SalesPipeline from "@/components/crm/SalesPipeline";
+import InteractionHistory from "@/components/crm/InteractionHistory";
+import ClientForm from "@/components/crm/ClientForm";
 
 const ClientDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [isClientFormOpen, setIsClientFormOpen] = useState(false);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
   // Métricas simuladas do cliente
   const clientMetrics = {
@@ -74,7 +81,7 @@ const ClientDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-white/80 backdrop-blur-sm shadow-lg border border-white/50">
+          <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur-sm shadow-lg border border-white/50">
             <TabsTrigger 
               value="overview" 
               className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
@@ -95,6 +102,13 @@ const ClientDashboard = () => {
             >
               <Users className="h-4 w-4" />
               Conversas
+            </TabsTrigger>
+            <TabsTrigger 
+              value="crm" 
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
+            >
+              <Users2 className="h-4 w-4" />
+              CRM
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
@@ -125,11 +139,63 @@ const ClientDashboard = () => {
             />
           </TabsContent>
 
+          <TabsContent value="crm" className="mt-8">
+            <div className="space-y-8">
+              {/* CRM Metrics */}
+              <CRMMetrics className="mb-8" />
+
+              {/* CRM Content in Tabs */}
+              <Tabs defaultValue="clients" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-8">
+                  <TabsTrigger value="clients" className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    Clientes
+                  </TabsTrigger>
+                  <TabsTrigger value="pipeline" className="flex items-center gap-2">
+                    <BarChart3 className="h-4 w-4" />
+                    Pipeline
+                  </TabsTrigger>
+                  <TabsTrigger value="interactions" className="flex items-center gap-2">
+                    <MessageCircle className="h-4 w-4" />
+                    Interações
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="clients" className="space-y-6">
+                  <ClientsList 
+                    onEditClient={(clientId) => {
+                      setSelectedClientId(clientId);
+                      setIsClientFormOpen(true);
+                    }}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="pipeline" className="space-y-6">
+                  <SalesPipeline />
+                </TabsContent>
+                
+                <TabsContent value="interactions" className="space-y-6">
+                  <InteractionHistory />
+                </TabsContent>
+              </Tabs>
+            </div>
+          </TabsContent>
+
           <TabsContent value="settings" className="mt-8">
             <SettingsTab />
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Modal de formulário de cliente */}
+      <ClientForm
+        isOpen={isClientFormOpen}
+        onClose={() => {
+          setIsClientFormOpen(false);
+          setSelectedClientId(null);
+        }}
+        clientId={selectedClientId}
+      />
     </div>
   );
 };
