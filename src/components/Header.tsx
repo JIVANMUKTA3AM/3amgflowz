@@ -36,12 +36,12 @@ interface HeaderProps {
 
 const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { logout } = useAuth();
+  const { signOut } = useAuth();
   const { role } = useUserRole();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await logout();
+    await signOut();
     navigate('/');
   };
 
