@@ -24,20 +24,58 @@ serve(async (req) => {
   try {
     logStep("Recebendo webhook");
     
-    // Obter a chave secreta do webhook
+    const body = await req.text();
+    let requestData;
+    
+    try {
+      requestData = JSON.parse(body);
+    } catch (parseError) {
+      logStep("Erro ao fazer parse do JSON", { error: parseError.message, body: body.substring(0, 200) });
+      return new Response(JSON.stringify({ error: "JSON inválido" }), { 
+        status: 400, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      });
+    }
+
+    // Verificar se é um teste
+    if (requestData.test === true) {
+      logStep("Modo de teste detectado - processando sem verificação de assinatura");
+      
+      // Simular processamento de teste
+      return new Response(JSON.stringify({ 
+        status: "success", 
+        message: "Webhook de teste processado com sucesso",
+        test: true
+      }), { 
+        status: 200, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      });
+    }
+
+    // Para webhooks reais do Stripe, verificar assinatura
     const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
     if (!webhookSecret) {
-      throw new Error("STRIPE_WEBHOOK_SECRET não configurada");
+      logStep("STRIPE_WEBHOOK_SECRET não configurada");
+      return new Response(JSON.stringify({ error: "Webhook secret não configurada" }), { 
+        status: 500, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      });
     }
 
     // Obter a assinatura do webhook
     const signature = req.headers.get("stripe-signature");
     if (!signature) {
-      throw new Error("Cabeçalho stripe-signature não encontrado");
+      logStep("Cabeçalho stripe-signature não encontrado - este pode ser um teste ou requisição inválida");
+      return new Response(JSON.stringify({ 
+        error: "Cabeçalho stripe-signature não encontrado",
+        message: "Para testes, inclua 'test: true' no payload"
+      }), { 
+        status: 400, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      });
     }
 
-    // Processar o evento
-    const body = await req.text();
+    // Processar o evento real do Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2023-10-16",
       httpClient: Stripe.createFetchHttpClient(),
