@@ -21,14 +21,19 @@ serve(async (req) => {
   }
 
   try {
-    // Get request data
-    const { planType, successUrl, cancelUrl }: CheckoutRequest = await req.json();
+    console.log('=== CREATE SUBSCRIPTION CHECKOUT START ===');
     
-    console.log('Creating checkout for plan:', planType);
+    const { planType, successUrl, cancelUrl }: CheckoutRequest = await req.json();
+    console.log('Request data:', { planType, successUrl, cancelUrl });
     
     // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
+    
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Missing Supabase configuration');
+    }
+    
     const supabase = createClient(supabaseUrl, supabaseKey, {
       auth: { persistSession: false }
     });
@@ -107,7 +112,7 @@ serve(async (req) => {
           price_data: {
             currency: 'brl',
             product_data: {
-              name: 'AgentFlow - Plano Completo',
+              name: 'AgentFlow - Plano Premium',
               description: 'Todos os 3 agentes IA incluídos',
             },
             unit_amount: 49900, // R$ 499,00 em centavos
@@ -127,6 +132,7 @@ serve(async (req) => {
     });
     
     console.log('Checkout session created:', session.id);
+    console.log('=== CREATE SUBSCRIPTION CHECKOUT SUCCESS ===');
     
     return new Response(
       JSON.stringify({ url: session.url }),
@@ -136,6 +142,7 @@ serve(async (req) => {
       }
     );
   } catch (error) {
+    console.error('=== CREATE SUBSCRIPTION CHECKOUT ERROR ===');
     console.error('Error creating checkout session:', error);
     return new Response(
       JSON.stringify({ 

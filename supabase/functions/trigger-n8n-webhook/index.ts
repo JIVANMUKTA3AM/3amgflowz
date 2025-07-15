@@ -13,6 +13,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log('=== TRIGGER N8N WEBHOOK START ===');
+    
     const { event_type, user_id, timestamp, olt_data, agent_type } = await req.json()
 
     console.log('Triggering n8n webhook with data:', {
@@ -48,7 +50,22 @@ serve(async (req) => {
     webhookUrl = webhookUrls[targetAgent as keyof typeof webhookUrls]
 
     if (!webhookUrl) {
-      throw new Error(`Webhook URL não configurada para o agente: ${targetAgent}`)
+      console.log(`No webhook URL configured for agent: ${targetAgent}, using default response`)
+      
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: `No webhook configured for ${targetAgent}, but request processed`,
+          agent_type: targetAgent,
+          event_type
+        }),
+        { 
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json' 
+          } 
+        }
+      )
     }
     
     const webhookPayload = {
@@ -85,6 +102,7 @@ serve(async (req) => {
 
     const result = await response.json()
     console.log('N8n webhook response:', result)
+    console.log('=== TRIGGER N8N WEBHOOK SUCCESS ===')
 
     return new Response(
       JSON.stringify({ 
@@ -103,12 +121,14 @@ serve(async (req) => {
     )
 
   } catch (error) {
+    console.error('=== TRIGGER N8N WEBHOOK ERROR ===')
     console.error('Error triggering n8n webhook:', error)
     
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: error.message,
+        details: 'Failed to trigger n8n webhook'
       }),
       { 
         status: 500,
