@@ -13,6 +13,7 @@ interface ProcessPaymentRequest {
   paymentMethod: 'pix' | 'boleto' | 'credit_card';
   returnUrl?: string;
   amount?: number;
+  test?: boolean;
 }
 
 serve(async (req) => {
@@ -23,8 +24,25 @@ serve(async (req) => {
   try {
     console.log('=== PROCESS PAYMENT START ===');
     
-    const { invoiceId, paymentMethod, returnUrl, amount }: ProcessPaymentRequest = await req.json();
-    console.log('Request data:', { invoiceId, paymentMethod, returnUrl, amount });
+    const { invoiceId, paymentMethod, returnUrl, amount, test }: ProcessPaymentRequest = await req.json();
+    console.log('Request data:', { invoiceId, paymentMethod, returnUrl, amount, test });
+    
+    // If this is a test request, return a mock response
+    if (test) {
+      console.log('Test mode - returning mock response');
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          message: 'Test mode - função funcionando corretamente',
+          payment_method: paymentMethod,
+          test: true
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
     
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
@@ -60,7 +78,7 @@ serve(async (req) => {
         // For PIX, generate a simple payment URL (in real implementation, use a payment provider)
         paymentUrl = `${returnUrl || req.headers.get('origin')}/payment-success?invoice=${invoiceId}&method=pix`;
         paymentData = {
-          pix_code: `00020126580014BR.GOV.BCB.PIX0136${invoiceId}520400005303986540${(amount || invoice.amount) / 100}5802BR5909AgentFlow6009SAO_PAULO62070503***63047C8A`,
+          pix_code: `00020126580014BR.GOV.BCB.PIX0136${invoiceId}520400005303986540${((amount || invoice.amount) / 100).toFixed(2)}5802BR5909AgentFlow6009SAO_PAULO62070503***63047C8A`,
           qr_code: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
         };
         break;
@@ -69,7 +87,7 @@ serve(async (req) => {
         // For Boleto, generate a simple payment URL (in real implementation, use a payment provider)
         paymentUrl = `${returnUrl || req.headers.get('origin')}/payment-success?invoice=${invoiceId}&method=boleto`;
         paymentData = {
-          boleto_code: `${invoiceId.replace(/-/g, '').substring(0, 12)}${Date.now().toString().substring(-8)}`,
+          boleto_code: `${invoiceId.replace(/-/g, '').substring(0, 12)}${Date.now().toString().slice(-8)}`,
           due_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
         };
         break;

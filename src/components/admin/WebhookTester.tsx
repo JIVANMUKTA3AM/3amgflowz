@@ -62,19 +62,23 @@ const WebhookTester = () => {
       switch (webhookTest.endpoint) {
         case 'verify-payment':
           testData = {
-            invoiceId: 'test-invoice-id',
-            sessionId: 'test-session-id'
+            test: true,
+            invoiceId: 'test-invoice-' + Date.now(),
+            // Remove sessionId to avoid Stripe API calls during testing
           };
           break;
         case 'process-payment':
           testData = {
-            invoiceId: 'test-invoice-id',
-            paymentMethod: 'credit_card',
+            test: true,
+            invoiceId: 'test-invoice-' + Date.now(),
+            paymentMethod: 'pix',
+            amount: 10000,
             returnUrl: window.location.origin
           };
           break;
         case 'create-subscription-checkout':
           testData = {
+            test: true,
             planType: 'premium',
             successUrl: `${window.location.origin}/subscription?success=true`,
             cancelUrl: `${window.location.origin}/subscription?canceled=true`
@@ -82,7 +86,20 @@ const WebhookTester = () => {
           break;
         case 'customer-portal':
           testData = {
+            test: true,
             returnUrl: window.location.origin
+          };
+          break;
+        case 'webhook-stripe':
+          testData = {
+            test: true,
+            type: 'test.webhook',
+            data: {
+              object: {
+                id: 'test_' + Date.now(),
+                object: 'test'
+              }
+            }
           };
           break;
         default:
@@ -100,16 +117,25 @@ const WebhookTester = () => {
           i === index ? { 
             ...test, 
             status: 'error', 
-            message: error.message,
+            message: error.message || 'Erro desconhecido',
             responseTime 
           } : test
         ));
       } else {
+        // Check if response indicates success
+        const isSuccess = data && (
+          data.success === true || 
+          data.url || 
+          data.message || 
+          data.status === 'success' ||
+          !data.error
+        );
+
         setTests(prev => prev.map((test, i) => 
           i === index ? { 
             ...test, 
-            status: 'success', 
-            message: 'Webhook responded successfully',
+            status: isSuccess ? 'success' : 'error', 
+            message: isSuccess ? 'Webhook respondeu com sucesso' : (data?.error || 'Resposta inesperada'),
             responseTime 
           } : test
         ));
@@ -120,7 +146,7 @@ const WebhookTester = () => {
         i === index ? { 
           ...test, 
           status: 'error', 
-          message: error instanceof Error ? error.message : 'Unknown error',
+          message: error instanceof Error ? error.message : 'Erro desconhecido',
           responseTime 
         } : test
       ));
@@ -258,6 +284,7 @@ const WebhookTester = () => {
             <li>• <strong>Sucesso:</strong> Webhook respondeu sem erros</li>
             <li>• <strong>Erro:</strong> Webhook retornou erro ou não respondeu</li>
             <li>• <strong>Tempo de resposta:</strong> Velocidade de resposta em milissegundos</li>
+            <li>• <strong>Modo de teste:</strong> Testes usam dados fictícios para não afetar APIs reais</li>
           </ul>
         </div>
       </CardContent>

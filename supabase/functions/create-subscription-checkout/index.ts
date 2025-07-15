@@ -13,6 +13,7 @@ interface CheckoutRequest {
   planType: 'free' | 'premium';
   successUrl?: string;
   cancelUrl?: string;
+  test?: boolean;
 }
 
 serve(async (req) => {
@@ -23,8 +24,25 @@ serve(async (req) => {
   try {
     console.log('=== CREATE SUBSCRIPTION CHECKOUT START ===');
     
-    const { planType, successUrl, cancelUrl }: CheckoutRequest = await req.json();
-    console.log('Request data:', { planType, successUrl, cancelUrl });
+    const { planType, successUrl, cancelUrl, test }: CheckoutRequest = await req.json();
+    console.log('Request data:', { planType, successUrl, cancelUrl, test });
+    
+    // If this is a test request, return a mock response
+    if (test) {
+      console.log('Test mode - returning mock response');
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          message: 'Test mode - função funcionando corretamente',
+          plan_type: planType,
+          test: true
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
     
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL');

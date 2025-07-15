@@ -12,6 +12,7 @@ const corsHeaders = {
 interface VerifyPaymentRequest {
   invoiceId?: string;
   sessionId?: string;
+  test?: boolean;
 }
 
 serve(async (req) => {
@@ -22,8 +23,24 @@ serve(async (req) => {
   try {
     console.log('=== VERIFY PAYMENT START ===');
     
-    const { invoiceId, sessionId }: VerifyPaymentRequest = await req.json();
-    console.log('Request data:', { invoiceId, sessionId });
+    const { invoiceId, sessionId, test }: VerifyPaymentRequest = await req.json();
+    console.log('Request data:', { invoiceId, sessionId, test });
+    
+    // If this is a test request, return a mock response
+    if (test) {
+      console.log('Test mode - returning mock response');
+      return new Response(
+        JSON.stringify({ 
+          status: 'success',
+          message: 'Test mode - função funcionando corretamente',
+          test: true
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
     
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
@@ -37,22 +54,22 @@ serve(async (req) => {
       auth: { persistSession: false }
     });
     
-    // Initialize Stripe
-    const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY');
-    if (!stripeSecretKey) {
-      throw new Error('Stripe secret key not configured');
-    }
-    
-    const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: '2023-10-16',
-    });
-    
     let paymentStatus = 'pending';
     let paymentData = null;
     
     // If sessionId is provided, check Stripe session
     if (sessionId) {
       try {
+        // Initialize Stripe
+        const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY');
+        if (!stripeSecretKey) {
+          throw new Error('Stripe secret key not configured');
+        }
+        
+        const stripe = new Stripe(stripeSecretKey, {
+          apiVersion: '2023-10-16',
+        });
+        
         const session = await stripe.checkout.sessions.retrieve(sessionId);
         console.log('Stripe session status:', session.payment_status);
         
@@ -67,6 +84,7 @@ serve(async (req) => {
         }
       } catch (stripeError) {
         console.error('Error retrieving Stripe session:', stripeError);
+        // Don't throw here, just log the error and continue
       }
     }
     

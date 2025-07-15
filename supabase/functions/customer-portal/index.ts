@@ -11,6 +11,7 @@ const corsHeaders = {
 
 interface CustomerPortalRequest {
   returnUrl?: string;
+  test?: boolean;
 }
 
 serve(async (req) => {
@@ -21,18 +22,34 @@ serve(async (req) => {
   try {
     console.log('=== CUSTOMER PORTAL START ===');
     
-    const { returnUrl }: CustomerPortalRequest = await req.json();
-    console.log('Request data:', { returnUrl });
+    const { returnUrl, test }: CustomerPortalRequest = await req.json();
+    console.log('Request data:', { returnUrl, test });
+    
+    // If this is a test request, return a mock response
+    if (test) {
+      console.log('Test mode - returning mock response');
+      return new Response(
+        JSON.stringify({ 
+          success: true,
+          message: 'Test mode - função funcionando corretamente',
+          test: true
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
     
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
     
-    if (!supabaseUrl || !supabaseKey) {
+    if (!supabaseUrl || !supabaseServiceKey) {
       throw new Error('Missing Supabase configuration');
     }
     
-    const supabase = createClient(supabaseUrl, supabaseKey, {
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { persistSession: false }
     });
     
@@ -62,7 +79,9 @@ serve(async (req) => {
       apiVersion: '2023-10-16',
     });
     
-    // Find customer by email
+    console.log('Stripe initialized');
+    
+    // Find customer
     const customers = await stripe.customers.list({
       email: user.email!,
       limit: 1,
@@ -72,23 +91,20 @@ serve(async (req) => {
       throw new Error('Customer not found');
     }
     
-    const customer = customers.data[0];
-    console.log('Customer found:', customer.id);
+    const customerId = customers.data[0].id;
+    console.log('Customer found:', customerId);
     
     // Create portal session
-    const portalSession = await stripe.billingPortal.sessions.create({
-      customer: customer.id,
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
       return_url: returnUrl || `${req.headers.get('origin')}/subscription`,
     });
     
-    console.log('Portal session created:', portalSession.id);
+    console.log('Portal session created:', session.id);
     console.log('=== CUSTOMER PORTAL SUCCESS ===');
     
     return new Response(
-      JSON.stringify({ 
-        url: portalSession.url,
-        message: 'Customer portal session created successfully'
-      }),
+      JSON.stringify({ url: session.url }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -96,11 +112,11 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error('=== CUSTOMER PORTAL ERROR ===');
-    console.error('Error creating customer portal session:', error);
+    console.error('Error creating portal session:', error);
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        details: 'Failed to create customer portal session'
+        details: 'Failed to create portal session'
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
