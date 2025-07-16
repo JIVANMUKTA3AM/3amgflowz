@@ -51,16 +51,19 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
     { name: "CRM", href: "/crm", icon: Users2 },
     { name: "Integrações", href: "/integracoes", icon: Zap },
     { name: "Fluxos", href: "/fluxos", icon: GitBranch },
+    { name: "Chat de Teste", href: "/test-chat", icon: MessageSquare },
+    { name: "Pagamentos", href: "/pagamentos", icon: CreditCard },
+    { name: "Assinatura", href: "/subscription", icon: CreditCard },
+    { name: "Onboarding", href: "/onboarding", icon: Settings },
     ...(role === 'admin' ? [
       { name: "Banco de Dados", href: "/database-management", icon: Database },
       { name: "Usuários", href: "/subscription-management", icon: Users },
       { name: "Webhooks Admin", href: "/admin-webhooks", icon: Webhook },
+      { name: "Documentação", href: "/documentacao", icon: FileText },
+      { name: "Arquitetura", href: "/arquitetura", icon: Layers },
+      { name: "Modelo de Dados", href: "/modelo-dados", icon: Table },
+      { name: "N8N Management", href: "/n8n-management", icon: Play },
     ] : []),
-    { name: "Documentação", href: "/documentacao", icon: FileText },
-    { name: "Arquitetura", href: "/arquitetura", icon: Layers },
-    { name: "Modelo de Dados", href: "/modelo-dados", icon: Table },
-    { name: "N8N Management", href: "/n8n-management", icon: Play },
-    { name: "Pagamentos", href: "/pagamentos", icon: CreditCard },
   ];
 
   return (
@@ -91,6 +94,9 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
             </Link>
             <Link to="/fluxos" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
               Fluxos
+            </Link>
+            <Link to="/onboarding" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              Onboarding
             </Link>
           </nav>
 
