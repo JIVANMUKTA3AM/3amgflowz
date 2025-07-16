@@ -1137,6 +1137,65 @@ export type Database = {
         }
         Relationships: []
       }
+      ont_monitoring: {
+        Row: {
+          created_at: string
+          id: string
+          interface_id: string
+          last_seen: string | null
+          olt_configuration_id: string
+          ont_id: string
+          ont_serial: string
+          optical_power_rx: number | null
+          optical_power_tx: number | null
+          status: string
+          temperature: number | null
+          updated_at: string
+          user_id: string
+          voltage: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interface_id: string
+          last_seen?: string | null
+          olt_configuration_id: string
+          ont_id: string
+          ont_serial: string
+          optical_power_rx?: number | null
+          optical_power_tx?: number | null
+          status?: string
+          temperature?: number | null
+          updated_at?: string
+          user_id: string
+          voltage?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interface_id?: string
+          last_seen?: string | null
+          olt_configuration_id?: string
+          ont_id?: string
+          ont_serial?: string
+          optical_power_rx?: number | null
+          optical_power_tx?: number | null
+          status?: string
+          temperature?: number | null
+          updated_at?: string
+          user_id?: string
+          voltage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ont_monitoring_olt_configuration_id_fkey"
+            columns: ["olt_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "olt_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -1428,6 +1487,103 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      snmp_data: {
+        Row: {
+          created_at: string
+          data_type: string
+          description: string | null
+          id: string
+          interface_index: number | null
+          oid: string
+          olt_configuration_id: string
+          ont_id: string | null
+          timestamp: string
+          user_id: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          data_type?: string
+          description?: string | null
+          id?: string
+          interface_index?: number | null
+          oid: string
+          olt_configuration_id: string
+          ont_id?: string | null
+          timestamp?: string
+          user_id: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          data_type?: string
+          description?: string | null
+          id?: string
+          interface_index?: number | null
+          oid?: string
+          olt_configuration_id?: string
+          ont_id?: string | null
+          timestamp?: string
+          user_id?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "snmp_data_olt_configuration_id_fkey"
+            columns: ["olt_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "olt_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      snmp_logs: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          oid: string | null
+          olt_configuration_id: string
+          operation_type: string
+          response_data: Json | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          oid?: string | null
+          olt_configuration_id: string
+          operation_type: string
+          response_data?: Json | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          oid?: string | null
+          olt_configuration_id?: string
+          operation_type?: string
+          response_data?: Json | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "snmp_logs_olt_configuration_id_fkey"
+            columns: ["olt_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "olt_configurations"
             referencedColumns: ["id"]
           },
         ]
