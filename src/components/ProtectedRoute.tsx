@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
+import { useUserRole } from '@/hooks/useUserRole';
 import { Loader2 } from 'lucide-react';
 
 interface ProtectedRouteProps {
@@ -12,6 +13,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading: authLoading } = useAuth();
   const { profile, isLoading: profileLoading } = useProfile();
+  const { role } = useUserRole();
 
   if (authLoading || profileLoading) {
     return (
@@ -28,7 +30,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Verificar se o usuário precisa completar o onboarding
+  // Admins têm acesso irrestrito (para testes)
+  if (role === 'admin') {
+    return <>{children}</>;
+  }
+
+  // Para clientes, verificar se precisa completar o onboarding
   if (profile?.agent_settings?.needs_onboarding && 
       profile?.agent_settings?.checkout_completed && 
       !profile?.agent_settings?.onboarding_completed) {

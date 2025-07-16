@@ -7,6 +7,7 @@ import AgentConfiguration from "./AgentConfiguration";
 import OLTConfiguration from "./OLTConfiguration";
 import ReviewAndActivate from "./ReviewAndActivate";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
+import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "@/hooks/use-toast";
 
 export interface OnboardingData {
@@ -29,6 +30,7 @@ export interface OnboardingData {
 
 const OnboardingWizard = () => {
   const [step, setStep] = useState(1);
+  const { role } = useUserRole();
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     selectedServices: [],
     numeroAssinantes: 0,
@@ -75,12 +77,18 @@ const OnboardingWizard = () => {
       
       toast({
         title: "Onboarding Concluído!",
-        description: "Suas configurações foram ativadas com sucesso.",
+        description: role === 'admin' 
+          ? "Teste concluído com sucesso! Os dados foram salvos para demonstração."
+          : "Suas configurações foram ativadas com sucesso.",
       });
 
-      // Redirect to subscription page to select plan
+      // Redirecionar baseado no tipo de usuário
       setTimeout(() => {
-        window.location.href = '/subscription';
+        if (role === 'admin') {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = '/subscription';
+        }
       }, 2000);
     } catch (error) {
       console.error('Error completing onboarding:', error);

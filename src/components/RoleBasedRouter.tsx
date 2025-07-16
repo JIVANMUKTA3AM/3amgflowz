@@ -1,11 +1,13 @@
 
 import { useProfile } from "@/hooks/useProfile";
+import { useUserRole } from "@/hooks/useUserRole";
 import { Navigate } from "react-router-dom";
 import RoleBasedDashboard from "./RoleBasedDashboard";
 import { Loader2 } from "lucide-react";
 
 const RoleBasedRouter = () => {
   const { profile, isLoading } = useProfile();
+  const { role } = useUserRole();
 
   if (isLoading) {
     return (
@@ -18,14 +20,14 @@ const RoleBasedRouter = () => {
     );
   }
 
+  // Admins sempre vão para o dashboard completo (não precisam do onboarding obrigatório)
+  if (role === 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   // Se não tem perfil, redireciona para onboarding
   if (!profile) {
     return <Navigate to="/onboarding" replace />;
-  }
-
-  // Se é admin (role principal), vai direto para o dashboard completo
-  if (profile.role === 'admin') {
-    return <Navigate to="/dashboard" replace />;
   }
 
   // Se não tem user_role_type definido, redireciona para onboarding
