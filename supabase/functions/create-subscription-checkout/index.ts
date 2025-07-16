@@ -10,7 +10,7 @@ const corsHeaders = {
 };
 
 interface CheckoutRequest {
-  planType: 'free' | 'premium';
+  planType: 'free' | 'flow_start' | 'flow_pro' | 'flow_power' | 'flow_enterprise' | 'flow_ultra';
   successUrl?: string;
   cancelUrl?: string;
   test?: boolean;
@@ -72,12 +72,26 @@ serve(async (req) => {
     const user = userData.user;
     console.log('User authenticated:', user.email);
     
-    // Only create checkout for premium plan
+    // Handle free plan
     if (planType === 'free') {
       return new Response(
         JSON.stringify({ 
           message: 'Free plan activated',
           url: successUrl || `${req.headers.get('origin')}/subscription?success=true`
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      );
+    }
+
+    // Handle Flow Ultra plan (custom solution)
+    if (planType === 'flow_ultra') {
+      return new Response(
+        JSON.stringify({ 
+          message: 'Entre em contato para soluções customizadas',
+          url: `${req.headers.get('origin')}/contact?plan=flow_ultra`
         }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -119,6 +133,19 @@ serve(async (req) => {
       customerId = customer.id;
       console.log('New customer created:', customerId);
     }
+
+    // Plan prices and names
+    const planData = {
+      flow_start: { price: 19900, name: 'Flow Start - Até 1.000 clientes' },
+      flow_pro: { price: 49900, name: 'Flow Pro - 1.001 a 3.000 clientes' },
+      flow_power: { price: 89900, name: 'Flow Power - 3.001 a 10.000 clientes' },
+      flow_enterprise: { price: 149700, name: 'Flow Enterprise - 10.001 a 30.000 clientes' }
+    };
+
+    const selectedPlan = planData[planType as keyof typeof planData];
+    if (!selectedPlan) {
+      throw new Error('Invalid plan type');
+    }
     
     // Create checkout session for subscription
     const session = await stripe.checkout.sessions.create({
@@ -130,10 +157,10 @@ serve(async (req) => {
           price_data: {
             currency: 'brl',
             product_data: {
-              name: 'AgentFlow - Plano Premium',
-              description: 'Todos os 3 agentes IA incluídos',
+              name: selectedPlan.name,
+              description: 'Plano Flow - Agentes IA para provedores de internet',
             },
-            unit_amount: 49900, // R$ 499,00 em centavos
+            unit_amount: selectedPlan.price,
             recurring: {
               interval: 'month',
             },

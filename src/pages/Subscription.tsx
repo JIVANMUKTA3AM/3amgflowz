@@ -7,6 +7,7 @@ import SubscriptionStatus from "@/components/SubscriptionStatus";
 import SubscriptionCheckout from "@/components/subscription/SubscriptionCheckout";
 import QuotaStatus from "@/components/subscription/QuotaStatus";
 import { useWorkflow } from "@/hooks/useWorkflow";
+import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
 import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
@@ -14,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Subscription = () => {
   const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
+  const { config: onboardingConfig } = useOnboardingConfig();
   const location = useLocation();
 
   useEffect(() => {
@@ -35,6 +37,8 @@ const Subscription = () => {
     }
   }, [location]);
 
+  const subscriberCount = onboardingConfig?.numero_assinantes || 0;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
@@ -43,10 +47,10 @@ const Subscription = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Assinaturas e Planos
+              Planos Flow
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-6">
-              Plano único e simples: todos os agentes por R$ 499/mês
+              Planos escaláveis baseados no número de assinantes do seu provedor
             </p>
             
             {/* Link para gerenciamento */}
@@ -66,7 +70,7 @@ const Subscription = () => {
             </TabsList>
             
             <TabsContent value="plans" className="space-y-6">
-              <SubscriptionCheckout />
+              <SubscriptionCheckout subscriberCount={subscriberCount} />
             </TabsContent>
             
             <TabsContent value="status" className="space-y-6">
@@ -76,9 +80,9 @@ const Subscription = () => {
             <TabsContent value="usage" className="space-y-6">
               <QuotaStatus 
                 currentUsage={{
-                  agents: 3, // Todos os agentes incluídos
-                  apiCalls: 0, // Será atualizado com dados reais
-                  integrations: 0 // Será atualizado com dados reais
+                  agents: 3,
+                  apiCalls: 0,
+                  integrations: 0
                 }}
               />
             </TabsContent>

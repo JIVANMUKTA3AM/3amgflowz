@@ -8,6 +8,7 @@ export interface OnboardingConfig {
   id?: string;
   user_id: string;
   selected_services: string[];
+  numero_assinantes?: number;
   agent_configs: Record<string, any>;
   whatsapp_config?: {
     phoneNumberId?: string;
@@ -70,6 +71,7 @@ export const useOnboardingConfig = () => {
       const dataToSave = {
         user_id: user.id,
         selected_services: configData.selected_services || [],
+        numero_assinantes: configData.numero_assinantes || 0,
         agent_configs: configData.agent_configs || {},
         whatsapp_config: configData.whatsapp_config || null,
         crm_config: configData.crm_config || null,

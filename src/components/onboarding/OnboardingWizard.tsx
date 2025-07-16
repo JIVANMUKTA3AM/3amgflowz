@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import ServiceSelection from "./ServiceSelection";
+import SubscriberCountStep from "./SubscriberCountStep";
 import IntegrationsConfig from "./IntegrationsConfig";
 import AgentConfiguration from "./AgentConfiguration";
 import OLTConfiguration from "./OLTConfiguration";
@@ -10,6 +11,7 @@ import { toast } from "@/hooks/use-toast";
 
 export interface OnboardingData {
   selectedServices: string[];
+  numeroAssinantes: number;
   whatsappConfig?: {
     phoneNumberId?: string;
     accessToken?: string;
@@ -29,6 +31,7 @@ const OnboardingWizard = () => {
   const [step, setStep] = useState(1);
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     selectedServices: [],
+    numeroAssinantes: 0,
     agentConfigs: {},
     oltConfigs: []
   });
@@ -39,6 +42,7 @@ const OnboardingWizard = () => {
     // Auto-save configuration on each step
     saveConfig({
       selected_services: onboardingData.selectedServices,
+      numero_assinantes: onboardingData.numeroAssinantes,
       agent_configs: onboardingData.agentConfigs,
       whatsapp_config: onboardingData.whatsappConfig,
       olt_configs: onboardingData.oltConfigs || [],
@@ -62,6 +66,7 @@ const OnboardingWizard = () => {
     try {
       await completeOnboarding({
         selected_services: onboardingData.selectedServices,
+        numero_assinantes: onboardingData.numeroAssinantes,
         agent_configs: onboardingData.agentConfigs,
         whatsapp_config: onboardingData.whatsappConfig,
         olt_configs: onboardingData.oltConfigs || [],
@@ -73,9 +78,9 @@ const OnboardingWizard = () => {
         description: "Suas configurações foram ativadas com sucesso.",
       });
 
-      // Redirect to client dashboard
+      // Redirect to subscription page to select plan
       setTimeout(() => {
-        window.location.href = '/client-dashboard';
+        window.location.href = '/subscription';
       }, 2000);
     } catch (error) {
       console.error('Error completing onboarding:', error);
@@ -99,6 +104,15 @@ const OnboardingWizard = () => {
       )}
 
       {step === 2 && (
+        <SubscriberCountStep
+          subscriberCount={onboardingData.numeroAssinantes}
+          onSubscriberCountChange={(count) => handleUpdate({ numeroAssinantes: count })}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+        />
+      )}
+
+      {step === 3 && (
         <IntegrationsConfig
           selectedServices={onboardingData.selectedServices}
           onboardingData={onboardingData}
@@ -108,7 +122,7 @@ const OnboardingWizard = () => {
         />
       )}
 
-      {step === 3 && (
+      {step === 4 && (
         <AgentConfiguration
           selectedServices={onboardingData.selectedServices}
           agentConfigs={onboardingData.agentConfigs}
@@ -118,7 +132,7 @@ const OnboardingWizard = () => {
         />
       )}
 
-      {step === 4 && (
+      {step === 5 && (
         <OLTConfiguration
           selectedServices={onboardingData.selectedServices}
           oltConfigs={onboardingData.oltConfigs || []}
@@ -128,7 +142,7 @@ const OnboardingWizard = () => {
         />
       )}
 
-      {step === 5 && (
+      {step === 6 && (
         <ReviewAndActivate
           onboardingData={onboardingData}
           onPrevious={handlePrevious}
