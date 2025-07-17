@@ -1,6 +1,6 @@
 
 import { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
 import { useUserRole } from '@/hooks/useUserRole';
@@ -8,12 +8,14 @@ import { Loader2 } from 'lucide-react';
 
 interface ProtectedRouteProps {
   children: ReactNode;
+  requireRole?: string[];
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children, requireRole }: ProtectedRouteProps) => {
   const { user, loading: authLoading } = useAuth();
   const { profile, isLoading: profileLoading } = useProfile();
   const { role } = useUserRole();
+  const location = useLocation();
 
   if (authLoading || profileLoading) {
     return (
@@ -26,16 +28,30 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
+  // Se não está autenticado, redireciona para login
   if (!user) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
-  // Admins têm acesso irrestrito (para testes)
+  // Se tem role específico requerido, verifica se o usuário tem permissão
+  if (requireRole && requireRole.length > 0) {
+    const userRole = role || profile?.role || 'user';
+    if (!requireRole.includes(userRole)) {
+      return <Navigate to="/client-dashboard" replace />;
+    }
+  }
+
+  // Admins têm acesso irrestrito
   if (role === 'admin') {
     return <>{children}</>;
   }
 
-  // Para clientes, verificar se precisa completar o onboarding
+  // Para onboarding, sempre permitir acesso
+  if (location.pathname === '/onboarding') {
+    return <>{children}</>;
+  }
+
+  // Para usuários regulares, verificar se precisam completar o onboarding
   if (profile?.agent_settings?.needs_onboarding && 
       profile?.agent_settings?.checkout_completed && 
       !profile?.agent_settings?.onboarding_completed) {

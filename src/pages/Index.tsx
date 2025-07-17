@@ -7,7 +7,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Activity, TrendingUp, Shield, Menu, X, Settings, Database, Webhook, Zap, Bot, MessageSquare, BarChart3, CreditCard } from "lucide-react";
+import { Users, Activity, TrendingUp, Shield, Bot, MessageSquare, BarChart3, CreditCard, Database, Webhook, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import UserMenu from "@/components/UserMenu";
@@ -17,7 +17,6 @@ const Index = () => {
   const { profile, isLoading: profileLoading } = useProfile();
   const { role: userRole, loading: roleLoading } = useUserRole();
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     // Aguardar que tanto o perfil quanto o role sejam carregados
@@ -226,7 +225,7 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Seção de Acesso Rápido Expandida */}
+        {/* Seção de Acesso Rápido */}
         <Card className="mt-12 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Acesso Rápido - Funcionalidades Principais</CardTitle>
@@ -236,9 +235,8 @@ const Index = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Row 1 - Principais */}
-              <button
-                onClick={() => navigate("/admin-webhooks")}
+              <Link
+                to="/admin-webhooks"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-blue-50 border-blue-200"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -248,10 +246,10 @@ const Index = () => {
                 <p className="text-sm text-blue-600">
                   Configure e teste agentes com webhooks
                 </p>
-              </button>
+              </Link>
               
-              <button
-                onClick={() => navigate("/dashboard")}
+              <Link
+                to="/dashboard"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-purple-50 border-purple-200"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -261,10 +259,10 @@ const Index = () => {
                 <p className="text-sm text-purple-600">
                   Acesse o painel administrativo completo
                 </p>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => navigate("/client-dashboard")}
+              <Link
+                to="/client-dashboard"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-green-50 border-green-200"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -274,11 +272,10 @@ const Index = () => {
                 <p className="text-sm text-green-600">
                   Acesse a interface do cliente para testes
                 </p>
-              </button>
+              </Link>
 
-              {/* Row 2 - Gerenciamento */}
-              <button
-                onClick={() => navigate("/agentes")}
+              <Link
+                to="/agentes"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -288,10 +285,10 @@ const Index = () => {
                 <p className="text-sm text-gray-600">
                   Configure e monitore agentes de IA
                 </p>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => navigate("/integracoes")}
+              <Link
+                to="/integracoes"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -301,10 +298,10 @@ const Index = () => {
                 <p className="text-sm text-gray-600">
                   Conecte com CRM, WhatsApp e outros serviços
                 </p>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => navigate("/fluxos")}
+              <Link
+                to="/fluxos"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -314,11 +311,10 @@ const Index = () => {
                 <p className="text-sm text-gray-600">
                   Configure workflows e automações
                 </p>
-              </button>
+              </Link>
 
-              {/* Row 3 - Configurações */}
-              <button
-                onClick={() => navigate("/database-management")}
+              <Link
+                to="/database-management"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -328,10 +324,10 @@ const Index = () => {
                 <p className="text-sm text-gray-600">
                   Gerenciar dados e configurações do sistema
                 </p>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => navigate("/test-chat")}
+              <Link
+                to="/test-chat"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -341,10 +337,10 @@ const Index = () => {
                 <p className="text-sm text-gray-600">
                   Teste conversas com os agentes
                 </p>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => navigate("/subscription-management")}
+              <Link
+                to="/subscription-management"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -354,12 +350,12 @@ const Index = () => {
                 <p className="text-sm text-gray-600">
                   Gerenciar planos e cobranças
                 </p>
-              </button>
+              </Link>
             </div>
           </CardContent>
         </Card>
 
-        {/* Seção de Documentação e Suporte */}
+        {/* Seção de Documentação */}
         <Card className="mt-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Documentação e Configurações Avançadas</CardTitle>
@@ -369,45 +365,45 @@ const Index = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <button
-                onClick={() => navigate("/documentacao")}
+              <Link
+                to="/documentacao"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-gray-50"
               >
                 <h3 className="font-semibold mb-2">📚 Documentação</h3>
                 <p className="text-sm text-gray-600">
                   Guias e documentação técnica
                 </p>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => navigate("/arquitetura")}
+              <Link
+                to="/arquitetura"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-gray-50"
               >
                 <h3 className="font-semibold mb-2">🏗️ Arquitetura</h3>
                 <p className="text-sm text-gray-600">
                   Visão geral da arquitetura do sistema
                 </p>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => navigate("/modelo-dados")}
+              <Link
+                to="/modelo-dados"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-gray-50"
               >
                 <h3 className="font-semibold mb-2">🗃️ Modelo de Dados</h3>
                 <p className="text-sm text-gray-600">
                   Estrutura do banco de dados
                 </p>
-              </button>
+              </Link>
 
-              <button
-                onClick={() => navigate("/n8n-management")}
+              <Link
+                to="/n8n-management"
                 className="p-4 text-left border rounded-lg hover:shadow-md transition-shadow bg-gray-50"
               >
                 <h3 className="font-semibold mb-2">⚙️ N8N Management</h3>
                 <p className="text-sm text-gray-600">
                   Gerenciar automações N8N
                 </p>
-              </button>
+              </Link>
             </div>
           </CardContent>
         </Card>
