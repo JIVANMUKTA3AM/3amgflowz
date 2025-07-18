@@ -126,6 +126,12 @@ const ReviewAndActivate = ({ onboardingData, onPrevious, onComplete, isCompletin
     }
   };
 
+  // Helper function to get the correct icon component
+  const getServiceIcon = (serviceKey: string) => {
+    const IconComponent = serviceIcons[serviceKey as keyof typeof serviceIcons];
+    return IconComponent || Users; // Always return a valid component
+  };
+
   if (isCompleted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6 flex items-center justify-center">
@@ -197,7 +203,7 @@ const ReviewAndActivate = ({ onboardingData, onPrevious, onComplete, isCompletin
             </h3>
             <div className="flex flex-wrap gap-3">
               {onboardingData.selectedServices.map((service) => {
-                const Icon = serviceIcons[service as keyof typeof serviceIcons];
+                const IconComponent = getServiceIcon(service);
                 const isConfigured = service === 'whatsapp' 
                   ? onboardingData.whatsappConfig?.accessToken 
                   : service === 'telegram' 
@@ -210,8 +216,8 @@ const ReviewAndActivate = ({ onboardingData, onPrevious, onComplete, isCompletin
                     variant={isConfigured ? "default" : "destructive"} 
                     className="px-4 py-2 text-sm flex items-center gap-2"
                   >
-                    <Icon className="w-4 h-4" />
-                    {serviceNames[service as keyof typeof serviceNames]}
+                    <IconComponent className="w-4 h-4" />
+                    {serviceNames[service as keyof typeof serviceNames] || service}
                     {isConfigured ? <CheckCircle className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
                   </Badge>
                 );
@@ -286,19 +292,20 @@ const ReviewAndActivate = ({ onboardingData, onPrevious, onComplete, isCompletin
                 Agentes Configurados ({Object.keys(onboardingData.agentConfigs).length})
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(onboardingData.agentConfigs).map(([key, config]: [string, any]) => (
-                  <Card key={key} className="border-green-200 bg-green-50">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        {React.createElement(serviceIcons[key as keyof typeof serviceIcons] || Users, { 
-                          className: "w-4 h-4 text-green-600" 
-                        })}
-                        <span className="font-medium text-green-900">{config.name}</span>
-                      </div>
-                      <p className="text-xs text-green-700">Modelo: {config.model}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+                {Object.entries(onboardingData.agentConfigs).map(([key, config]: [string, any]) => {
+                  const IconComponent = getServiceIcon(key);
+                  return (
+                    <Card key={key} className="border-green-200 bg-green-50">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <IconComponent className="w-4 h-4 text-green-600" />
+                          <span className="font-medium text-green-900">{config.name}</span>
+                        </div>
+                        <p className="text-xs text-green-700">Modelo: {config.model}</p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </div>
           )}
