@@ -8,11 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useAgentTasks } from "@/hooks/useAgentTasks";
 import { useAuth } from "@/contexts/AuthContext";
-import { Wrench, Plus, Filter, Clock, CheckCircle, AlertCircle, Terminal } from "lucide-react";
+import { Wrench, Plus, Filter, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import TecnicoSNMPDashboard from "./TecnicoSNMPDashboard";
 
 const TecnicoDashboard = () => {
   const { user } = useAuth();
@@ -87,7 +85,7 @@ const TecnicoDashboard = () => {
           <Wrench className="h-8 w-8 text-blue-600" />
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Painel Técnico</h1>
-            <p className="text-gray-600">Gerencie instalações, tickets técnicos e operações SNMP</p>
+            <p className="text-gray-600">Gerencie instalações e tickets técnicos</p>
           </div>
         </div>
         
@@ -141,6 +139,8 @@ const TecnicoDashboard = () => {
                     <SelectItem value="manutencao">Manutenção</SelectItem>
                     <SelectItem value="reparo">Reparo</SelectItem>
                     <SelectItem value="upgrade">Upgrade</SelectItem>
+                    <SelectItem value="configuracao_ont">Configuração ONT</SelectItem>
+                    <SelectItem value="reset_equipamento">Reset Equipamento</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -232,81 +232,94 @@ const TecnicoDashboard = () => {
         </Card>
       </div>
 
-      {/* Tabs principais */}
-      <Tabs defaultValue="tickets" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="tickets">Tickets Técnicos</TabsTrigger>
-          <TabsTrigger value="snmp">Operações SNMP</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="tickets">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Filter className="h-5 w-5" />
-                  Tickets Técnicos
-                </CardTitle>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    <SelectItem value="pendente">Pendentes</SelectItem>
-                    <SelectItem value="em_andamento">Em Andamento</SelectItem>
-                    <SelectItem value="concluida">Concluídos</SelectItem>
-                    <SelectItem value="cancelada">Cancelados</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {loadingTickets ? (
-                <div className="text-center py-8">Carregando tickets...</div>
-              ) : filteredTickets.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  Nenhum ticket encontrado
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {filteredTickets.map((ticket) => (
-                    <div key={ticket.id} className="border rounded-lg p-4 space-y-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold">{ticket.cliente_nome}</h3>
-                            <Badge className={getStatusColor(ticket.status)}>
-                              {ticket.status.replace('_', ' ')}
-                            </Badge>
-                            <Badge variant="outline" className={getPriorityColor(ticket.prioridade)}>
-                              {ticket.prioridade}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-2">{ticket.descricao}</p>
-                          <div className="text-xs text-gray-500">
-                            <span className="font-medium">Tipo:</span> {ticket.tipo_servico} • 
-                            <span className="font-medium ml-2">Criado:</span> {new Date(ticket.created_at).toLocaleDateString()}
-                            {ticket.cliente_telefone && (
-                              <>
-                                <span className="font-medium ml-2">Tel:</span> {ticket.cliente_telefone}
-                              </>
-                            )}
-                          </div>
-                        </div>
+      {/* Lista de Tickets */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Filter className="h-5 w-5" />
+              Tickets Técnicos
+            </CardTitle>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="pendente">Pendentes</SelectItem>
+                <SelectItem value="em_andamento">Em Andamento</SelectItem>
+                <SelectItem value="concluida">Concluídos</SelectItem>
+                <SelectItem value="cancelada">Cancelados</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {loadingTickets ? (
+            <div className="text-center py-8">Carregando tickets...</div>
+          ) : filteredTickets.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              Nenhum ticket encontrado
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredTickets.map((ticket) => (
+                <div key={ticket.id} className="border rounded-lg p-4 space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-semibold">{ticket.cliente_nome}</h3>
+                        <Badge className={getStatusColor(ticket.status)}>
+                          {ticket.status.replace('_', ' ')}
+                        </Badge>
+                        <Badge variant="outline" className={getPriorityColor(ticket.prioridade)}>
+                          {ticket.prioridade}
+                        </Badge>
                       </div>
+                      <p className="text-sm text-gray-600 mb-2">{ticket.descricao}</p>
+                      <div className="text-xs text-gray-500">
+                        <span className="font-medium">Tipo:</span> {ticket.tipo_servico} • 
+                        <span className="font-medium ml-2">Criado:</span> {new Date(ticket.created_at).toLocaleDateString()}
+                        {ticket.cliente_telefone && (
+                          <>
+                            <span className="font-medium ml-2">Tel:</span> {ticket.cliente_telefone}
+                          </>
+                        )}
+                      </div>
+                      {ticket.cliente_endereco && (
+                        <div className="text-xs text-gray-500 mt-1">
+                          <span className="font-medium">Endereço:</span> {ticket.cliente_endereco}
+                        </div>
+                      )}
                     </div>
-                  ))}
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm">
+                        Editar
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        Executar
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-        <TabsContent value="snmp">
-          <TecnicoSNMPDashboard />
-        </TabsContent>
-      </Tabs>
+      {/* Nota sobre comandos HTTP */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardHeader>
+          <CardTitle className="text-blue-900">Execução de Comandos nas OLTs</CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm text-blue-800 space-y-2">
+          <p>• Os comandos nas OLTs serão executados via <strong>requisições HTTP</strong></p>
+          <p>• Configure as APIs das OLTs na seção de configurações</p>
+          <p>• Os tickets podem incluir comandos automáticos baseados no tipo de serviço</p>
+          <p>• Histórico de execuções ficará registrado em cada ticket</p>
+        </CardContent>
+      </Card>
     </div>
   );
 };
