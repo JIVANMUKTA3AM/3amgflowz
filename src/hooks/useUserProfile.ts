@@ -6,6 +6,8 @@ import { toast } from "@/components/ui/use-toast";
 
 export interface UserProfile {
   id: string;
+  user_id: string;
+  name: string;
   role: string;
   plan: string;
   user_role_type: string;
@@ -30,14 +32,14 @@ export const useUserProfile = () => {
   const queryClient = useQueryClient();
 
   const { data: profile, isLoading, error } = useQuery({
-    queryKey: ['userProfile', user?.id],
+    queryKey: ['user-profile', user?.id],
     queryFn: async () => {
       if (!user?.id) throw new Error('User not authenticated');
       
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
+        .eq('user_id', user.id)
         .single();
       
       if (error) throw error;
@@ -53,7 +55,7 @@ export const useUserProfile = () => {
       const { data, error } = await supabase
         .from('profiles')
         .update(updates)
-        .eq('id', user.id)
+        .eq('user_id', user.id)
         .select()
         .single();
       
@@ -61,14 +63,14 @@ export const useUserProfile = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['user-profile', user?.id] });
       toast({
-        title: "Perfil atualizado!",
-        description: "Suas configurações foram salvas com sucesso.",
+        title: "Perfil atualizado",
+        description: "Suas informações foram atualizadas com sucesso.",
       });
     },
     onError: (error) => {
-      console.error('Error updating profile:', error);
+      console.error('Profile update error:', error);
       toast({
         title: "Erro ao atualizar perfil",
         description: "Tente novamente em alguns instantes.",
