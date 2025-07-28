@@ -1,130 +1,217 @@
 
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Menu, X, Settings, User, LogOut, Zap } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useWorkflow } from "@/hooks/useWorkflow";
-import UserMenu from "./UserMenu";
+import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { 
+  User, 
+  Settings, 
+  LogOut, 
+  Menu,
+  X,
+  Bot,
+  Zap,
+  Bell,
+  Search,
+  Command
+} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
+import { useUserRole } from '@/hooks/useUserRole';
 
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+interface HeaderProps {
+  handleWorkflowTrigger?: (workflowType: string, data?: any) => Promise<any>;
+  isLoading?: boolean;
+}
+
+const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
   const { user, signOut } = useAuth();
-  const location = useLocation();
-  const { triggerWorkflow, isLoading } = useWorkflow();
+  const { profile, role, isAdmin } = useUserRole();
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const isActive = (path: string) => location.pathname === path;
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
 
-  const navigation = [
-    { name: "Dashboard", href: "/dashboard" },
-    { name: "Agentes", href: "/agentes" },
-    { name: "Integrações", href: "/integracoes" },
-    { name: "Webhooks", href: "/webhooks-management" },
-    { name: "N8N", href: "/n8n-management" },
-    { name: "Fluxos", href: "/fluxos" },
-    { name: "CRM", href: "/crm" },
-    { name: "Documentação", href: "/documentacao" },
+  const triggerWorkflow = async () => {
+    if (handleWorkflowTrigger) {
+      await handleWorkflowTrigger('header-action');
+    }
+  };
+
+  const getRoleColor = (userRole: string) => {
+    switch (userRole) {
+      case 'admin': return 'bg-red-100 text-red-800';
+      case 'tecnico': return 'bg-blue-100 text-blue-800';
+      case 'comercial': return 'bg-green-100 text-green-800';
+      case 'geral': return 'bg-gray-100 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const navItems = [
+    { label: 'Dashboard', path: '/', icon: '🏠' },
+    { label: 'Agentes', path: '/agentes', icon: '🤖' },
+    { label: 'Integrações', path: '/integracoes', icon: '🔗' },
+    { label: 'CRM', path: '/crm', icon: '👥' },
+    { label: 'Fluxos', path: '/fluxos', icon: '🔄' },
+    ...(isAdmin ? [
+      { label: 'Admin Webhooks', path: '/admin-webhooks', icon: '⚙️' },
+      { label: 'Gerenciar Integrações', path: '/integrations-management', icon: '🔧' },
+    ] : []),
   ];
 
   return (
-    <header className="bg-white shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">3A</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">3AMG</span>
-            </Link>
-          </div>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <Bot className="h-8 w-8 text-primary" />
+          <span className="font-bold text-xl">AgentFlow</span>
+        </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(item.href)
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-6">
+          {navItems.map((item) => (
+            <Button
+              key={item.path}
+              variant="ghost"
+              onClick={() => navigate(item.path)}
+              className="flex items-center gap-2"
+            >
+              <span>{item.icon}</span>
+              {item.label}
+            </Button>
+          ))}
+        </nav>
 
-          {/* User Menu */}
-          <div className="flex items-center space-x-4">
+        {/* Actions */}
+        <div className="flex items-center gap-4">
+          {/* Workflow Trigger Button */}
+          {handleWorkflowTrigger && (
             <Button
               variant="outline"
               size="sm"
               onClick={triggerWorkflow}
               disabled={isLoading}
-              className="hidden md:flex"
+              className="hidden sm:flex items-center gap-2"
             >
-              <Zap className="h-4 w-4 mr-1" />
-              {isLoading ? "Executando..." : "Workflow"}
+              <Zap className="h-4 w-4" />
+              {isLoading ? 'Executando...' : 'Trigger Workflow'}
             </Button>
-            
-            {user ? (
-              <UserMenu />
-            ) : (
-              <Link to="/auth">
-                <Button size="sm">Entrar</Button>
-              </Link>
-            )}
-          </div>
+          )}
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+          {/* Search */}
+          <Button variant="ghost" size="sm" className="hidden sm:flex">
+            <Search className="h-4 w-4" />
+          </Button>
+
+          {/* Notifications */}
+          <Button variant="ghost" size="sm" className="hidden sm:flex">
+            <Bell className="h-4 w-4" />
+          </Button>
+
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-2 px-2">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={profile?.avatar_url} />
+                  <AvatarFallback>
+                    {profile?.first_name?.[0]}{profile?.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="hidden sm:flex flex-col items-start">
+                  <span className="text-sm font-medium">
+                    {profile?.first_name} {profile?.last_name}
+                  </span>
+                  <Badge className={`text-xs ${getRoleColor(role)}`}>
+                    {role}
+                  </Badge>
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium">
+                    {profile?.first_name} {profile?.last_name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {user?.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/profile')}>
+                <User className="mr-2 h-4 w-4" />
+                Perfil
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/settings')}>
+                <Settings className="mr-2 h-4 w-4" />
+                Configurações
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Mobile Menu Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </Button>
         </div>
       </div>
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive(item.href)
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                }`}
-                onClick={() => setIsMenuOpen(false)}
+        <div className="md:hidden border-t bg-background">
+          <nav className="container py-4">
+            {navItems.map((item) => (
+              <Button
+                key={item.path}
+                variant="ghost"
+                onClick={() => {
+                  navigate(item.path);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full justify-start flex items-center gap-2 mb-2"
               >
-                {item.name}
-              </Link>
+                <span>{item.icon}</span>
+                {item.label}
+              </Button>
             ))}
-            <div className="px-3 py-2">
+            {handleWorkflowTrigger && (
               <Button
                 variant="outline"
-                size="sm"
                 onClick={triggerWorkflow}
                 disabled={isLoading}
-                className="w-full"
+                className="w-full justify-start flex items-center gap-2 mt-4"
               >
-                <Zap className="h-4 w-4 mr-1" />
-                {isLoading ? "Executando..." : "Workflow"}
+                <Zap className="h-4 w-4" />
+                {isLoading ? 'Executando...' : 'Trigger Workflow'}
               </Button>
-            </div>
-          </div>
+            )}
+          </nav>
         </div>
       )}
     </header>

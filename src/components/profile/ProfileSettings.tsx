@@ -21,7 +21,7 @@ const ProfileSettings = () => {
     user_role_type: profile?.user_role_type || 'geral',
     preferences: {
       notifications: profile?.preferences?.notifications ?? true,
-      theme: profile?.preferences?.theme || 'system',
+      dark_mode: profile?.preferences?.dark_mode ?? false,
       language: profile?.preferences?.language || 'pt-BR',
       timezone: profile?.preferences?.timezone || 'America/Sao_Paulo',
     }
@@ -208,18 +208,15 @@ const ProfileSettings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
-                <Label>Tema</Label>
-                <Select value={formData.preferences.theme} onValueChange={(value) => handleInputChange('preferences.theme', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Claro</SelectItem>
-                    <SelectItem value="dark">Escuro</SelectItem>
-                    <SelectItem value="system">Sistema</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Modo Escuro</Label>
+                  <p className="text-sm text-gray-600">Ativar tema escuro da interface</p>
+                </div>
+                <Switch
+                  checked={formData.preferences.dark_mode}
+                  onCheckedChange={(checked) => handleInputChange('preferences.dark_mode', checked)}
+                />
               </div>
 
               <div>
