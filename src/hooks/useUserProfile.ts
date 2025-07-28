@@ -6,28 +6,10 @@ import { toast } from "@/components/ui/use-toast";
 
 export interface UserProfile {
   id: string;
-  email?: string;
-  first_name?: string;
-  last_name?: string;
-  avatar_url?: string;
-  role: 'admin' | 'user' | 'moderator';
-  plan: 'free' | 'basic' | 'premium' | 'enterprise';
-  user_role_type: 'tecnico' | 'comercial' | 'geral' | 'admin';
-  organization_id?: string;
-  agent_settings: {
-    onboarding_completed: boolean;
-    checkout_completed: boolean;
-    needs_onboarding: boolean;
-    max_agents: number;
-    api_calls_limit: number;
-    [key: string]: any;
-  };
-  preferences: {
-    notifications: boolean;
-    theme: 'light' | 'dark' | 'system';
-    language: string;
-    timezone: string;
-  };
+  role: string;
+  plan: string;
+  user_role_type: string;
+  agent_settings: any;
   created_at: string;
   updated_at: string;
 }
@@ -43,18 +25,11 @@ export const useUserProfile = () => {
       
       const { data, error } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          organization:organizations(*)
-        `)
+        .select('*')
         .eq('id', user.id)
         .single();
       
-      if (error) {
-        console.error('Error fetching profile:', error);
-        throw error;
-      }
-      
+      if (error) throw error;
       return data as UserProfile;
     },
     enabled: !!user?.id,
@@ -66,10 +41,7 @@ export const useUserProfile = () => {
       
       const { data, error } = await supabase
         .from('profiles')
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString()
-        })
+        .update(updates)
         .eq('id', user.id)
         .select()
         .single();
@@ -80,8 +52,8 @@ export const useUserProfile = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userProfile', user?.id] });
       toast({
-        title: "Perfil atualizado",
-        description: "Suas informações foram salvas com sucesso.",
+        title: "Perfil atualizado!",
+        description: "Suas configurações foram salvas com sucesso.",
       });
     },
     onError: (error) => {
@@ -94,45 +66,11 @@ export const useUserProfile = () => {
     },
   });
 
-  const uploadAvatarMutation = useMutation({
-    mutationFn: async (file: File) => {
-      if (!user?.id) throw new Error('User not authenticated');
-      
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(fileName, file, { upsert: true });
-      
-      if (uploadError) throw uploadError;
-      
-      const { data: urlData } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(fileName);
-      
-      return urlData.publicUrl;
-    },
-    onSuccess: (avatarUrl) => {
-      updateProfileMutation.mutate({ avatar_url: avatarUrl });
-    },
-    onError: (error) => {
-      console.error('Error uploading avatar:', error);
-      toast({
-        title: "Erro ao fazer upload",
-        description: "Não foi possível fazer upload da imagem.",
-        variant: "destructive",
-      });
-    },
-  });
-
   return {
     profile,
     isLoading,
     error,
     updateProfile: updateProfileMutation.mutate,
     isUpdating: updateProfileMutation.isPending,
-    uploadAvatar: uploadAvatarMutation.mutate,
-    isUploadingAvatar: uploadAvatarMutation.isPending,
   };
 };

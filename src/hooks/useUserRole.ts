@@ -1,42 +1,22 @@
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
-
-export type UserRole = 'admin' | 'client' | null;
+import { useUserProfile } from './useUserProfile';
 
 export const useUserRole = () => {
-  const { user } = useAuth();
-  const [role, setRole] = useState<UserRole>(null);
-  const [loading, setLoading] = useState(true);
+  const { profile, isLoading } = useUserProfile();
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      if (!user) {
-        setRole(null);
-        setLoading(false);
-        return;
-      }
+  const role = profile?.user_role_type || 'geral';
+  const isAdmin = profile?.role === 'admin';
+  const isTecnico = profile?.user_role_type === 'tecnico';
+  const isComercial = profile?.user_role_type === 'comercial';
+  const isGeral = profile?.user_role_type === 'geral';
 
-      try {
-        // Verificar se o usuário é admin (você pode definir emails específicos ou usar uma tabela)
-        const adminEmails = ['gustavo.steve@hotmail.com', '3amg777@gmail.com']; // Adicionei ambos os emails
-        
-        if (adminEmails.includes(user.email || '')) {
-          setRole('admin');
-        } else {
-          setRole('client');
-        }
-      } catch (error) {
-        console.error('Erro ao verificar role do usuário:', error);
-        setRole('client'); // Default para client em caso de erro
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserRole();
-  }, [user]);
-
-  return { role, loading };
+  return {
+    role,
+    isAdmin,
+    isTecnico,
+    isComercial,
+    isGeral,
+    isLoading,
+    profile
+  };
 };
