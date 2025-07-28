@@ -9,6 +9,17 @@ export interface UserProfile {
   role: string;
   plan: string;
   user_role_type: string;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  avatar_url?: string;
+  organization_id?: string;
+  preferences?: {
+    notifications: boolean;
+    dark_mode: boolean;
+    language: string;
+    timezone: string;
+  };
   agent_settings: any;
   created_at: string;
   updated_at: string;
@@ -66,11 +77,32 @@ export const useUserProfile = () => {
     },
   });
 
+  const uploadAvatar = async (file: File) => {
+    if (!user?.id) throw new Error('User not authenticated');
+    
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${user.id}.${fileExt}`;
+    
+    const { error } = await supabase.storage
+      .from('avatars')
+      .upload(fileName, file, { upsert: true });
+    
+    if (error) throw error;
+    
+    const { data } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(fileName);
+    
+    return data.publicUrl;
+  };
+
   return {
     profile,
     isLoading,
     error,
     updateProfile: updateProfileMutation.mutate,
     isUpdating: updateProfileMutation.isPending,
+    uploadAvatar,
+    isUploadingAvatar: false,
   };
 };

@@ -45,8 +45,14 @@ export const useWorkflow = () => {
     }
   };
 
+  // Função compatível com Header que não requer parâmetros
+  const triggerWorkflow = () => {
+    return handleWorkflowTrigger('default');
+  };
+
   return {
     handleWorkflowTrigger,
+    triggerWorkflow,
     isLoading
   };
 };

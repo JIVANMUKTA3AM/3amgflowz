@@ -17,6 +17,7 @@ export const useUserRole = () => {
     isComercial,
     isGeral,
     isLoading,
+    loading: isLoading, // Adicionar alias para compatibilidade
     profile
   };
 };
