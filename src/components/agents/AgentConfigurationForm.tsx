@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,6 +57,8 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log("Dados do formulário sendo enviados:", formData);
+    
     if (!validateConfiguration(formData.model, formData.temperature, formData.max_tokens)) {
       return;
     }
@@ -66,9 +67,26 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
   };
 
   const handleChange = (field: string, value: any) => {
+    console.log(`Atualizando campo ${field} com valor:`, value);
+    setFormData(prev => {
+      const newData = {
+        ...prev,
+        [field]: value
+      };
+      console.log("Novo estado do formData:", newData);
+      return newData;
+    });
+  };
+
+  const handleWebhookChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    console.log("Webhook URL alterada para:", value);
+    console.log("Event target value:", e.target.value);
+    console.log("Event atual:", e);
+    
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      webhook_url: value
     }));
   };
 
@@ -94,6 +112,9 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
     { value: "suporte_tecnico", label: "Suporte Técnico" },
     { value: "personalizado", label: "Personalizado" },
   ];
+
+  // Debug: log do estado atual
+  console.log("Estado atual do webhook_url:", formData.webhook_url);
 
   return (
     <Card>
@@ -147,41 +168,56 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
 
           <div>
             <Label htmlFor="webhook_url">Webhook URL do N8N</Label>
-            <div className="flex gap-2">
-              <Input
-                id="webhook_url"
-                type="text"
-                value={formData.webhook_url}
-                onChange={(e) => handleChange("webhook_url", e.target.value)}
-                placeholder="https://seu-n8n.com/webhook/seu-agente"
-                className="flex-1"
-              />
-              {formData.webhook_url && (
-                <>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={copyWebhookUrl}
-                    className="gap-1"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={openWebhookUrl}
-                    className="gap-1"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
-                </>
-              )}
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  id="webhook_url"
+                  type="text"
+                  value={formData.webhook_url}
+                  onChange={handleWebhookChange}
+                  onInput={handleWebhookChange}
+                  onPaste={(e) => {
+                    console.log("Evento de paste detectado");
+                    setTimeout(() => {
+                      const target = e.target as HTMLInputElement;
+                      console.log("Valor após paste:", target.value);
+                      handleWebhookChange(e as any);
+                    }, 0);
+                  }}
+                  placeholder="https://seu-n8n.com/webhook/seu-agente"
+                  className="flex-1 px-3 py-2 border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
+                  style={{ minHeight: '40px' }}
+                />
+                {formData.webhook_url && (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={copyWebhookUrl}
+                      className="gap-1"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={openWebhookUrl}
+                      className="gap-1"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+              </div>
+              <p className="text-xs text-gray-500">
+                URL do webhook do N8N que será chamado quando o agente receber uma mensagem
+              </p>
+              <div className="text-xs bg-yellow-50 p-2 rounded border border-yellow-200">
+                <strong>Debug:</strong> Valor atual: "{formData.webhook_url}"
+              </div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              URL do webhook do N8N que será chamado quando o agente receber uma mensagem
-            </p>
           </div>
 
           <ModelSelector
