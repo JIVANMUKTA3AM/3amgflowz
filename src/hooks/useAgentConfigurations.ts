@@ -14,6 +14,7 @@ export interface AgentConfiguration {
   temperature: number;
   max_tokens: number;
   is_active: boolean;
+  webhook_url?: string;
   created_at: string;
   updated_at: string;
 }

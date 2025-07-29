@@ -1,8 +1,9 @@
+
 import { TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus } from "lucide-react";
+import { Plus, Copy, ExternalLink } from "lucide-react";
 import AgentConfigurationForm from "./AgentConfigurationForm";
 import ConversationLogs from "./ConversationLogs";
 import AgentMetrics from "./AgentMetrics";
@@ -15,6 +16,7 @@ import WorkflowManagement from "./WorkflowManagement";
 import { AgentConfiguration, AgentConversation, AgentMetric } from "@/hooks/useAgentConfigurations";
 import { AgentIntegration } from "@/hooks/useAgentIntegrations";
 import { WorkflowExecution } from "@/hooks/useWorkflowExecutions";
+import { toast } from "@/components/ui/use-toast";
 
 interface AgentsTabContentProps {
   configurations: AgentConfiguration[] | undefined;
@@ -63,6 +65,19 @@ const AgentsTabContent = ({
   setEditingAgent,
   setEditingIntegration,
 }: AgentsTabContentProps) => {
+
+  const copyWebhookUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "URL copiada!",
+      description: "A URL do webhook foi copiada para a área de transferência.",
+    });
+  };
+
+  const openWebhookUrl = (url: string) => {
+    window.open(url, '_blank');
+  };
+
   return (
     <>
       
@@ -111,6 +126,34 @@ const AgentsTabContent = ({
                     <div><strong>Temperatura:</strong> {config.temperature}</div>
                     <div><strong>Max Tokens:</strong> {config.max_tokens}</div>
                   </div>
+
+                  {config.webhook_url && (
+                    <div className="mt-3 p-2 bg-gray-50 rounded">
+                      <div className="text-xs font-medium text-gray-600 mb-1">Webhook N8N:</div>
+                      <div className="flex items-center gap-1">
+                        <div className="text-xs text-gray-700 truncate flex-1" title={config.webhook_url}>
+                          {config.webhook_url}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => copyWebhookUrl(config.webhook_url!)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => openWebhookUrl(config.webhook_url!)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="mt-4 space-y-2">
                     <p className="text-sm text-gray-600 line-clamp-2">
                       {config.prompt}

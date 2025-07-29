@@ -11,6 +11,8 @@ import { Switch } from "@/components/ui/switch";
 import { AgentConfiguration } from "@/hooks/useAgentConfigurations";
 import { useAIProviders } from "@/hooks/useAIProviders";
 import ModelSelector from "./ModelSelector";
+import { Copy, ExternalLink } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 
 interface AgentConfigurationFormProps {
   configuration?: AgentConfiguration;
@@ -30,6 +32,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
     temperature: 0.7,
     max_tokens: 1000,
     is_active: true,
+    webhook_url: "",
   });
 
   useEffect(() => {
@@ -42,6 +45,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
         temperature: configuration.temperature,
         max_tokens: configuration.max_tokens,
         is_active: configuration.is_active,
+        webhook_url: configuration.webhook_url || "",
       });
     } else {
       const recommendedModels = getRecommendedModels();
@@ -66,6 +70,22 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
       ...prev,
       [field]: value
     }));
+  };
+
+  const copyWebhookUrl = () => {
+    if (formData.webhook_url) {
+      navigator.clipboard.writeText(formData.webhook_url);
+      toast({
+        title: "Webhook URL copiada!",
+        description: "A URL do webhook foi copiada para a área de transferência.",
+      });
+    }
+  };
+
+  const openWebhookUrl = () => {
+    if (formData.webhook_url) {
+      window.open(formData.webhook_url, '_blank');
+    }
   };
 
   const agentTypes = [
@@ -123,6 +143,43 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
               rows={4}
               required
             />
+          </div>
+
+          <div>
+            <Label htmlFor="webhook_url">Webhook URL do N8N</Label>
+            <div className="flex gap-2">
+              <Input
+                id="webhook_url"
+                value={formData.webhook_url}
+                onChange={(e) => handleChange("webhook_url", e.target.value)}
+                placeholder="https://seu-n8n.com/webhook/seu-agente"
+              />
+              {formData.webhook_url && (
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={copyWebhookUrl}
+                    className="gap-1"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={openWebhookUrl}
+                    className="gap-1"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              URL do webhook do N8N que será chamado quando o agente receber uma mensagem
+            </p>
           </div>
 
           <ModelSelector
