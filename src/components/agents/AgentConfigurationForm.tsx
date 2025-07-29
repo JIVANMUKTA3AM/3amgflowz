@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,10 +70,6 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
       ...prev,
       [field]: value
     }));
-  };
-
-  const handleWebhookUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleChange("webhook_url", e.target.value);
   };
 
   const copyWebhookUrl = () => {
@@ -155,10 +152,9 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
                 id="webhook_url"
                 type="text"
                 value={formData.webhook_url}
-                onChange={handleWebhookUrlChange}
+                onChange={(e) => handleChange("webhook_url", e.target.value)}
                 placeholder="https://seu-n8n.com/webhook/seu-agente"
                 className="flex-1"
-                autoComplete="off"
               />
               {formData.webhook_url && (
                 <>
