@@ -12,7 +12,7 @@ import { AgentConfiguration } from "@/hooks/useAgentConfigurations";
 import { useAIProviders } from "@/hooks/useAIProviders";
 import ModelSelector from "./ModelSelector";
 import { Copy, ExternalLink } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 interface AgentConfigurationFormProps {
   configuration?: AgentConfiguration;
@@ -38,13 +38,13 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
   useEffect(() => {
     if (configuration) {
       setFormData({
-        name: configuration.name,
-        agent_type: configuration.agent_type,
-        prompt: configuration.prompt,
-        model: configuration.model,
-        temperature: configuration.temperature,
-        max_tokens: configuration.max_tokens,
-        is_active: configuration.is_active,
+        name: configuration.name || "",
+        agent_type: configuration.agent_type || "",
+        prompt: configuration.prompt || "",
+        model: configuration.model || "gpt-4.1-2025-04-14",
+        temperature: configuration.temperature || 0.7,
+        max_tokens: configuration.max_tokens || 1000,
+        is_active: configuration.is_active !== undefined ? configuration.is_active : true,
         webhook_url: configuration.webhook_url || "",
       });
     } else {
@@ -150,9 +150,15 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
             <div className="flex gap-2">
               <Input
                 id="webhook_url"
+                type="url"
                 value={formData.webhook_url}
                 onChange={(e) => handleChange("webhook_url", e.target.value)}
+                onPaste={(e) => {
+                  // Permitir paste normalmente
+                  e.stopPropagation();
+                }}
                 placeholder="https://seu-n8n.com/webhook/seu-agente"
+                className="flex-1"
               />
               {formData.webhook_url && (
                 <>
