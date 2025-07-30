@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +11,6 @@ import { Switch } from "@/components/ui/switch";
 import { AgentConfiguration } from "@/hooks/useAgentConfigurations";
 import { useAIProviders } from "@/hooks/useAIProviders";
 import ModelSelector from "./ModelSelector";
-import { Copy, ExternalLink } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface AgentConfigurationFormProps {
@@ -57,8 +57,6 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Dados do formulário sendo enviados:", formData);
-    
     if (!validateConfiguration(formData.model, formData.temperature, formData.max_tokens)) {
       return;
     }
@@ -66,44 +64,11 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
     onSave(formData);
   };
 
-  const handleChange = (field: string, value: any) => {
-    console.log(`Atualizando campo ${field} com valor:`, value);
-    setFormData(prev => {
-      const newData = {
-        ...prev,
-        [field]: value
-      };
-      console.log("Novo estado do formData:", newData);
-      return newData;
-    });
-  };
-
-  const handleWebhookChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    console.log("Webhook URL alterada para:", value);
-    console.log("Event target value:", e.target.value);
-    console.log("Event atual:", e);
-    
+  const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
-      webhook_url: value
+      [field]: value
     }));
-  };
-
-  const copyWebhookUrl = () => {
-    if (formData.webhook_url) {
-      navigator.clipboard.writeText(formData.webhook_url);
-      toast({
-        title: "Webhook URL copiada!",
-        description: "A URL do webhook foi copiada para a área de transferência.",
-      });
-    }
-  };
-
-  const openWebhookUrl = () => {
-    if (formData.webhook_url) {
-      window.open(formData.webhook_url, '_blank');
-    }
   };
 
   const agentTypes = [
@@ -112,9 +77,6 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
     { value: "suporte_tecnico", label: "Suporte Técnico" },
     { value: "personalizado", label: "Personalizado" },
   ];
-
-  // Debug: log do estado atual
-  console.log("Estado atual do webhook_url:", formData.webhook_url);
 
   return (
     <Card>
@@ -131,7 +93,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
               <Input
                 id="name"
                 value={formData.name}
-                onChange={(e) => handleChange("name", e.target.value)}
+                onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="Ex: Agente de Atendimento"
                 required
               />
@@ -139,7 +101,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
 
             <div>
               <Label htmlFor="agent_type">Tipo de Agente</Label>
-              <Select value={formData.agent_type} onValueChange={(value) => handleChange("agent_type", value)}>
+              <Select value={formData.agent_type} onValueChange={(value) => handleInputChange("agent_type", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
@@ -159,70 +121,41 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
             <Textarea
               id="prompt"
               value={formData.prompt}
-              onChange={(e) => handleChange("prompt", e.target.value)}
+              onChange={(e) => handleInputChange("prompt", e.target.value)}
               placeholder="Descreva como o agente deve se comportar..."
               rows={4}
               required
             />
           </div>
 
-          <div>
-            <Label htmlFor="webhook_url">Webhook URL do N8N</Label>
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <input
-                  id="webhook_url"
-                  type="text"
-                  value={formData.webhook_url}
-                  onChange={handleWebhookChange}
-                  onInput={handleWebhookChange}
-                  onPaste={(e) => {
-                    console.log("Evento de paste detectado");
-                    setTimeout(() => {
-                      const target = e.target as HTMLInputElement;
-                      console.log("Valor após paste:", target.value);
-                      handleWebhookChange(e as any);
-                    }, 0);
-                  }}
-                  placeholder="https://seu-n8n.com/webhook/seu-agente"
-                  className="flex-1 px-3 py-2 border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
-                  style={{ minHeight: '40px' }}
-                />
-                {formData.webhook_url && (
-                  <>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={copyWebhookUrl}
-                      className="gap-1"
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={openWebhookUrl}
-                      className="gap-1"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
-                  </>
-                )}
-              </div>
-              <p className="text-xs text-gray-500">
-                URL do webhook do N8N que será chamado quando o agente receber uma mensagem
+          <div className="space-y-3">
+            <Label htmlFor="webhook_url">URL do Webhook N8N</Label>
+            <Input
+              id="webhook_url"
+              type="text"
+              value={formData.webhook_url}
+              onChange={(e) => handleInputChange("webhook_url", e.target.value)}
+              placeholder="Cole aqui a URL do seu webhook do N8N"
+              className="w-full"
+            />
+            <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-200">
+              <p><strong>Como configurar:</strong></p>
+              <ol className="list-decimal list-inside mt-2 space-y-1">
+                <li>No N8N, crie um novo workflow</li>
+                <li>Adicione um nó "Webhook" como trigger</li>
+                <li>Copie a URL do webhook gerada</li>
+                <li>Cole a URL no campo acima</li>
+                <li>Salve este agente</li>
+              </ol>
+              <p className="mt-2 text-xs text-gray-500">
+                A URL deve começar com https:// e terminar com um ID único
               </p>
-              <div className="text-xs bg-yellow-50 p-2 rounded border border-yellow-200">
-                <strong>Debug:</strong> Valor atual: "{formData.webhook_url}"
-              </div>
             </div>
           </div>
 
           <ModelSelector
             selectedModel={formData.model}
-            onModelChange={(model) => handleChange("model", model)}
+            onModelChange={(model) => handleInputChange("model", model)}
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -230,7 +163,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
               <Label>Temperatura: {formData.temperature}</Label>
               <Slider
                 value={[formData.temperature]}
-                onValueChange={([value]) => handleChange("temperature", value)}
+                onValueChange={([value]) => handleInputChange("temperature", value)}
                 min={0}
                 max={2}
                 step={0.1}
@@ -249,7 +182,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
                 min="100"
                 max="8000"
                 value={formData.max_tokens}
-                onChange={(e) => handleChange("max_tokens", parseInt(e.target.value))}
+                onChange={(e) => handleInputChange("max_tokens", parseInt(e.target.value))}
               />
               <p className="text-xs text-gray-500 mt-1">
                 Limite de resposta
@@ -261,14 +194,14 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
             <Switch
               id="is_active"
               checked={formData.is_active}
-              onCheckedChange={(checked) => handleChange("is_active", checked)}
+              onCheckedChange={(checked) => handleInputChange("is_active", checked)}
             />
             <Label htmlFor="is_active">Agente ativo</Label>
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Salvando..." : "Salvar"}
+            <Button type="submit" disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
+              {isLoading ? "Salvando..." : "Salvar Agente"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancelar
