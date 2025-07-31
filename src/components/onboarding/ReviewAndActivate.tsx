@@ -1,362 +1,252 @@
 
-import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CheckCircle, Loader2, MessageCircle, Send, Users, Headphones, Wrench, Zap, AlertCircle } from "lucide-react";
-import { OnboardingData } from "./OnboardingWizard";
-import { toast } from "@/hooks/use-toast";
-import { onboardingActivationService } from "@/services/onboardingActivation";
-import { useAuth } from "@/contexts/AuthContext";
+import { Separator } from "@/components/ui/separator";
+import { ArrowLeft, ArrowRight, Check, Users, DollarSign } from "lucide-react";
+import { getPlanBySubscribers, getSubscriberRange } from "@/types/subscription";
 
 interface ReviewAndActivateProps {
-  onboardingData: OnboardingData;
+  selectedServices: string[];
+  selectedChannels: string[];
+  selectedAgents: string[];
+  subscriberCount: number;
+  integrationData: any;
+  onNext: () => void;
   onPrevious: () => void;
-  onComplete: () => void;
-  isCompleting: boolean;
 }
 
-const ReviewAndActivate = ({ onboardingData, onPrevious, onComplete, isCompleting }: ReviewAndActivateProps) => {
-  const [activationStep, setActivationStep] = useState<string | null>(null);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const { user } = useAuth();
-
-  const serviceIcons = {
-    whatsapp: MessageCircle,
-    telegram: Send,
-    atendimento: Users,
-    comercial: Headphones,
-    suporte_tecnico: Wrench
+const ReviewAndActivate = ({
+  selectedServices,
+  selectedChannels,
+  selectedAgents,
+  subscriberCount,
+  integrationData,
+  onNext,
+  onPrevious
+}: ReviewAndActivateProps) => {
+  const recommendedPlan = getPlanBySubscribers(subscriberCount);
+  
+  const planNames = {
+    free: 'Gratuito',
+    flow_start: 'Flow Start',
+    flow_pro: 'Flow Pro',
+    flow_power: 'Flow Power',
+    flow_enterprise: 'Flow Enterprise',
+    flow_ultra: 'Flow Ultra'
   };
 
-  const serviceNames = {
-    whatsapp: 'WhatsApp Business',
-    telegram: 'Telegram Bot',
-    atendimento: 'Atendimento Geral',
-    comercial: 'Comercial',
-    suporte_tecnico: 'Suporte Técnico'
+  const planPrices = {
+    free: 'R$ 0',
+    flow_start: 'R$ 199',
+    flow_pro: 'R$ 499',
+    flow_power: 'R$ 899',
+    flow_enterprise: 'R$ 1.497',
+    flow_ultra: 'Sob consulta'
   };
 
-  const validateConfigurations = () => {
-    const errors = [];
-    
-    // Validate agents
-    const agentServices = onboardingData.selectedServices.filter(s => 
-      ['atendimento', 'comercial', 'suporte_tecnico'].includes(s)
-    );
-    
-    agentServices.forEach(service => {
-      const config = onboardingData.agentConfigs[service];
-      if (!config?.name || !config?.prompt) {
-        errors.push(`Agente ${serviceNames[service as keyof typeof serviceNames]} não está completamente configurado`);
-      }
-    });
-
-    // Validate WhatsApp if selected
-    if (onboardingData.selectedServices.includes('whatsapp')) {
-      if (!onboardingData.whatsappConfig?.phoneNumberId || !onboardingData.whatsappConfig?.accessToken) {
-        errors.push('WhatsApp Business não está completamente configurado');
-      }
-    }
-
-    // Validate Telegram if selected
-    if (onboardingData.selectedServices.includes('telegram')) {
-      if (!onboardingData.telegramConfig?.botToken) {
-        errors.push('Telegram Bot não está completamente configurado');
-      }
-    }
-
-    return errors;
+  const planFeatures = {
+    free: ['Acesso limitado', 'Suporte básico'],
+    flow_start: ['Até 1.000 clientes', 'Agentes básicos', 'Suporte email'],
+    flow_pro: ['1.001 a 3.000 clientes', 'Todos os agentes', 'Suporte prioritário'],
+    flow_power: ['3.001 a 10.000 clientes', 'Suporte 24/7', 'Analytics avançados'],
+    flow_enterprise: ['10.001 a 30.000 clientes', 'Suporte dedicado', 'White label'],
+    flow_ultra: ['30.000+ clientes', 'Solução customizada', 'Gerente dedicado']
   };
 
-  const handleActivate = async () => {
-    const errors = validateConfigurations();
-    
-    if (errors.length > 0) {
-      toast({
-        title: "Configurações Incompletas",
-        description: errors.join(', '),
-        variant: "destructive",
-      });
-      return;
-    }
+  return (
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          Revise suas configurações
+        </h2>
+        <p className="text-gray-600">
+          Confirme todas as informações antes de ativar sua conta
+        </p>
+      </div>
 
-    if (!user) {
-      toast({
-        title: "Erro de Autenticação",
-        description: "Usuário não autenticado. Faça login novamente.",
-        variant: "destructive",
-      });
-      return;
-    }
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Resumo da configuração */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-600" />
+                Serviços Selecionados
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {selectedServices.map((service) => (
+                  <Badge key={service} variant="secondary">
+                    {service}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-    try {
-      setActivationStep('Salvando configurações...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setActivationStep('Ativando integrações...');
-      
-      // Perform full activation using the service
-      const result = await onboardingActivationService.performFullActivation(
-        onboardingData, 
-        user.id
-      );
-      
-      if (!result.success) {
-        throw new Error(result.message);
-      }
-      
-      setActivationStep('Configurando webhooks...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setActivationStep('Testando conexões...');
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      await onComplete();
-      setIsCompleted(true);
-      
-    } catch (error) {
-      console.error('Error activating:', error);
-      setActivationStep(null);
-      toast({
-        title: "Erro na Ativação",
-        description: error instanceof Error ? error.message : "Houve um erro ao ativar suas automações. Tente novamente.",
-        variant: "destructive",
-      });
-    }
-  };
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-blue-600" />
+                Número de Assinantes
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-blue-600">
+                {subscriberCount.toLocaleString()} assinantes
+              </div>
+            </CardContent>
+          </Card>
 
-  // Helper function to get the correct icon component
-  const getServiceIcon = (serviceKey: string) => {
-    const IconComponent = serviceIcons[serviceKey as keyof typeof serviceIcons];
-    return IconComponent || Users; // Always return a valid component
-  };
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Check className="h-5 w-5 text-green-600" />
+                Canais e Agentes
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div>
+                  <strong>Canais:</strong>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {selectedChannels.map((channel) => (
+                      <Badge key={channel} variant="outline" className="text-xs">
+                        {channel}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <strong>Agentes:</strong>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {selectedAgents.map((agent) => (
+                      <Badge key={agent} variant="outline" className="text-xs">
+                        {agent}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-  if (isCompleted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6 flex items-center justify-center">
-        <Card className="w-full max-w-2xl border-0 shadow-2xl bg-white/95 backdrop-blur-xl">
-          <CardContent className="p-12 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-green-600" />
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              🎉 Onboarding Concluído!
-            </h2>
-            <p className="text-xl text-gray-600 mb-6">
-              Suas automações foram ativadas com sucesso. Redirecionando para o dashboard...
-            </p>
-            <div className="flex items-center justify-center gap-2 text-purple-600">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Carregando dashboard...</span>
+        {/* Plano recomendado e preço */}
+        <div>
+          <Card className="border-2 border-blue-500 shadow-lg">
+            <CardHeader className="bg-blue-50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-blue-900">
+                    <DollarSign className="h-5 w-5" />
+                    Plano Recomendado
+                  </CardTitle>
+                  <CardDescription className="text-blue-700">
+                    Baseado no seu número de assinantes
+                  </CardDescription>
+                </div>
+                <Badge className="bg-blue-600 text-white">
+                  Recomendado
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="text-center mb-4">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  {planNames[recommendedPlan]}
+                </h3>
+                <div className="text-3xl font-bold text-blue-600 mt-2">
+                  {planPrices[recommendedPlan]}
+                  {recommendedPlan !== 'free' && recommendedPlan !== 'flow_ultra' && (
+                    <span className="text-lg font-normal text-gray-600">/mês</span>
+                  )}
+                </div>
+              </div>
+
+              <Separator className="my-4" />
+
+              <div className="space-y-2">
+                <h4 className="font-semibold text-gray-900 mb-3">Recursos inclusos:</h4>
+                {planFeatures[recommendedPlan].map((feature, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-green-600 flex-shrink-0" />
+                    <span className="text-sm text-gray-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                <p className="text-sm text-gray-600">
+                  <strong>Ideal para:</strong>{" "}
+                  {(() => {
+                    const range = getSubscriberRange(recommendedPlan);
+                    if (recommendedPlan === 'free') {
+                      return 'Testes e avaliação';
+                    } else if (recommendedPlan === 'flow_ultra') {
+                      return 'Grandes provedores com mais de 30.000 assinantes';
+                    } else if (range.max) {
+                      return `Provedores com ${range.min.toLocaleString()} a ${range.max.toLocaleString()} assinantes`;
+                    } else {
+                      return `Provedores com mais de ${range.min.toLocaleString()} assinantes`;
+                    }
+                  })()}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Integração configurada */}
+      {(integrationData.whatsapp || integrationData.olt) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-600" />
+              Integrações Configuradas
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {integrationData.whatsapp && (
+                <div className="p-3 bg-green-50 rounded-lg">
+                  <h4 className="font-medium text-green-800">WhatsApp</h4>
+                  <p className="text-sm text-green-600">
+                    Token configurado
+                  </p>
+                </div>
+              )}
+              {integrationData.olt && integrationData.olt.length > 0 && (
+                <div className="p-3 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium text-blue-800">OLT/SNMP</h4>
+                  <p className="text-sm text-blue-600">
+                    {integrationData.olt.length} configuração(ões)
+                  </p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
-      </div>
-    );
-  }
+      )}
 
-  const validationErrors = validateConfigurations();
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6 flex items-center justify-center">
-      <Card className="w-full max-w-4xl border-0 shadow-2xl bg-white/95 backdrop-blur-xl">
-        <CardHeader className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white rounded-t-lg">
-          <div className="flex items-center gap-3">
-            <Zap className="w-8 h-8 text-yellow-300" />
-            <div>
-              <CardTitle className="text-3xl font-bold">
-                Revisão e Ativação
-              </CardTitle>
-              <p className="text-purple-100 mt-2">
-                Revise suas configurações e ative suas automações do <span className="font-bold text-yellow-300">3AMG FLOWS</span>
-              </p>
-            </div>
-          </div>
-        </CardHeader>
+      {/* Botões de navegação */}
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={onPrevious}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar
+        </Button>
         
-        <CardContent className="p-8 space-y-8">
-          {/* Validation Errors */}
-          {validationErrors.length > 0 && (
-            <Card className="border-red-200 bg-red-50">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-red-900 mb-2">Configurações Pendentes</h4>
-                    <ul className="text-sm text-red-800 space-y-1">
-                      {validationErrors.map((error, index) => (
-                        <li key={index}>• {error}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Selected Services */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              Serviços Selecionados ({onboardingData.selectedServices.length})
-            </h3>
-            <div className="flex flex-wrap gap-3">
-              {onboardingData.selectedServices.map((service) => {
-                const IconComponent = getServiceIcon(service);
-                const isConfigured = service === 'whatsapp' 
-                  ? onboardingData.whatsappConfig?.accessToken 
-                  : service === 'telegram' 
-                    ? onboardingData.telegramConfig?.botToken
-                    : onboardingData.agentConfigs[service]?.name;
-                
-                return (
-                  <Badge 
-                    key={service} 
-                    variant={isConfigured ? "default" : "destructive"} 
-                    className="px-4 py-2 text-sm flex items-center gap-2"
-                  >
-                    <IconComponent className="w-4 h-4" />
-                    {serviceNames[service as keyof typeof serviceNames] || service}
-                    {isConfigured ? <CheckCircle className="w-3 h-3" /> : <AlertCircle className="w-3 h-3" />}
-                  </Badge>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Configuration Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* WhatsApp Config */}
-            {onboardingData.selectedServices.includes('whatsapp') && (
-              <Card className={onboardingData.whatsappConfig?.accessToken ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-green-800">
-                    <MessageCircle className="w-5 h-5" />
-                    WhatsApp Business
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="font-medium">Phone Number ID:</span>
-                      <span className="text-gray-600">
-                        {onboardingData.whatsappConfig?.phoneNumberId || 'Não configurado'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Access Token:</span>
-                      <span className="text-gray-600">
-                        {onboardingData.whatsappConfig?.accessToken ? '••••••••' : 'Não configurado'}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Telegram Config */}
-            {onboardingData.selectedServices.includes('telegram') && (
-              <Card className={onboardingData.telegramConfig?.botToken ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-blue-800">
-                    <Send className="w-5 h-5" />
-                    Telegram Bot
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="font-medium">Bot Token:</span>
-                      <span className="text-gray-600">
-                        {onboardingData.telegramConfig?.botToken ? '••••••••' : 'Não configurado'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Bot Username:</span>
-                      <span className="text-gray-600">
-                        {onboardingData.telegramConfig?.botUsername || 'Não configurado'}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Agent Configs Summary */}
-          {Object.keys(onboardingData.agentConfigs).length > 0 && (
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                Agentes Configurados ({Object.keys(onboardingData.agentConfigs).length})
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {Object.entries(onboardingData.agentConfigs).map(([key, config]: [string, any]) => {
-                  const IconComponent = getServiceIcon(key);
-                  return (
-                    <Card key={key} className="border-green-200 bg-green-50">
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <IconComponent className="w-4 h-4 text-green-600" />
-                          <span className="font-medium text-green-900">{config.name}</span>
-                        </div>
-                        <p className="text-xs text-green-700">Modelo: {config.model}</p>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Activation Status */}
-          {activationStep && (
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-                  <div>
-                    <h4 className="font-semibold text-blue-900">Ativando Automações...</h4>
-                    <p className="text-blue-700">{activationStep}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-8 border-t border-gray-200">
-            <Button 
-              onClick={onPrevious}
-              variant="outline"
-              disabled={isCompleting || !!activationStep}
-              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Voltar
-            </Button>
-            
-            <Button 
-              onClick={handleActivate}
-              disabled={isCompleting || !!activationStep || validationErrors.length > 0}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              {isCompleting || activationStep ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Ativando...
-                </>
-              ) : (
-                <>
-                  <Zap className="w-4 h-4" />
-                  Ativar Automações
-                </>
-              )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        <Button 
+          onClick={onNext}
+          className="bg-blue-600 hover:bg-blue-700"
+        >
+          Ativar Conta
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };

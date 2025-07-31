@@ -1,120 +1,192 @@
 
 import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, ArrowRight, ArrowLeft, Users } from "lucide-react";
+import ServiceSelection from "./ServiceSelection";
 import ChannelAgentSelection from "./ChannelAgentSelection";
-import ProviderRegistration from "./ProviderRegistration";
+import SubscriberCountStep from "./SubscriberCountStep";
 import IntegrationConfiguration from "./IntegrationConfiguration";
-import { useProviderOnboarding } from "@/hooks/useProviderOnboarding";
-import type { OnboardingData, ProviderData, IntegrationData } from "@/hooks/useProviderOnboarding";
+import ReviewAndActivate from "./ReviewAndActivate";
+import FinalActivation from "./FinalActivation";
+import { useOnboardingNavigation } from "@/hooks/useOnboardingNavigation";
+import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
 
 const NewOnboardingWizard = () => {
-  const [step, setStep] = useState(1);
-  const { completeOnboarding, isLoading } = useProviderOnboarding();
+  const { currentStep, nextStep, previousStep, goToStep } = useOnboardingNavigation();
+  const { config, saveConfig, completeOnboarding, isSaving, isCompleting } = useOnboardingConfig();
   
-  const [onboardingData, setOnboardingData] = useState<OnboardingData>({
-    selectedChannels: [],
-    selectedAgents: [],
-    providerData: {
-      name: '',
-      cnpj_id: '',
-      contact: ''
-    },
-    integrationData: {
-      snmp_enabled: false,
-      api_enabled: false,
-      snmp_config: {
-        olt_brand: '',
-        olt_model: '',
-        olt_ip: '',
-        snmp_version: 'v2c',
-        snmp_cred: 'public',
-        snmp_port: '161',
-        timeout: '5000'
-      },
-      api_config: {
-        api_base_url: '',
-        api_token: '',
-        api_endpoints: []
-      },
-      mode: 'manual'
-    }
-  });
-
-  const handleChannelsChange = (channels: string[]) => {
-    setOnboardingData(prev => ({
-      ...prev,
-      selectedChannels: channels
-    }));
-  };
-
-  const handleAgentsChange = (agents: string[]) => {
-    setOnboardingData(prev => ({
-      ...prev,
-      selectedAgents: agents
-    }));
-  };
-
-  const handleProviderDataChange = (data: ProviderData) => {
-    setOnboardingData(prev => ({
-      ...prev,
-      providerData: data
-    }));
-  };
-
-  const handleIntegrationDataChange = (data: IntegrationData) => {
-    setOnboardingData(prev => ({
-      ...prev,
-      integrationData: data
-    }));
-  };
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
+  const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
+  const [subscriberCount, setSubscriberCount] = useState(0);
+  const [integrationData, setIntegrationData] = useState<any>({});
+  
+  const steps = [
+    { id: 1, name: "Serviços", description: "Selecione os serviços desejados", icon: CheckCircle },
+    { id: 2, name: "Assinantes", description: "Informe o número de assinantes", icon: Users },
+    { id: 3, name: "Canais e Agentes", description: "Configure canais e agentes", icon: CheckCircle },
+    { id: 4, name: "Integrações", description: "Configure suas integrações", icon: CheckCircle },
+    { id: 5, name: "Revisão", description: "Revise suas configurações", icon: CheckCircle },
+    { id: 6, name: "Ativação", description: "Active sua conta", icon: CheckCircle }
+  ];
 
   const handleNext = () => {
-    setStep(prev => prev + 1);
-  };
-
-  const handlePrevious = () => {
-    setStep(prev => prev - 1);
+    // Salvar dados do step atual
+    const configData = {
+      selected_services: selectedServices,
+      numero_assinantes: subscriberCount,
+      agent_configs: {
+        channels: selectedChannels,
+        agents: selectedAgents
+      },
+      whatsapp_config: integrationData.whatsapp,
+      olt_configs: integrationData.olt || [],
+      is_completed: false
+    };
+    
+    saveConfig(configData);
+    nextStep();
   };
 
   const handleComplete = async () => {
-    try {
-      await completeOnboarding(onboardingData);
-      // Redirecionar para dashboard
-      window.location.href = '/dashboard';
-    } catch (error) {
-      console.error('Erro ao completar onboarding:', error);
+    const finalConfig = {
+      selected_services: selectedServices,
+      numero_assinantes: subscriberCount,
+      agent_configs: {
+        channels: selectedChannels,
+        agents: selectedAgents
+      },
+      whatsapp_config: integrationData.whatsapp,
+      olt_configs: integrationData.olt || [],
+      is_completed: true
+    };
+    
+    completeOnboarding(finalConfig);
+  };
+
+  const renderStepIndicator = () => (
+    <div className="flex items-center justify-center space-x-4 mb-8">
+      {steps.map((step, index) => (
+        <div key={step.id} className="flex items-center">
+          <div 
+            className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+              currentStep >= step.id 
+                ? 'bg-blue-600 border-blue-600 text-white' 
+                : 'bg-white border-gray-300 text-gray-500'
+            }`}
+          >
+            {currentStep > step.id ? (
+              <CheckCircle className="w-5 h-5" />
+            ) : (
+              <span className="text-sm font-medium">{step.id}</span>
+            )}
+          </div>
+          <div className="ml-2 text-sm">
+            <div className={`font-medium ${currentStep >= step.id ? 'text-blue-600' : 'text-gray-500'}`}>
+              {step.name}
+            </div>
+            <div className="text-gray-400 text-xs">{step.description}</div>
+          </div>
+          {index < steps.length - 1 && (
+            <ArrowRight className="mx-4 w-4 h-4 text-gray-300" />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <ServiceSelection
+            selectedServices={selectedServices}
+            onServicesChange={setSelectedServices}
+            onNext={handleNext}
+            onPrevious={() => {}}
+          />
+        );
+      
+      case 2:
+        return (
+          <SubscriberCountStep
+            subscriberCount={subscriberCount}
+            onSubscriberCountChange={setSubscriberCount}
+            onNext={handleNext}
+            onPrevious={previousStep}
+          />
+        );
+      
+      case 3:
+        return (
+          <ChannelAgentSelection
+            selectedChannels={selectedChannels}
+            selectedAgents={selectedAgents}
+            onChannelsChange={setSelectedChannels}
+            onAgentsChange={setSelectedAgents}
+            onNext={handleNext}
+            onPrevious={previousStep}
+          />
+        );
+      
+      case 4:
+        return (
+          <IntegrationConfiguration
+            integrationData={integrationData}
+            onIntegrationChange={setIntegrationData}
+            onNext={handleNext}
+            onPrevious={previousStep}
+          />
+        );
+      
+      case 5:
+        return (
+          <ReviewAndActivate
+            selectedServices={selectedServices}
+            selectedChannels={selectedChannels}
+            selectedAgents={selectedAgents}
+            subscriberCount={subscriberCount}
+            integrationData={integrationData}
+            onNext={handleNext}
+            onPrevious={previousStep}
+          />
+        );
+      
+      case 6:
+        return (
+          <FinalActivation
+            onComplete={handleComplete}
+            onPrevious={previousStep}
+            isCompleting={isCompleting}
+          />
+        );
+      
+      default:
+        return <div>Step não encontrado</div>;
     }
   };
 
   return (
-    <>
-      {step === 1 && (
-        <ChannelAgentSelection
-          selectedChannels={onboardingData.selectedChannels}
-          selectedAgents={onboardingData.selectedAgents}
-          onChannelsChange={handleChannelsChange}
-          onAgentsChange={handleAgentsChange}
-          onNext={handleNext}
-        />
-      )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Configuração da sua conta Flow
+          </h1>
+          <p className="text-lg text-gray-600">
+            Vamos configurar sua plataforma de agentes IA em poucos passos
+          </p>
+        </div>
 
-      {step === 2 && (
-        <ProviderRegistration
-          providerData={onboardingData.providerData}
-          onProviderDataChange={handleProviderDataChange}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-        />
-      )}
-
-      {step === 3 && (
-        <IntegrationConfiguration
-          integrationData={onboardingData.integrationData}
-          onIntegrationDataChange={handleIntegrationDataChange}
-          onNext={handleComplete}
-          onPrevious={handlePrevious}
-        />
-      )}
-    </>
+        {renderStepIndicator()}
+        
+        <div className="max-w-6xl mx-auto">
+          {renderCurrentStep()}
+        </div>
+      </div>
+    </div>
   );
 };
 

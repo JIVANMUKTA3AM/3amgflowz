@@ -57,6 +57,10 @@ export const useOnboardingConfig = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['onboarding-config', user?.id] });
+      toast({
+        title: "Configuração salva",
+        description: "Suas configurações foram salvas com sucesso.",
+      });
     },
     onError: (error) => {
       console.error('Error saving onboarding config:', error);
@@ -86,11 +90,16 @@ export const useOnboardingConfig = () => {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['onboarding-config', user?.id] });
+      
+      // Aqui podemos integrar com o sistema de assinatura se necessário
+      const planType = require('@/types/subscription').getPlanBySubscribers(data.numero_assinantes);
+      console.log(`Cliente configurado com ${data.numero_assinantes} assinantes - Plano recomendado: ${planType}`);
+      
       toast({
         title: "Onboarding concluído!",
-        description: "Configuração salva com sucesso.",
+        description: "Sua conta foi configurada com sucesso. Bem-vindo à Flow!",
       });
     },
     onError: (error) => {
