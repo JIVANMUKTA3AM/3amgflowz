@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +14,7 @@ import UserMenu from "@/components/UserMenu";
 const Index = () => {
   const { user } = useAuth();
   const { profile, isLoading: profileLoading } = useProfile();
-  const { role: userRole, loading: roleLoading } = useUserRole();
+  const { role: userRole, loading: roleLoading, isAdmin } = useUserRole();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,20 +22,21 @@ const Index = () => {
     if (user && !profileLoading && !roleLoading) {
       console.log('User role:', userRole);
       console.log('Profile role:', profile?.role);
+      console.log('Is Admin:', isAdmin);
       
-      // Priorizar o userRole (baseado no email) para admins
-      if (userRole === 'admin') {
+      // Se é admin (baseado no email ou role), fica na página inicial
+      if (isAdmin) {
         console.log('Usuário é admin, mantendo na página inicial com acesso admin');
         return; // Admin fica na página inicial com acesso completo
       }
       
-      // Se é usuário regular (não admin), redireciona para client dashboard
-      if (userRole === 'client' || profile?.role === 'user') {
+      // Se é usuário regular (não admin), redireciona apenas se não for admin
+      if (!isAdmin && userRole !== 'admin') {
         console.log('Redirecionando usuário regular para client dashboard');
         navigate("/client-dashboard");
       }
     }
-  }, [user, profile, profileLoading, userRole, roleLoading, navigate]);
+  }, [user, profile, profileLoading, userRole, roleLoading, navigate, isAdmin]);
 
   // Se está carregando, mostra loading
   if (profileLoading || roleLoading) {
@@ -151,7 +151,7 @@ const Index = () => {
 
             <div className="flex items-center space-x-4">
               <div className="text-sm text-green-600 font-medium">
-                Modo Admin Ativo
+                Modo Admin Ativo - Dashboard dos Provedores
               </div>
               <UserMenu />
             </div>
@@ -162,10 +162,10 @@ const Index = () => {
       <main className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Painel Administrativo
+            Painel Administrativo - Gestão de Provedores
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Monitore clientes, assinaturas e desempenho da plataforma
+            Monitore clientes provedores, suas assinaturas e desempenho da plataforma
           </p>
         </div>
 
@@ -174,13 +174,13 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Clientes Ativos</CardTitle>
+              <CardTitle className="text-sm font-medium">Provedores Ativos</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">12</div>
               <p className="text-xs text-muted-foreground">
-                +2 novos esta semana
+                +2 novos provedores esta semana
               </p>
             </CardContent>
           </Card>
@@ -225,7 +225,6 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Seção de Acesso Rápido */}
         <Card className="mt-12 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Acesso Rápido - Funcionalidades Principais</CardTitle>
@@ -355,7 +354,6 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        {/* Seção de Documentação */}
         <Card className="mt-8 border-0 shadow-lg bg-white/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Documentação e Configurações Avançadas</CardTitle>
