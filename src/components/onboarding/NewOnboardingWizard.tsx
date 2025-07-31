@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,11 +16,14 @@ const NewOnboardingWizard = () => {
   const { currentStep, nextStep, previousStep, goToStep } = useOnboardingNavigation();
   const { config, saveConfig, completeOnboarding, isSaving, isCompleting } = useOnboardingConfig();
   
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>(config?.selected_services || []);
   const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
   const [selectedAgents, setSelectedAgents] = useState<string[]>([]);
-  const [subscriberCount, setSubscriberCount] = useState(0);
-  const [integrationData, setIntegrationData] = useState<any>({});
+  const [subscriberCount, setSubscriberCount] = useState(config?.numero_assinantes || 0);
+  const [integrationData, setIntegrationData] = useState<any>(config ? {
+    whatsapp: config.whatsapp_config,
+    olt: config.olt_configs || []
+  } : {});
   
   const steps = [
     { id: 1, name: "Serviços", description: "Selecione os serviços desejados", icon: CheckCircle },
@@ -135,7 +137,7 @@ const NewOnboardingWizard = () => {
         return (
           <IntegrationConfiguration
             integrationData={integrationData}
-            onIntegrationChange={setIntegrationData}
+            onIntegrationDataChange={setIntegrationData}
             onNext={handleNext}
             onPrevious={previousStep}
           />

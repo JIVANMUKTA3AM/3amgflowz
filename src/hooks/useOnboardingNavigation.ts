@@ -19,16 +19,28 @@ export const useOnboardingNavigation = () => {
     // Determine current step based on what's configured
     if (!config.selected_services || config.selected_services.length === 0) {
       setCurrentStep(1); // Service Selection
-    } else if (needsIntegrationConfig(config)) {
-      setCurrentStep(2); // Integrations Config
+    } else if (!config.numero_assinantes || config.numero_assinantes === 0) {
+      setCurrentStep(2); // Subscriber Count
     } else if (needsAgentConfig(config)) {
       setCurrentStep(3); // Agent Configuration
-    } else if (needsOLTConfig(config)) {
-      setCurrentStep(4); // OLT Configuration
+    } else if (needsIntegrationConfig(config)) {
+      setCurrentStep(4); // Integrations Config
     } else {
       setCurrentStep(5); // Review and Activate
     }
   }, [config, isLoading]);
+
+  const nextStep = () => {
+    setCurrentStep(prev => prev + 1);
+  };
+
+  const previousStep = () => {
+    setCurrentStep(prev => prev - 1);
+  };
+
+  const goToStep = (step: number) => {
+    setCurrentStep(step);
+  };
 
   const needsIntegrationConfig = (config: any) => {
     const services = config.selected_services || [];
@@ -56,14 +68,12 @@ export const useOnboardingNavigation = () => {
     });
   };
 
-  const needsOLTConfig = (config: any) => {
-    const services = config.selected_services || [];
-    return services.includes('olt') && (!config.olt_configs || config.olt_configs.length === 0);
-  };
-
   return {
     currentStep,
     setCurrentStep,
+    nextStep,
+    previousStep,
+    goToStep,
     isLoading
   };
 };

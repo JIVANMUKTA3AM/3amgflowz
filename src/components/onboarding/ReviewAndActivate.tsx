@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, ArrowRight, Check, Users, DollarSign } from "lucide-react";
-import { getPlanBySubscribers, getSubscriberRange } from "@/types/subscription";
+import { getPlanBySubscribers, getPlanPrice, getSubscriberRange } from "@/types/subscription";
 
 interface ReviewAndActivateProps {
   selectedServices: string[];
@@ -26,6 +26,7 @@ const ReviewAndActivate = ({
   onPrevious
 }: ReviewAndActivateProps) => {
   const recommendedPlan = getPlanBySubscribers(subscriberCount);
+  const planPrice = getPlanPrice(recommendedPlan, subscriberCount);
   
   const planNames = {
     free: 'Gratuito',
@@ -36,22 +37,13 @@ const ReviewAndActivate = ({
     flow_ultra: 'Flow Ultra'
   };
 
-  const planPrices = {
-    free: 'R$ 0',
-    flow_start: 'R$ 199',
-    flow_pro: 'R$ 499',
-    flow_power: 'R$ 899',
-    flow_enterprise: 'R$ 1.497',
-    flow_ultra: 'Sob consulta'
-  };
-
   const planFeatures = {
     free: ['Acesso limitado', 'Suporte básico'],
-    flow_start: ['Até 1.000 clientes', 'Agentes básicos', 'Suporte email'],
-    flow_pro: ['1.001 a 3.000 clientes', 'Todos os agentes', 'Suporte prioritário'],
-    flow_power: ['3.001 a 10.000 clientes', 'Suporte 24/7', 'Analytics avançados'],
-    flow_enterprise: ['10.001 a 30.000 clientes', 'Suporte dedicado', 'White label'],
-    flow_ultra: ['30.000+ clientes', 'Solução customizada', 'Gerente dedicado']
+    flow_start: ['100 a 500 clientes', 'Agentes básicos', 'Suporte email'],
+    flow_pro: ['501 a 1.500 clientes', 'Todos os agentes', 'Suporte prioritário'],
+    flow_power: ['1.501 a 5.000 clientes', 'Suporte 24/7', 'Analytics avançados'],
+    flow_enterprise: ['5.001 a 15.000 clientes', 'Suporte dedicado', 'White label'],
+    flow_ultra: ['15.000+ clientes', 'Solução customizada', 'Gerente dedicado']
   };
 
   return (
@@ -159,8 +151,8 @@ const ReviewAndActivate = ({
                   {planNames[recommendedPlan]}
                 </h3>
                 <div className="text-3xl font-bold text-blue-600 mt-2">
-                  {planPrices[recommendedPlan]}
-                  {recommendedPlan !== 'free' && recommendedPlan !== 'flow_ultra' && (
+                  R$ {planPrice.toLocaleString('pt-BR')}
+                  {recommendedPlan !== 'free' && (
                     <span className="text-lg font-normal text-gray-600">/mês</span>
                   )}
                 </div>
@@ -180,20 +172,14 @@ const ReviewAndActivate = ({
 
               <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-600">
-                  <strong>Ideal para:</strong>{" "}
-                  {(() => {
-                    const range = getSubscriberRange(recommendedPlan);
-                    if (recommendedPlan === 'free') {
-                      return 'Testes e avaliação';
-                    } else if (recommendedPlan === 'flow_ultra') {
-                      return 'Grandes provedores com mais de 30.000 assinantes';
-                    } else if (range.max) {
-                      return `Provedores com ${range.min.toLocaleString()} a ${range.max.toLocaleString()} assinantes`;
-                    } else {
-                      return `Provedores com mais de ${range.min.toLocaleString()} assinantes`;
-                    }
-                  })()}
+                  <strong>Valor calculado para:</strong>{" "}
+                  {subscriberCount.toLocaleString()} assinantes
                 </p>
+                {subscriberCount >= 100 && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    * Preço progressivo baseado no número de assinantes
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>

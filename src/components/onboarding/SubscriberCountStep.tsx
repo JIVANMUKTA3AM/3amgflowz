@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Users, ArrowLeft, ArrowRight } from "lucide-react";
-import { getPlanBySubscribers, getSubscriberRange } from "@/types/subscription";
+import { getPlanBySubscribers, getPlanPrice } from "@/types/subscription";
 
 interface SubscriberCountStepProps {
   subscriberCount: number;
@@ -30,6 +30,8 @@ const SubscriberCountStep = ({
   };
 
   const recommendedPlan = getPlanBySubscribers(subscriberCount);
+  const planPrice = getPlanPrice(recommendedPlan, subscriberCount);
+  
   const planNames = {
     free: 'Gratuito',
     flow_start: 'Flow Start',
@@ -39,16 +41,7 @@ const SubscriberCountStep = ({
     flow_ultra: 'Flow Ultra'
   };
 
-  const planPrices = {
-    free: 'R$ 0',
-    flow_start: 'R$ 199',
-    flow_pro: 'R$ 499',
-    flow_power: 'R$ 899',
-    flow_enterprise: 'R$ 1.497',
-    flow_ultra: 'Sob consulta'
-  };
-
-  const quickOptions = [100, 500, 1000, 2500, 5000, 15000, 50000];
+  const quickOptions = [100, 300, 500, 800, 1200, 2000, 5000, 10000, 20000];
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -57,7 +50,7 @@ const SubscriberCountStep = ({
           Quantos assinantes seu provedor possui?
         </h2>
         <p className="text-gray-600">
-          Com base no número de assinantes, recomendaremos o plano ideal para seu negócio
+          Com base no número de assinantes, calcularemos o valor ideal para seu negócio
         </p>
       </div>
 
@@ -113,31 +106,29 @@ const SubscriberCountStep = ({
               </div>
               
               <div className="text-center">
-                <p className="text-2xl font-bold text-blue-900">
-                  {planPrices[recommendedPlan]}
-                  {recommendedPlan !== 'free' && recommendedPlan !== 'flow_ultra' && (
+                <p className="text-3xl font-bold text-blue-900">
+                  R$ {planPrice.toLocaleString('pt-BR')}
+                  {recommendedPlan !== 'free' && (
                     <span className="text-sm font-normal">/mês</span>
                   )}
                 </p>
               </div>
 
               <div className="text-center text-sm text-blue-700">
-                {recommendedPlan === 'flow_ultra' ? (
-                  <p>Solução customizada para grandes provedores</p>
+                {subscriberCount < 100 ? (
+                  <p>Plano gratuito para testes e avaliação</p>
                 ) : (
                   <p>
-                    Ideal para provedores com{" "}
-                    {(() => {
-                      const range = getSubscriberRange(recommendedPlan);
-                      if (range.max) {
-                        return `${range.min.toLocaleString()} a ${range.max.toLocaleString()}`;
-                      } else {
-                        return `mais de ${range.min.toLocaleString()}`;
-                      }
-                    })()} assinantes
+                    Valor calculado para {subscriberCount.toLocaleString()} assinantes
                   </p>
                 )}
               </div>
+              
+              {subscriberCount >= 100 && (
+                <div className="text-xs text-blue-600 text-center">
+                  * Preço progressivo baseado no número de assinantes
+                </div>
+              )}
             </div>
           )}
         </CardContent>
@@ -151,7 +142,7 @@ const SubscriberCountStep = ({
         
         <Button 
           onClick={onNext}
-          disabled={subscriberCount <= 0}
+          disabled={subscriberCount < 0}
           className="bg-blue-600 hover:bg-blue-700"
         >
           Continuar
