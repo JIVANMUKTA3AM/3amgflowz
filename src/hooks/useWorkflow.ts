@@ -8,7 +8,7 @@ export const useWorkflow = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleWorkflowTrigger = async (workflowType: string, data: any = {}) => {
+  const handleWorkflowTrigger = async (workflowType: string = 'default', data: any = {}) => {
     if (!user?.id) {
       toast({
         title: "Erro de autenticação",
@@ -51,8 +51,8 @@ export const useWorkflow = () => {
   };
 
   return {
-    handleWorkflowTrigger,
-    triggerWorkflow,
+    handleWorkflowTrigger: triggerWorkflow, // Retorna a versão sem parâmetros para compatibilidade
+    triggerWorkflowWithParams: handleWorkflowTrigger, // Versão com parâmetros para uso específico
     isLoading
   };
 };

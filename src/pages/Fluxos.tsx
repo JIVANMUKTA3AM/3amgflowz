@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -9,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Code, Play, FileText, Zap, Database, Mail, Webhook } from "lucide-react";
 
 const Fluxos = () => {
-  const { handleWorkflowTrigger, isLoading } = useWorkflow();
+  const { handleWorkflowTrigger, triggerWorkflowWithParams, isLoading } = useWorkflow();
   const [activeCode, setActiveCode] = useState<string | null>(null);
 
   const workflowExamples = [
@@ -289,7 +288,7 @@ const Fluxos = () => {
                     
                     <Button
                       size="sm"
-                      onClick={() => handleWorkflowTrigger(workflow.workflowType)}
+                      onClick={() => triggerWorkflowWithParams(workflow.workflowType)}
                       disabled={isLoading}
                       className="bg-gradient-3amg hover:bg-gradient-3amg-light text-white"
                     >
