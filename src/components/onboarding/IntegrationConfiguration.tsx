@@ -153,6 +153,16 @@ const IntegrationConfiguration = ({
 
   const canProceed = !integrationData.snmp_enabled || testResults.snmp === true;
 
+  const oltBrands = [
+    { value: 'huawei', label: 'Huawei' },
+    { value: 'zte', label: 'ZTE' },
+    { value: 'fiberhome', label: 'Fiberhome' },
+    { value: 'parks', label: 'Parks' },
+    { value: 'datacom', label: 'Datacom' },
+    { value: 'vsol', label: 'VSOL' },
+    { value: 'ubiquiti', label: 'Ubiquiti' }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6 flex items-center justify-center">
       <Card className="w-full max-w-4xl border-0 shadow-2xl bg-white/95 backdrop-blur-xl">
@@ -195,11 +205,11 @@ const IntegrationConfiguration = ({
                         <SelectValue placeholder="Selecione a marca" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="huawei">Huawei</SelectItem>
-                        <SelectItem value="zte">ZTE</SelectItem>
-                        <SelectItem value="fiberhome">FiberHome</SelectItem>
-                        <SelectItem value="parks">Parks</SelectItem>
-                        <SelectItem value="datacom">Datacom</SelectItem>
+                        {oltBrands.map((brand) => (
+                          <SelectItem key={brand.value} value={brand.value}>
+                            {brand.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -210,7 +220,7 @@ const IntegrationConfiguration = ({
                       id="olt_model"
                       value={integrationData.snmp_config.olt_model}
                       onChange={(e) => handleSNMPConfigChange('olt_model', e.target.value)}
-                      placeholder="Ex: MA5608T"
+                      placeholder="Ex: MA5608T, V1600G, UF-INSTANT"
                     />
                   </div>
                   

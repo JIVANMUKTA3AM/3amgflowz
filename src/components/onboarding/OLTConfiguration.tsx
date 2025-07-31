@@ -48,12 +48,13 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
   }
 
   const oltBrands = [
-    { value: 'huawei', label: 'Huawei', models: ['MA5608T', 'MA5683T', 'MA5800-X7', 'MA5800-X15'] },
-    { value: 'zte', label: 'ZTE', models: ['C320', 'C300', 'C220', 'C600'] },
-    { value: 'fiberhome', label: 'Fiberhome', models: ['AN5516-01', 'AN5516-04', 'AN5516-06'] },
+    { value: 'huawei', label: 'Huawei', models: ['MA5608T', 'MA5683T', 'MA5800-X7', 'MA5800-X15', 'MA5800-X2'] },
+    { value: 'zte', label: 'ZTE', models: ['C320', 'C300', 'C220', 'C600', 'C650'] },
+    { value: 'fiberhome', label: 'Fiberhome', models: ['AN5516-01', 'AN5516-04', 'AN5516-06', 'AN5506-04'] },
     { value: 'parks', label: 'Parks', models: ['OLT 4800', 'OLT 8800', 'OLT 1600'] },
-    { value: 'datacom', label: 'Datacom', models: ['DM4100', 'DM4000', 'DM991'] },
-    { value: 'vsol', label: 'VSOL', models: ['V1600D', 'V1600G', 'V2408G', 'V2724G', 'V3216G'] }
+    { value: 'datacom', label: 'Datacom', models: ['DM4100', 'DM4000', 'DM991', 'DM4600'] },
+    { value: 'vsol', label: 'VSOL', models: ['V1600D', 'V1600G', 'V2408G', 'V2724G', 'V3216G', 'V2408A', 'V1600A'] },
+    { value: 'ubiquiti', label: 'Ubiquiti', models: ['UF-INSTANT', 'UF-NANO-G', 'UF-LOCO', 'UF-GP-C+', 'UF-GP-B+', 'Dream Machine'] }
   ];
 
   const handleConfigChange = (index: number, field: keyof OLTConfig, value: string) => {
