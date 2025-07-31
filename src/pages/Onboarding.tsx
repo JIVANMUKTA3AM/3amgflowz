@@ -1,5 +1,5 @@
 
-import OnboardingWizard from "@/components/onboarding/OnboardingWizard";
+import NewOnboardingWizard from "@/components/onboarding/NewOnboardingWizard";
 import { useUserRole } from "@/hooks/useUserRole";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,13 +34,13 @@ const Onboarding = () => {
               </div>
               <CardDescription className="text-blue-700">
                 Você está acessando o onboarding como administrador para fins de teste. 
-                Este é o mesmo fluxo que os clientes verão ao se cadastrar no sistema.
+                Este é o mesmo fluxo que os provedores verão ao se cadastrar no sistema.
               </CardDescription>
             </CardHeader>
           </Card>
         )}
         
-        <OnboardingWizard />
+        <NewOnboardingWizard />
       </div>
     </div>
   );
