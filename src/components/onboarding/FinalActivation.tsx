@@ -6,19 +6,13 @@ import { ArrowLeft, CheckCircle, Users, Bot, MessageCircle, MessageSquare, Wifi,
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface FinalActivationProps {
-  onboardingData: any;
   onComplete: () => void;
   onPrevious: () => void;
+  isCompleting?: boolean;
 }
 
-const FinalActivation = ({ onboardingData, onComplete, onPrevious }: FinalActivationProps) => {
+const FinalActivation = ({ onComplete, onPrevious, isCompleting = false }: FinalActivationProps) => {
   const [isActivating, setIsActivating] = useState(false);
-
-  const agentIcons = {
-    atendimento: Users,
-    tecnico: Bot,
-    comercial: MessageCircle
-  };
 
   const handleActivate = async () => {
     setIsActivating(true);
@@ -34,80 +28,13 @@ const FinalActivation = ({ onboardingData, onComplete, onPrevious }: FinalActiva
     <div className="space-y-6">
       <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Revisar e Ativar</CardTitle>
+          <CardTitle className="text-2xl text-center">Ativação Final</CardTitle>
           <p className="text-center text-gray-600">
-            Confirme suas configurações e ative seus agentes
+            Pronto para ativar sua conta Flow!
           </p>
         </CardHeader>
         
         <CardContent className="space-y-8">
-          {/* Resumo dos Agentes */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              Agentes Configurados ({onboardingData.selectedServices?.length || 0})
-            </h3>
-            
-            <div className="space-y-3">
-              {onboardingData.selectedServices?.map((serviceId: string) => {
-                const config = onboardingData.agentConfigs?.[serviceId];
-                const Icon = agentIcons[serviceId as keyof typeof agentIcons];
-                
-                return (
-                  <div key={serviceId} className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                    <Icon className="w-6 h-6 text-green-600" />
-                    <div>
-                      <p className="font-medium">{config?.name || serviceId}</p>
-                      <p className="text-sm text-gray-600">Modelo: {config?.model || 'GPT-4 Omni Mini'}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Resumo das Integrações */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              Integrações
-            </h3>
-            
-            <div className="space-y-3">
-              {onboardingData.integrations?.whatsapp?.token && (
-                <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                  <MessageSquare className="w-6 h-6 text-green-600" />
-                  <div>
-                    <p className="font-medium">WhatsApp Business</p>
-                    <p className="text-sm text-gray-600">
-                      Phone ID: {onboardingData.integrations.whatsapp.phoneId}
-                    </p>
-                  </div>
-                </div>
-              )}
-              
-              {onboardingData.integrations?.oltConfig?.length > 0 && (
-                <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                  <Wifi className="w-6 h-6 text-green-600" />
-                  <div>
-                    <p className="font-medium">OLTs Configuradas</p>
-                    <p className="text-sm text-gray-600">
-                      {onboardingData.integrations.oltConfig.length} OLT(s) conectada(s)
-                    </p>
-                  </div>
-                </div>
-              )}
-              
-              {(!onboardingData.integrations?.whatsapp?.token && !onboardingData.integrations?.oltConfig?.length) && (
-                <div className="text-center py-4 text-gray-500">
-                  <p>Nenhuma integração configurada</p>
-                  <p className="text-sm">Você pode configurar depois no painel</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Instruções Pós-Ativação */}
           <Alert>
             <Rocket className="h-4 w-4" />
             <AlertDescription>
@@ -140,11 +67,11 @@ const FinalActivation = ({ onboardingData, onComplete, onPrevious }: FinalActiva
             
             <Button 
               onClick={handleActivate}
-              disabled={isActivating}
+              disabled={isActivating || isCompleting}
               size="lg"
               className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
             >
-              {isActivating ? (
+              {isActivating || isCompleting ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
                   Ativando Agentes...
@@ -152,7 +79,7 @@ const FinalActivation = ({ onboardingData, onComplete, onPrevious }: FinalActiva
               ) : (
                 <>
                   <Rocket className="w-4 h-4 mr-2" />
-                  Ativar Meus Agentes
+                  Ativar Minha Conta
                 </>
               )}
             </Button>

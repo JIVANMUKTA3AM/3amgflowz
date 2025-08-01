@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowRight, MessageCircle, Wifi, Users, DollarSign, Wrench } from "lucide-react";
+import { ArrowRight, ArrowLeft, MessageCircle, Wifi, Users, DollarSign, Wrench } from "lucide-react";
 
 interface ChannelAgentSelectionProps {
   selectedChannels: string[];
@@ -11,6 +11,7 @@ interface ChannelAgentSelectionProps {
   onChannelsChange: (channels: string[]) => void;
   onAgentsChange: (agents: string[]) => void;
   onNext: () => void;
+  onPrevious: () => void;
 }
 
 const ChannelAgentSelection = ({ 
@@ -18,7 +19,8 @@ const ChannelAgentSelection = ({
   selectedAgents, 
   onChannelsChange, 
   onAgentsChange, 
-  onNext 
+  onNext,
+  onPrevious 
 }: ChannelAgentSelectionProps) => {
   const channels = [
     { id: 'whatsapp', label: 'WhatsApp Business', icon: MessageCircle, description: 'Atendimento via WhatsApp' },
@@ -111,7 +113,16 @@ const ChannelAgentSelection = ({
             </div>
           </div>
 
-          <div className="flex justify-center pt-6">
+          <div className="flex justify-between pt-6">
+            <Button 
+              onClick={onPrevious}
+              variant="outline"
+              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 hover:bg-gray-50"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Voltar
+            </Button>
+            
             <Button 
               onClick={onNext}
               disabled={!canProceed}
