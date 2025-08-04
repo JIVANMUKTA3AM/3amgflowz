@@ -5,15 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { ServiceSelection } from "./ServiceSelection";
-import { ProviderRegistration } from "./ProviderRegistration";
-import { SubscriberCountStep } from "./SubscriberCountStep";
-import { ChannelAgentSelection } from "./ChannelAgentSelection";
-import { IntegrationsSetup } from "./IntegrationsSetup";
-import { ReviewAndActivate } from "./ReviewAndActivate";
-import { FinalActivation } from "./FinalActivation";
+import ServiceSelection from "./ServiceSelection";
+import ProviderRegistration from "./ProviderRegistration";
+import SubscriberCountStep from "./SubscriberCountStep";
+import ChannelAgentSelection from "./ChannelAgentSelection";
+import IntegrationsSetup from "./IntegrationsSetup";
+import ReviewAndActivate from "./ReviewAndActivate";
+import FinalActivation from "./FinalActivation";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
-import { OnboardingData } from "@/hooks/useOnboardingConfig";
 
 const STEPS = [
   { key: "services", title: "Seleção de Serviços", description: "Escolha os serviços que deseja contratar" },
@@ -27,9 +26,15 @@ const STEPS = [
 
 export const OnboardingWizard = () => {
   const navigate = useNavigate();
-  const { onboardingData, updateOnboardingData, saveOnboardingData } = useOnboardingConfig();
+  const { config, saveConfig, completeOnboarding, isSaving, isCompleting } = useOnboardingConfig();
   const [currentStep, setCurrentStep] = useState(0);
-  const [isCompleting, setIsCompleting] = useState(false);
+
+  // State for onboarding data
+  const [selectedServices, setSelectedServices] = useState<string[]>(config?.selected_services || []);
+  const [providerData, setProviderData] = useState<any>({});
+  const [subscriberCount, setSubscriberCount] = useState(config?.numero_assinantes || 0);
+  const [channelConfigs, setChannelConfigs] = useState<any>({});
+  const [integrations, setIntegrations] = useState<any>({});
 
   const currentStepKey = STEPS[currentStep]?.key;
 
@@ -46,17 +51,23 @@ export const OnboardingWizard = () => {
   };
 
   const handleComplete = async () => {
-    setIsCompleting(true);
     try {
-      await saveOnboardingData();
+      const finalConfig = {
+        selected_services: selectedServices,
+        numero_assinantes: subscriberCount,
+        agent_configs: channelConfigs,
+        whatsapp_config: integrations.whatsapp,
+        olt_configs: integrations.olt || [],
+        is_completed: true
+      };
+      
+      await completeOnboarding(finalConfig);
       // Redirecionar para dashboard após conclusão
       setTimeout(() => {
         navigate('/client-dashboard');
       }, 2000);
     } catch (error) {
       console.error('Error completing onboarding:', error);
-    } finally {
-      setIsCompleting(false);
     }
   };
 
@@ -67,17 +78,18 @@ export const OnboardingWizard = () => {
       case "services":
         return (
           <ServiceSelection
-            selectedServices={onboardingData.selectedServices}
-            onServicesChange={(services) => updateOnboardingData({ selectedServices: services })}
+            selectedServices={selectedServices}
+            onServicesChange={(services) => setSelectedServices(services)}
             onNext={handleNext}
+            onPrevious={() => {}}
           />
         );
       
       case "provider":
         return (
           <ProviderRegistration
-            providerData={onboardingData.providerData}
-            onProviderDataChange={(data) => updateOnboardingData({ providerData: data })}
+            providerData={providerData}
+            onProviderDataChange={(data) => setProviderData(data)}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
@@ -86,8 +98,8 @@ export const OnboardingWizard = () => {
       case "subscribers":
         return (
           <SubscriberCountStep
-            subscriberCount={onboardingData.subscriberCount}
-            onSubscriberCountChange={(count) => updateOnboardingData({ subscriberCount: count })}
+            subscriberCount={subscriberCount}
+            onSubscriberCountChange={(count) => setSubscriberCount(count)}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
@@ -96,8 +108,10 @@ export const OnboardingWizard = () => {
       case "channels":
         return (
           <ChannelAgentSelection
-            channelConfigs={onboardingData.channelConfigs}
-            onChannelConfigsChange={(configs) => updateOnboardingData({ channelConfigs: configs })}
+            selectedChannels={channelConfigs.channels || []}
+            selectedAgents={channelConfigs.agents || []}
+            onChannelsChange={(channels) => setChannelConfigs({...channelConfigs, channels})}
+            onAgentsChange={(agents) => setChannelConfigs({...channelConfigs, agents})}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
@@ -106,8 +120,8 @@ export const OnboardingWizard = () => {
       case "integrations":
         return (
           <IntegrationsSetup
-            integrations={onboardingData.integrations}
-            onIntegrationsChange={(integrations) => updateOnboardingData({ integrations })}
+            integrations={integrations}
+            onIntegrationsChange={(integrations) => setIntegrations(integrations)}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
@@ -116,19 +130,21 @@ export const OnboardingWizard = () => {
       case "review":
         return (
           <ReviewAndActivate
-            data={onboardingData}
+            selectedServices={selectedServices}
+            selectedChannels={channelConfigs.channels || []}
+            selectedAgents={channelConfigs.agents || []}
+            subscriberCount={subscriberCount}
+            integrationData={integrations}
+            onNext={handleNext}
             onPrevious={handlePrevious}
-            onComplete={handleNext}
-            isCompleting={false}
           />
         );
       
       case "activation":
         return (
           <FinalActivation
-            data={onboardingData}
-            onPrevious={handlePrevious}
             onComplete={handleComplete}
+            onPrevious={handlePrevious}
             isCompleting={isCompleting}
           />
         );
