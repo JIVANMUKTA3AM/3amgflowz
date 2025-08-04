@@ -61,8 +61,25 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
     console.log('Supabase client initialized successfully');
     
-    // Get agent configuration
+    // Get agent configuration - Fix UUID validation
     console.log('Fetching agent configuration for ID:', agent_configuration_id);
+    
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(agent_configuration_id)) {
+      console.error('Invalid UUID format:', agent_configuration_id);
+      return new Response(
+        JSON.stringify({ 
+          error: 'ID do agente inválido',
+          agent_response: "Erro: ID do agente não é um UUID válido.",
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+    
     const { data: agentConfig, error: configError } = await supabase
       .from('agent_configurations')
       .select('*')
@@ -264,6 +281,7 @@ async function callOpenAI(agentConfig: any, userMessage: string) {
     headers: {
       'Authorization': `Bearer ${openaiApiKey}`,
       'Content-Type': 'application/json',
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(requestBody),
   });
@@ -338,61 +356,6 @@ async function callClaude(agentConfig: any, userMessage: string) {
   return result;
 }
 
-async function callGemini(agentConfig: any, userMessage: string) {
-  const googleApiKey = Deno.env.get('GOOGLE_API_KEY');
-  if (!googleApiKey) {
-    throw new Error('Chave da API Google não configurada');
-  }
-  
-  console.log('Making Google API call with model:', agentConfig.model);
-  
-  // Map model names to available Gemini models
-  let modelName = agentConfig.model;
-  if (agentConfig.model === 'gemini-1.5-pro-002') {
-    modelName = 'gemini-1.5-pro';
-  } else if (agentConfig.model === 'gemini-1.5-flash-002') {
-    modelName = 'gemini-1.5-flash';
-  } else if (!agentConfig.model.startsWith('gemini-')) {
-    modelName = 'gemini-1.5-flash'; // Default fallback
-  }
-  
-  const requestBody = {
-    contents: [{
-      parts: [{
-        text: `${agentConfig.prompt}\n\nUser: ${userMessage}`
-      }]
-    }],
-    generationConfig: {
-      temperature: agentConfig.temperature || 0.7,
-      maxOutputTokens: agentConfig.max_tokens || 1000,
-    },
-  };
-  
-  console.log('Google request body:', JSON.stringify(requestBody, null, 2));
-  
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${googleApiKey}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('Google API error response:', {
-      status: response.status,
-      statusText: response.statusText,
-      body: errorText
-    });
-    throw new Error(`Erro da API Google: ${response.status} - ${errorText}`);
-  }
-  
-  const result = await response.json();
-  console.log('Google API response received successfully');
-  return result;
-}
-
 async function callDeepSeek(agentConfig: any, userMessage: string) {
   const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
   if (!deepseekApiKey) {
@@ -434,6 +397,102 @@ async function callDeepSeek(agentConfig: any, userMessage: string) {
   
   const result = await response.json();
   console.log('DeepSeek API response received successfully');
+  return result;
+}
+
+async function callGemini(agentConfig: any, userMessage: string) {
+  const googleApiKey = Deno.env.get('GOOGLE_API_KEY');
+  if (!googleApiKey) {
+    throw new Error('Chave da API Google não configurada');
+  }
+  
+  console.log('Making Google API call with model:', agentConfig.model);
+  
+  // Map model names to available Gemini models
+  let modelName = agentConfig.model;
+  if (agentConfig.model === 'gemini-1.5-pro-002') {
+    modelName = 'gemini-1.5-pro-latest';
+  } else if (agentConfig.model === 'gemini-1.5-flash-002') {
+    modelName = 'gemini-1.5-flash-latest';
+  } else if (!agentConfig.model.startsWith('gemini-')) {
+    modelName = 'gemini-1.5-flash'; // Default fallback
+  }
+  
+  // Prepare the prompt with system instructions
+  const fullPrompt = `${agentConfig.prompt}\n\nUsuário: ${userMessage}`;
+  
+  const requestBody = {
+    contents: [{
+      parts: [{
+        text: fullPrompt
+      }]
+    }],
+    generationConfig: {
+      temperature: agentConfig.temperature || 0.7,
+      maxOutputTokens: agentConfig.max_tokens || 1000,
+      topP: 0.8,
+      topK: 10
+    },
+    safetySettings: [
+      {
+        category: "HARM_CATEGORY_HARASSMENT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        category: "HARM_CATEGORY_HATE_SPEECH",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      },
+      {
+        category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+        threshold: "BLOCK_MEDIUM_AND_ABOVE"
+      }
+    ]
+  };
+  
+  console.log('Google request body:', JSON.stringify(requestBody, null, 2));
+  
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${googleApiKey}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  });
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Google API error response:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText
+    });
+    throw new Error(`Erro da API Google: ${response.status} - ${errorText}`);
+  }
+  
+  const result = await response.json();
+  console.log('Google API response received successfully');
+  
+  // Check for blocked content
+  if (result.candidates?.[0]?.finishReason === 'SAFETY') {
+    console.warn('Content was blocked by safety filters');
+    return {
+      candidates: [{
+        content: {
+          parts: [{
+            text: "Desculpe, não posso responder a essa pergunta por questões de segurança. Tente reformular sua pergunta."
+          }]
+        }
+      }],
+      usageMetadata: {
+        totalTokenCount: 0
+      }
+    };
+  }
+  
   return result;
 }
 
