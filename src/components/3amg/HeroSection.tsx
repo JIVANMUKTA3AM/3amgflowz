@@ -70,7 +70,7 @@ const HeroSection = () => {
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 bg-3amg-dark-light/50 backdrop-blur-sm border border-3amg-orange/30 rounded-full px-6 py-2 mb-6">
             <div className="w-2 h-2 bg-3amg-orange rounded-full animate-ping"></div>
-            <span className="text-3amg-orange text-sm font-medium">Sistema Online • Agentes Ativos</span>
+            <span className="text-3amg-orange text-sm font-medium">API-First • Enterprise Ready • 99.9% Uptime</span>
           </div>
         </div>
 
@@ -81,40 +81,56 @@ const HeroSection = () => {
         
         <div className="relative mb-6">
           <h2 className="text-3xl md:text-5xl font-semibold text-white mb-4">
-            Automação & 
+            Plataforma Enterprise de
             <span className="relative mx-3">
-              <span className="bg-gradient-3amg bg-clip-text text-transparent">Inteligência</span>
+              <span className="bg-gradient-3amg bg-clip-text text-transparent">Automação IA</span>
               <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-3amg rounded-full animate-pulse"></div>
             </span>
-            Artificial
           </h2>
         </div>
 
-        <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed">
-          Transformamos empresas através de <span className="text-3amg-orange font-semibold">soluções inteligentes</span> de automação, 
-          integrações avançadas e <span className="text-3amg-purple font-semibold">agentes de IA especializados</span> para revolucionar 
-          seu atendimento e processos.
+        <p className="text-xl md:text-2xl text-gray-300 max-w-5xl mx-auto mb-8 leading-relaxed">
+          Reduza custos operacionais em até <span className="text-3amg-orange font-bold">70%</span> com nossa plataforma de 
+          <span className="text-3amg-orange font-semibold"> agentes IA multi-canal</span>, integrações avançadas via 
+          <span className="text-3amg-purple font-semibold"> N8N e APIs REST</span>. Escale seu atendimento para 
+          <span className="text-3amg-orange font-bold"> milhares de interações simultâneas</span> sem aumentar headcount.
         </p>
+
+        {/* Key Benefits */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
+          <div className="bg-3amg-dark-light/30 backdrop-blur-sm border border-3amg-orange/20 rounded-lg p-4">
+            <div className="text-2xl font-bold text-3amg-orange mb-1">-70%</div>
+            <div className="text-sm text-gray-300">Redução de Custos Operacionais</div>
+          </div>
+          <div className="bg-3amg-dark-light/30 backdrop-blur-sm border border-3amg-purple/20 rounded-lg p-4">
+            <div className="text-2xl font-bold text-3amg-purple mb-1">24/7</div>
+            <div className="text-sm text-gray-300">Atendimento Automatizado</div>
+          </div>
+          <div className="bg-3amg-dark-light/30 backdrop-blur-sm border border-3amg-orange/20 rounded-lg p-4">
+            <div className="text-2xl font-bold text-3amg-orange mb-1">99.9%</div>
+            <div className="text-sm text-gray-300">SLA de Disponibilidade</div>
+          </div>
+        </div>
 
         {/* Enhanced CTAs */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
           <Link to="/auth">
             <Button size="lg" className="group bg-gradient-3amg-orange hover:opacity-90 text-white font-semibold px-10 py-6 text-xl rounded-full shadow-2xl hover:shadow-3amg-orange/50 transition-all duration-300">
-              Começar Agora
+              Iniciar Trial Enterprise
               <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
           <Button size="lg" variant="outline" className="border-2 border-3amg-orange text-3amg-orange hover:bg-3amg-orange hover:text-white px-10 py-6 text-xl rounded-full backdrop-blur-sm bg-white/5 hover:shadow-xl transition-all duration-300">
-            Conhecer Soluções
+            Agendar Demo Técnica
           </Button>
         </div>
 
-        {/* Enhanced Tech Icons */}
+        {/* Enhanced Tech Stack Display */}
         <div className="flex justify-center space-x-12">
           {[
-            { icon: Code, label: "Automação", gradient: "from-3amg-orange to-3amg-red" },
-            { icon: Cpu, label: "IA", gradient: "from-3amg-purple to-3amg-purple-dark" },
-            { icon: Zap, label: "Integrações", gradient: "from-3amg-orange-light to-3amg-purple" }
+            { icon: Code, label: "APIs REST/GraphQL", gradient: "from-3amg-orange to-3amg-red" },
+            { icon: Cpu, label: "LLMs Enterprise", gradient: "from-3amg-purple to-3amg-purple-dark" },
+            { icon: Database, label: "Integrações N8N", gradient: "from-3amg-orange-light to-3amg-purple" }
           ].map((item, index) => (
             <div key={index} className="flex flex-col items-center group cursor-pointer">
               <div className={`w-16 h-16 bg-gradient-to-r ${item.gradient} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
