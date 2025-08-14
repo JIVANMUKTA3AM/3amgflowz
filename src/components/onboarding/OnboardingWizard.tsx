@@ -128,6 +128,7 @@ export const OnboardingWizard = () => {
       case "integrations":
         return (
           <IntegrationsSetup
+            selectedServices={selectedServices}
             integrations={integrations}
             onUpdate={(integrations) => setIntegrations(integrations)}
             onNext={handleNext}
