@@ -63,16 +63,18 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom 3AMG colors matching the sales page
+				// 3AMG Brand Colors from logo
 				'3amg': {
-					purple: '#8B5CF6',
-					'purple-light': '#A78BFA',
+					orange: '#FF6B35', // Laranja principal do logo
+					'orange-dark': '#E55A2B',
+					'orange-light': '#FF8A5C',
+					red: '#FF4500', // Vermelho vibrante
+					purple: '#8B5CF6', // Roxo do gradiente
 					'purple-dark': '#7C3AED',
-					blue: '#3B82F6',
-					'blue-dark': '#1D4ED8',
-					indigo: '#6366F1',
-					'gray-dark': '#1F2937',
-					'gray-light': '#F3F4F6'
+					'purple-light': '#A78BFA',
+					dark: '#1A1A1A', // Fundo escuro do logo
+					'dark-light': '#2D2D2D',
+					binary: '#FF6B35' // Cor dos elementos binários
 				}
 			},
 			borderRadius: {
@@ -96,16 +98,27 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'binary-float': {
+					'0%, 100%': { transform: 'translateY(0px) rotate(0deg)', opacity: '0.3' },
+					'50%': { transform: 'translateY(-20px) rotate(180deg)', opacity: '0.6' }
+				},
+				'pulse-orange': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'binary-float': 'binary-float 3s ease-in-out infinite',
+				'pulse-orange': 'pulse-orange 2s ease-in-out infinite'
 			},
 			backgroundImage: {
-				'gradient-3amg': 'linear-gradient(135deg, #8B5CF6 0%, #6366F1 50%, #3B82F6 100%)',
-				'gradient-3amg-light': 'linear-gradient(135deg, #A78BFA 0%, #8B5CF6 50%, #7C3AED 100%)',
-				'gradient-blue': 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)'
+				'gradient-3amg': 'linear-gradient(135deg, #FF6B35 0%, #8B5CF6 50%, #7C3AED 100%)',
+				'gradient-3amg-orange': 'linear-gradient(135deg, #FF6B35 0%, #FF4500 100%)',
+				'gradient-3amg-purple': 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)',
+				'tech-pattern': 'radial-gradient(circle at 25% 25%, #FF6B35 0%, transparent 50%), radial-gradient(circle at 75% 75%, #8B5CF6 0%, transparent 50%)'
 			}
 		}
 	},

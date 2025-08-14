@@ -11,6 +11,13 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import UserMenu from "@/components/UserMenu";
 
+// 3AMG Components
+import HeroSection from "@/components/3amg/HeroSection";
+import ServicesSection from "@/components/3amg/ServicesSection";
+import AboutSection from "@/components/3amg/AboutSection";
+import TechSection from "@/components/3amg/TechSection";
+import CTASection from "@/components/3amg/CTASection";
+
 const Index = () => {
   const { user } = useAuth();
   const { profile, isLoading: profileLoading } = useProfile();
@@ -41,96 +48,51 @@ const Index = () => {
   // Se está carregando, mostra loading
   if (profileLoading || roleLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-3amg-dark flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Carregando...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-3amg-orange mx-auto mb-4"></div>
+          <p className="text-gray-300">Carregando...</p>
         </div>
       </div>
     );
   }
 
-  // Se não está logado, mostra página de apresentação
+  // Se não está logado, mostra site institucional da 3AMG
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-blue-50/30">
+      <div className="min-h-screen bg-3amg-dark">
         {/* Header para visitantes */}
-        <header className="bg-white shadow-sm border-b">
+        <header className="bg-gray-900/95 backdrop-blur-sm shadow-lg border-b border-3amg-orange/20 fixed w-full z-50">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16">
-              <Link to="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg"></div>
-                <span className="font-bold text-xl text-gray-900">AgentFlow</span>
+              <Link to="/" className="flex items-center space-x-3">
+                <div className="w-10 h-10 relative">
+                  <img 
+                    src="/lovable-uploads/71a5762a-fd4e-406c-bf7c-1e3df758cc53.png" 
+                    alt="3AMG Logo" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <span className="font-bold text-xl bg-gradient-3amg bg-clip-text text-transparent">3AMG</span>
               </Link>
 
               <div className="flex items-center space-x-4">
                 <Link to="/auth">
-                  <Button>Entrar</Button>
+                  <Button className="bg-gradient-3amg-orange hover:opacity-90 text-white">
+                    Entrar no Sistema
+                  </Button>
                 </Link>
               </div>
             </div>
           </div>
         </header>
         
-        <main className="container mx-auto px-4 py-16">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Automação Inteligente para Provedores
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-              Transforme seu atendimento com nossos agentes de IA especializados
-            </p>
-            <Link to="/auth">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                Começar Agora
-              </Button>
-            </Link>
-          </div>
-
-          {/* Cards de recursos */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-blue-600" />
-                  Atendimento Geral
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Agente especializado em atendimento ao cliente, suporte e informações gerais
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-green-600" />
-                  Suporte Técnico
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Resolução de problemas técnicos, configurações e troubleshooting especializado
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-purple-600" />
-                  Vendas
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  Agente comercial para vendas, consultas de planos e conversão de leads
-                </p>
-              </CardContent>
-            </Card>
-          </div>
+        <main className="pt-16">
+          <HeroSection />
+          <ServicesSection />
+          <AboutSection />
+          <TechSection />
+          <CTASection />
         </main>
 
         <Footer />
