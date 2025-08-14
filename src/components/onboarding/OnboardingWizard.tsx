@@ -14,6 +14,14 @@ import ReviewAndActivate from "./ReviewAndActivate";
 import FinalActivation from "./FinalActivation";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
 
+export interface OnboardingData {
+  selectedServices: string[];
+  providerData: any;
+  subscriberCount: number;
+  channelConfigs: any;
+  integrations: any;
+}
+
 const STEPS = [
   { key: "services", title: "Seleção de Serviços", description: "Escolha os serviços que deseja contratar" },
   { key: "provider", title: "Dados do Provedor", description: "Informações da sua empresa" },
@@ -121,7 +129,7 @@ export const OnboardingWizard = () => {
         return (
           <IntegrationsSetup
             integrations={integrations}
-            onIntegrationsChange={(integrations) => setIntegrations(integrations)}
+            onUpdate={(integrations) => setIntegrations(integrations)}
             onNext={handleNext}
             onPrevious={handlePrevious}
           />
