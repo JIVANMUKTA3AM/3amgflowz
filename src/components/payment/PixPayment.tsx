@@ -41,7 +41,7 @@ const PixPayment = ({ qrCodeUrl, copyText }: PixPaymentProps) => {
       
       {/* QR Code */}
       {qrCodeUrl ? (
-        <div className="bg-white p-4 border rounded-lg shadow-sm">
+        <div className="bg-gray-900/90 border border-gray-700 p-4 rounded-lg shadow-sm backdrop-blur-sm">
           <img 
             src={qrCodeUrl} 
             alt="QR Code PIX" 
@@ -49,15 +49,15 @@ const PixPayment = ({ qrCodeUrl, copyText }: PixPaymentProps) => {
           />
         </div>
       ) : (
-        <div className="bg-gray-100 p-8 border rounded-lg flex flex-col items-center">
-          <QrCode className="h-16 w-16 text-gray-400 mb-2" />
-          <p className="text-gray-500 text-sm">Carregando QR Code...</p>
+        <div className="bg-gray-900/90 border border-gray-700 p-8 rounded-lg flex flex-col items-center backdrop-blur-sm">
+          <QrCode className="h-16 w-16 text-3amg-orange mb-2" />
+          <p className="text-gray-300 text-sm">Carregando QR Code...</p>
         </div>
       )}
       
       {/* Botão para copiar código */}
       <Button 
-        className="w-full flex items-center gap-2" 
+        className="w-full flex items-center gap-2 bg-gradient-3amg hover:opacity-90 text-white" 
         onClick={copyToClipboard}
         disabled={!copyText}
       >
@@ -66,8 +66,8 @@ const PixPayment = ({ qrCodeUrl, copyText }: PixPaymentProps) => {
       </Button>
       
       <div className="text-center space-y-2">
-        <p className="text-sm text-gray-600 font-medium">Como pagar:</p>
-        <ol className="text-xs text-gray-500 space-y-1 text-left">
+        <p className="text-sm text-3amg-orange font-medium">Como pagar:</p>
+        <ol className="text-xs text-gray-300 space-y-1 text-left">
           <li>1. Abra o app do seu banco</li>
           <li>2. Escolha a opção PIX</li>
           <li>3. Escaneie o QR code ou cole o código copiado</li>

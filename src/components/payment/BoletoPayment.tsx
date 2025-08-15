@@ -33,17 +33,17 @@ const BoletoPayment = ({ boletoUrl }: BoletoPaymentProps) => {
       <div id="payment-element" className="w-full"></div>
       
       {/* Ícone do Boleto */}
-      <div className="bg-white p-6 border rounded-lg shadow-sm flex flex-col items-center">
-        <FileText className="h-16 w-16 text-blue-600 mb-4" />
-        <h3 className="text-lg font-semibold mb-2">Boleto Bancário</h3>
-        <p className="text-sm text-gray-600 text-center mb-4">
+      <div className="bg-gray-900/90 border border-gray-700 p-6 rounded-lg shadow-sm flex flex-col items-center backdrop-blur-sm">
+        <FileText className="h-16 w-16 text-3amg-orange mb-4" />
+        <h3 className="text-lg font-semibold mb-2 text-white">Boleto Bancário</h3>
+        <p className="text-sm text-gray-300 text-center mb-4">
           Clique no botão abaixo para baixar seu boleto
         </p>
       </div>
       
       {/* Botão para baixar boleto */}
       <Button 
-        className="w-full flex items-center gap-2" 
+        className="w-full flex items-center gap-2 bg-gradient-3amg hover:opacity-90 text-white" 
         onClick={downloadBoleto}
         disabled={!boletoUrl}
       >
@@ -52,8 +52,8 @@ const BoletoPayment = ({ boletoUrl }: BoletoPaymentProps) => {
       </Button>
       
       <div className="text-center space-y-2">
-        <p className="text-sm text-gray-600 font-medium">Como pagar:</p>
-        <ol className="text-xs text-gray-500 space-y-1 text-left">
+        <p className="text-sm text-3amg-orange font-medium">Como pagar:</p>
+        <ol className="text-xs text-gray-300 space-y-1 text-left">
           <li>1. Baixe o boleto clicando no botão acima</li>
           <li>2. Imprima o boleto ou use o código de barras</li>
           <li>3. Pague no banco, lotérica ou app bancário</li>
