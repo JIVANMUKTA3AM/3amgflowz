@@ -79,11 +79,11 @@ const DashboardMetrics = () => {
   const getChangeColor = (type: string) => {
     switch (type) {
       case 'positive':
-        return 'text-green-600';
+        return 'text-green-400';
       case 'negative':
-        return 'text-red-600';
+        return 'text-red-400';
       default:
-        return 'text-gray-600';
+        return 'text-gray-400';
     }
   };
 
@@ -91,14 +91,14 @@ const DashboardMetrics = () => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(6)].map((_, i) => (
-          <Card key={i} className="animate-pulse">
+          <Card key={i} className="animate-pulse bg-gray-900/90 border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="h-4 bg-gray-200 rounded w-24"></div>
-              <div className="h-4 w-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-700 rounded w-24"></div>
+              <div className="h-4 w-4 bg-gray-700 rounded"></div>
             </CardHeader>
             <CardContent>
-              <div className="h-8 bg-gray-200 rounded w-16 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-12"></div>
+              <div className="h-8 bg-gray-700 rounded w-16 mb-2"></div>
+              <div className="h-3 bg-gray-700 rounded w-12"></div>
             </CardContent>
           </Card>
         ))}
@@ -109,15 +109,17 @@ const DashboardMetrics = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {metrics.map((metric, index) => (
-        <Card key={index}>
+        <Card key={index} className="bg-gray-900/90 border-gray-700 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-gray-300">
               {metric.title}
             </CardTitle>
-            {metric.icon}
+            <div className="text-3amg-orange">
+              {metric.icon}
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metric.value}</div>
+            <div className="text-2xl font-bold text-white">{metric.value}</div>
             <p className={`text-xs ${getChangeColor(metric.changeType)}`}>
               {metric.change} em relação ao período anterior
             </p>

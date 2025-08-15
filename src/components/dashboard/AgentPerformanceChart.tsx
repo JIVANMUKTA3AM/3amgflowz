@@ -40,33 +40,33 @@ const AgentPerformanceChart = () => {
   const chartConfig = {
     atendimentos: {
       label: "Atendimentos",
-      color: "hsl(var(--chart-1))",
+      color: "#FF6B35",
     },
     resolvidos: {
       label: "Resolvidos",
-      color: "hsl(var(--chart-2))",
+      color: "#8B5CF6",
     },
   };
 
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="animate-pulse">
+        <Card className="animate-pulse bg-gray-900/90 border-gray-700">
           <CardHeader>
-            <div className="h-6 bg-gray-200 rounded w-48"></div>
-            <div className="h-4 bg-gray-200 rounded w-64"></div>
+            <div className="h-6 bg-gray-700 rounded w-48"></div>
+            <div className="h-4 bg-gray-700 rounded w-64"></div>
           </CardHeader>
           <CardContent>
-            <div className="h-64 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-gray-700 rounded"></div>
           </CardContent>
         </Card>
-        <Card className="animate-pulse">
+        <Card className="animate-pulse bg-gray-900/90 border-gray-700">
           <CardHeader>
-            <div className="h-6 bg-gray-200 rounded w-48"></div>
-            <div className="h-4 bg-gray-200 rounded w-64"></div>
+            <div className="h-6 bg-gray-700 rounded w-48"></div>
+            <div className="h-4 bg-gray-700 rounded w-64"></div>
           </CardHeader>
           <CardContent>
-            <div className="h-64 bg-gray-200 rounded"></div>
+            <div className="h-64 bg-gray-700 rounded"></div>
           </CardContent>
         </Card>
       </div>
@@ -75,10 +75,10 @@ const AgentPerformanceChart = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <Card>
+      <Card className="bg-gray-900/90 border-gray-700 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle>Performance dos Agentes</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-white">Performance dos Agentes</CardTitle>
+          <CardDescription className="text-gray-300">
             Comparação entre atendimentos totais e resolvidos por agente
           </CardDescription>
         </CardHeader>
@@ -86,22 +86,22 @@ const AgentPerformanceChart = () => {
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={performanceData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="agent" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis dataKey="agent" stroke="#9CA3AF" />
+                <YAxis stroke="#9CA3AF" />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="atendimentos" fill="var(--color-atendimentos)" />
-                <Bar dataKey="resolvidos" fill="var(--color-resolvidos)" />
+                <Bar dataKey="atendimentos" fill="#FF6B35" />
+                <Bar dataKey="resolvidos" fill="#8B5CF6" />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-gray-900/90 border-gray-700 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle>Tempo de Resposta</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-white">Tempo de Resposta</CardTitle>
+          <CardDescription className="text-gray-300">
             Evolução do tempo médio de resposta ao longo do dia
           </CardDescription>
         </CardHeader>
@@ -109,21 +109,21 @@ const AgentPerformanceChart = () => {
           <ChartContainer config={{
             tempo: {
               label: "Tempo (min)",
-              color: "hsl(var(--chart-3))",
+              color: "#FF6B35",
             }
           }}>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={responseTimeData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="hora" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis dataKey="hora" stroke="#9CA3AF" />
+                <YAxis stroke="#9CA3AF" />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Line 
                   type="monotone" 
                   dataKey="tempo" 
-                  stroke="var(--color-tempo)" 
+                  stroke="#FF6B35" 
                   strokeWidth={2}
-                  dot={{ fill: "var(--color-tempo)" }}
+                  dot={{ fill: "#FF6B35" }}
                 />
               </LineChart>
             </ResponsiveContainer>
