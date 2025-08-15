@@ -50,53 +50,120 @@ const IntegrationConfiguration = ({
   const [testing, setTesting] = useState<{ snmp: boolean; api: boolean }>({ snmp: false, api: false });
 
   const handleSNMPChange = (checked: boolean) => {
-    const newData = {
-      ...integrationData,
-      snmp_enabled: checked,
-      mode: checked ? 'snmp' as const : 
-             integrationData.api_enabled ? 'rest_api' as const : 'manual' as const
-    };
-    onIntegrationDataChange(newData);
+    console.log('SNMP checkbox changed:', checked);
+    
+    try {
+      const newData = {
+        ...integrationData,
+        snmp_enabled: checked,
+        mode: checked ? 'snmp' as const : 
+               integrationData.api_enabled ? 'rest_api' as const : 'manual' as const
+      };
+      
+      console.log('New integration data:', newData);
+      onIntegrationDataChange(newData);
+      
+      // Reset test results when changing configuration
+      setTestResults(prev => ({ ...prev, snmp: undefined }));
+    } catch (error) {
+      console.error('Error updating SNMP configuration:', error);
+      toast({
+        title: "Erro na configuração",
+        description: "Erro ao atualizar configurações SNMP",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleAPIChange = (checked: boolean) => {
-    const newData = {
-      ...integrationData,
-      api_enabled: checked,
-      mode: checked ? 'rest_api' as const : 
-             integrationData.snmp_enabled ? 'snmp' as const : 'manual' as const
-    };
-    onIntegrationDataChange(newData);
+    console.log('API checkbox changed:', checked);
+    
+    try {
+      const newData = {
+        ...integrationData,
+        api_enabled: checked,
+        mode: checked ? 'rest_api' as const : 
+               integrationData.snmp_enabled ? 'snmp' as const : 'manual' as const
+      };
+      
+      console.log('New integration data:', newData);
+      onIntegrationDataChange(newData);
+      
+      // Reset test results when changing configuration
+      setTestResults(prev => ({ ...prev, api: undefined }));
+    } catch (error) {
+      console.error('Error updating API configuration:', error);
+      toast({
+        title: "Erro na configuração",
+        description: "Erro ao atualizar configurações da API",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSNMPConfigChange = (field: keyof SNMPConfig, value: string) => {
-    onIntegrationDataChange({
-      ...integrationData,
-      snmp_config: {
+    console.log(`SNMP config change: ${field} = ${value}`);
+    
+    try {
+      const newConfig = {
         ...integrationData.snmp_config,
         [field]: value
-      }
-    });
+      };
+      
+      onIntegrationDataChange({
+        ...integrationData,
+        snmp_config: newConfig
+      });
+    } catch (error) {
+      console.error('Error updating SNMP field:', error);
+      toast({
+        title: "Erro na configuração",
+        description: `Erro ao atualizar ${field}`,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleAPIConfigChange = (field: keyof APIConfig, value: string | string[]) => {
-    onIntegrationDataChange({
-      ...integrationData,
-      api_config: {
+    console.log(`API config change: ${field} = ${value}`);
+    
+    try {
+      const newConfig = {
         ...integrationData.api_config,
         [field]: value
-      }
-    });
+      };
+      
+      onIntegrationDataChange({
+        ...integrationData,
+        api_config: newConfig
+      });
+    } catch (error) {
+      console.error('Error updating API field:', error);
+      toast({
+        title: "Erro na configuração",
+        description: `Erro ao atualizar ${field}`,
+        variant: "destructive",
+      });
+    }
   };
 
   const testSNMPConnection = async () => {
+    console.log('Testing SNMP connection...');
     setTesting(prev => ({ ...prev, snmp: true }));
     
     try {
-      // Simular teste de conexão SNMP
+      // Validate required fields
+      const { olt_ip, snmp_cred, snmp_port, snmp_version } = integrationData.snmp_config;
+      
+      if (!olt_ip || !snmp_cred || !snmp_port || !snmp_version) {
+        throw new Error('Preencha todos os campos obrigatórios');
+      }
+      
+      // Simulate SNMP connection test
+      console.log('SNMP test parameters:', integrationData.snmp_config);
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const success = Math.random() > 0.3; // 70% chance de sucesso para demo
+      const success = Math.random() > 0.3; // 70% success rate for demo
       
       setTestResults(prev => ({ ...prev, snmp: success }));
       
@@ -113,21 +180,35 @@ const IntegrationConfiguration = ({
         });
       }
     } catch (error) {
-      console.error('Erro no teste SNMP:', error);
+      console.error('SNMP test error:', error);
       setTestResults(prev => ({ ...prev, snmp: false }));
+      toast({
+        title: "Erro no teste SNMP",
+        description: error instanceof Error ? error.message : "Erro desconhecido",
+        variant: "destructive",
+      });
     } finally {
       setTesting(prev => ({ ...prev, snmp: false }));
     }
   };
 
   const testAPIConnection = async () => {
+    console.log('Testing API connection...');
     setTesting(prev => ({ ...prev, api: true }));
     
     try {
-      // Simular teste de conexão API
+      // Validate required fields
+      const { api_base_url, api_token } = integrationData.api_config;
+      
+      if (!api_base_url || !api_token) {
+        throw new Error('Preencha todos os campos obrigatórios');
+      }
+      
+      // Simulate API connection test
+      console.log('API test parameters:', integrationData.api_config);
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const success = Math.random() > 0.3; // 70% chance de sucesso para demo
+      const success = Math.random() > 0.3; // 70% success rate for demo
       
       setTestResults(prev => ({ ...prev, api: success }));
       
@@ -144,14 +225,34 @@ const IntegrationConfiguration = ({
         });
       }
     } catch (error) {
-      console.error('Erro no teste API:', error);
+      console.error('API test error:', error);
       setTestResults(prev => ({ ...prev, api: false }));
+      toast({
+        title: "Erro no teste da API",
+        description: error instanceof Error ? error.message : "Erro desconhecido",
+        variant: "destructive",
+      });
     } finally {
       setTesting(prev => ({ ...prev, api: false }));
     }
   };
 
-  const canProceed = !integrationData.snmp_enabled || testResults.snmp === true;
+  const handleNext = () => {
+    console.log('Proceeding to next step with integration data:', integrationData);
+    
+    // Validate that at least one integration is enabled or user chose manual mode
+    if (!integrationData.snmp_enabled && !integrationData.api_enabled) {
+      console.log('No integrations enabled, setting manual mode');
+      onIntegrationDataChange({
+        ...integrationData,
+        mode: 'manual'
+      });
+    }
+    
+    onNext();
+  };
+
+  const canProceed = true; // Allow proceeding even without successful tests for flexibility
 
   const oltBrands = [
     { value: 'huawei', label: 'Huawei' },
@@ -198,7 +299,7 @@ const IntegrationConfiguration = ({
                   <div>
                     <Label htmlFor="olt_brand" className="text-gray-300">Marca</Label>
                     <Select 
-                      value={integrationData.snmp_config.olt_brand}
+                      value={integrationData.snmp_config?.olt_brand || ''}
                       onValueChange={(value) => handleSNMPConfigChange('olt_brand', value)}
                     >
                       <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
@@ -218,7 +319,7 @@ const IntegrationConfiguration = ({
                     <Label htmlFor="olt_model" className="text-gray-300">Modelo</Label>
                     <Input
                       id="olt_model"
-                      value={integrationData.snmp_config.olt_model}
+                      value={integrationData.snmp_config?.olt_model || ''}
                       onChange={(e) => handleSNMPConfigChange('olt_model', e.target.value)}
                       placeholder="Ex: MA5608T, V1600G, UF-INSTANT"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
@@ -229,7 +330,7 @@ const IntegrationConfiguration = ({
                     <Label htmlFor="olt_ip" className="text-gray-300">IP</Label>
                     <Input
                       id="olt_ip"
-                      value={integrationData.snmp_config.olt_ip}
+                      value={integrationData.snmp_config?.olt_ip || ''}
                       onChange={(e) => handleSNMPConfigChange('olt_ip', e.target.value)}
                       placeholder="192.168.1.1"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
@@ -239,7 +340,7 @@ const IntegrationConfiguration = ({
                   <div>
                     <Label htmlFor="snmp_version" className="text-gray-300">Versão SNMP</Label>
                     <Select 
-                      value={integrationData.snmp_config.snmp_version}
+                      value={integrationData.snmp_config?.snmp_version || ''}
                       onValueChange={(value) => handleSNMPConfigChange('snmp_version', value)}
                     >
                       <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
@@ -257,7 +358,7 @@ const IntegrationConfiguration = ({
                     <Label htmlFor="snmp_cred" className="text-gray-300">Community/User</Label>
                     <Input
                       id="snmp_cred"
-                      value={integrationData.snmp_config.snmp_cred}
+                      value={integrationData.snmp_config?.snmp_cred || ''}
                       onChange={(e) => handleSNMPConfigChange('snmp_cred', e.target.value)}
                       placeholder="public ou username"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
@@ -268,7 +369,7 @@ const IntegrationConfiguration = ({
                     <Label htmlFor="snmp_port" className="text-gray-300">Porta</Label>
                     <Input
                       id="snmp_port"
-                      value={integrationData.snmp_config.snmp_port}
+                      value={integrationData.snmp_config?.snmp_port || '161'}
                       onChange={(e) => handleSNMPConfigChange('snmp_port', e.target.value)}
                       placeholder="161"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
@@ -326,7 +427,7 @@ const IntegrationConfiguration = ({
                     <Label htmlFor="api_base_url" className="text-gray-300">Base URL</Label>
                     <Input
                       id="api_base_url"
-                      value={integrationData.api_config.api_base_url}
+                      value={integrationData.api_config?.api_base_url || ''}
                       onChange={(e) => handleAPIConfigChange('api_base_url', e.target.value)}
                       placeholder="http://192.168.1.1:8080/api"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
@@ -338,7 +439,7 @@ const IntegrationConfiguration = ({
                     <Input
                       id="api_token"
                       type="password"
-                      value={integrationData.api_config.api_token}
+                      value={integrationData.api_config?.api_token || ''}
                       onChange={(e) => handleAPIConfigChange('api_token', e.target.value)}
                       placeholder="Bearer token ou API key"
                       className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
@@ -396,7 +497,7 @@ const IntegrationConfiguration = ({
             </Button>
             
             <Button 
-              onClick={onNext}
+              onClick={handleNext}
               disabled={!canProceed}
               className="bg-gradient-to-r from-3amg-orange to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50"
             >
