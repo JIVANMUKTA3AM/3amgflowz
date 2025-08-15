@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Database, Network, Zap, Globe, Server, Cpu, Code, Workflow } from "lucide-react";
 
@@ -185,7 +184,7 @@ const TechSection = () => {
                 <div className="w-8 h-px bg-gradient-3amg"></div>
               </h3>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">
                 {technologies
                   .filter(tech => tech.category === category)
                   .map((tech, index) => {
@@ -193,7 +192,7 @@ const TechSection = () => {
                     return (
                       <div
                         key={index}
-                        className="group relative bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-8 hover:border-3amg-orange/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-3amg-orange/20 mx-auto w-full max-w-md"
+                        className="group relative bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-8 hover:border-3amg-orange/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-3amg-orange/20 w-full max-w-md"
                       >
                         {/* Background Glow Effect */}
                         <div className={`absolute inset-0 bg-gradient-to-br ${tech.gradient} opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300`}></div>
@@ -247,7 +246,7 @@ const TechSection = () => {
           ))}
         </div>
 
-        {/* Infrastructure Performance Metrics */}
+        {/* Performance & Infraestrutura section remains the same */}
         <div className="mt-20">
           <h3 className="text-2xl font-semibold text-white text-center mb-8">
             Performance & Infraestrutura
