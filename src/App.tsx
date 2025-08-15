@@ -12,7 +12,7 @@ function App() {
         <CodeRainBackground />
         
         {/* Conteúdo principal */}
-        <div className="relative z-10 min-h-screen">
+        <div className="relative z-10">
           <RoleBasedRouter />
           <Toaster />
         </div>

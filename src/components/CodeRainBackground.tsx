@@ -38,7 +38,7 @@ const CodeRainBackground = () => {
         const x = i * fontSize;
         const y = drops[i] * fontSize;
 
-        ctx.fillStyle = `rgba(255, 107, 53, ${Math.random() * 0.3 + 0.1})`; // Opacidade ainda menor
+        ctx.fillStyle = `rgba(255, 107, 53, ${Math.random() * 0.8 + 0.2})`; // Opacidade mais visível
         ctx.fillText(text, x, y);
 
         // Reset da gota se chegou ao final ou aleatoriamente
@@ -53,7 +53,7 @@ const CodeRainBackground = () => {
     resizeCanvas();
     
     // Animar
-    const interval = setInterval(draw, 80); // Velocidade mais lenta
+    const interval = setInterval(draw, 50); // Velocidade mais rápida
 
     // Redimensionar quando a janela mudar
     const handleResize = () => resizeCanvas();
@@ -68,7 +68,7 @@ const CodeRainBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[-1] opacity-10"
+      className="fixed inset-0 pointer-events-none z-0 opacity-20"
       style={{ background: 'transparent' }}
     />
   );
