@@ -75,8 +75,8 @@ const NewOnboardingWizard = () => {
           <div 
             className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
               currentStep >= step.id 
-                ? 'bg-blue-600 border-blue-600 text-white' 
-                : 'bg-white border-gray-300 text-gray-500'
+                ? 'bg-3amg-orange border-3amg-orange text-white' 
+                : 'bg-gray-900 border-gray-600 text-gray-400'
             }`}
           >
             {currentStep > step.id ? (
@@ -86,13 +86,13 @@ const NewOnboardingWizard = () => {
             )}
           </div>
           <div className="ml-2 text-sm">
-            <div className={`font-medium ${currentStep >= step.id ? 'text-blue-600' : 'text-gray-500'}`}>
+            <div className={`font-medium ${currentStep >= step.id ? 'text-3amg-orange' : 'text-gray-500'}`}>
               {step.name}
             </div>
             <div className="text-gray-400 text-xs">{step.description}</div>
           </div>
           {index < steps.length - 1 && (
-            <ArrowRight className="mx-4 w-4 h-4 text-gray-300" />
+            <ArrowRight className="mx-4 w-4 h-4 text-gray-600" />
           )}
         </div>
       ))}
@@ -171,13 +171,13 @@ const NewOnboardingWizard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-3amg-dark">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-white mb-2">
             Configuração da sua conta Flow
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-300">
             Vamos configurar sua plataforma de agentes IA em poucos passos
           </p>
         </div>

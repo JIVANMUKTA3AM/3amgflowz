@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       description: 'Receba e responda mensagens do WhatsApp automaticamente',
       icon: <MessageCircle className="w-8 h-8 text-white" />,
       popular: true,
-      gradient: 'from-green-400 to-green-600'
+      gradient: 'from-green-500 to-green-600'
     },
     {
       id: 'telegram',
@@ -27,7 +28,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       description: 'Configure um bot no Telegram para atendimento automático',
       icon: <Send className="w-8 h-8 text-white" />,
       popular: true,
-      gradient: 'from-blue-400 to-blue-600'
+      gradient: 'from-blue-500 to-blue-600'
     },
     {
       id: 'olt',
@@ -35,7 +36,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       description: 'Configure OLTs para diagnósticos automáticos e suporte técnico',
       icon: <Network className="w-8 h-8 text-white" />,
       popular: false,
-      gradient: 'from-cyan-400 to-cyan-600'
+      gradient: 'from-cyan-500 to-cyan-600'
     }
   ];
 
@@ -46,7 +47,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       description: 'Atendimento ao cliente, dúvidas gerais e direcionamento',
       icon: <Users className="w-8 h-8 text-white" />,
       popular: true,
-      gradient: 'from-purple-400 to-purple-600'
+      gradient: 'from-3amg-orange to-orange-600'
     },
     {
       id: 'comercial',
@@ -54,7 +55,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       description: 'Vendas, propostas e negociação de planos',
       icon: <Headphones className="w-8 h-8 text-white" />,
       popular: true,
-      gradient: 'from-indigo-400 to-indigo-600'
+      gradient: 'from-3amg-orange to-orange-600'
     },
     {
       id: 'suporte_tecnico',
@@ -62,7 +63,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
       description: 'Suporte técnico e resolução de problemas',
       icon: <Wrench className="w-8 h-8 text-white" />,
       popular: false,
-      gradient: 'from-blue-400 to-cyan-500'
+      gradient: 'from-blue-500 to-cyan-500'
     }
   ];
 
@@ -75,30 +76,30 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6 flex items-center justify-center">
-      <Card className="w-full max-w-4xl border-0 shadow-2xl bg-white/95 backdrop-blur-xl">
-        <CardHeader className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white rounded-t-lg">
+    <div className="min-h-screen bg-3amg-dark p-6 flex items-center justify-center">
+      <Card className="w-full max-w-4xl border-0 shadow-2xl bg-gray-900/90 backdrop-blur-xl">
+        <CardHeader className="bg-gradient-to-r from-3amg-orange to-orange-600 text-white rounded-t-lg">
           <div className="flex items-center gap-3">
             <Sparkles className="w-8 h-8 text-yellow-300" />
             <div>
               <CardTitle className="text-3xl font-bold">
                 Configure sua Automação Inteligente
               </CardTitle>
-              <p className="text-purple-100 mt-2">
+              <p className="text-orange-100 mt-2">
                 Bem-vindo ao <span className="font-bold text-yellow-300">3AMG FLOWS</span> - Selecione os canais e agentes que irão revolucionar seu atendimento
               </p>
             </div>
           </div>
         </CardHeader>
         
-        <CardContent className="p-8 space-y-10">
+        <CardContent className="p-8 space-y-10 bg-gray-900/50">
           {/* Canais de Comunicação */}
           <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-3amg-orange to-orange-400 bg-clip-text text-transparent mb-2">
                 Canais de Comunicação
               </h3>
-              <p className="text-gray-600">Escolha onde seus clientes poderão falar com você</p>
+              <p className="text-gray-300">Escolha onde seus clientes poderão falar com você</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -107,8 +108,8 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
                   key={service.id}
                   className={`group relative p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
                     selectedServices.includes(service.id)
-                      ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-blue-50 shadow-lg'
-                      : 'border-gray-200 hover:border-purple-300 bg-white hover:bg-gradient-to-br hover:from-purple-25 hover:to-blue-25'
+                      ? 'border-3amg-orange bg-gradient-to-br from-orange-900/20 to-gray-800/50 shadow-lg'
+                      : 'border-gray-700 hover:border-3amg-orange bg-gray-800/50 hover:bg-gradient-to-br hover:from-orange-900/10 hover:to-gray-800/50'
                   }`}
                   onClick={() => handleServiceToggle(service.id)}
                 >
@@ -131,9 +132,9 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
                         <div className={`p-2 rounded-xl bg-gradient-to-r ${service.gradient} shadow-lg`}>
                           {service.icon}
                         </div>
-                        <h4 className="font-bold text-lg text-gray-800">{service.name}</h4>
+                        <h4 className="font-bold text-lg text-white">{service.name}</h4>
                       </div>
-                      <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                      <p className="text-gray-300 leading-relaxed">{service.description}</p>
                     </div>
                   </div>
                 </div>
@@ -144,10 +145,10 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
           {/* Tipos de Agentes */}
           <div className="space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-3amg-orange to-orange-400 bg-clip-text text-transparent mb-2">
                 Agentes Inteligentes
               </h3>
-              <p className="text-gray-600">Selecione os tipos de atendimento automatizado</p>
+              <p className="text-gray-300">Selecione os tipos de atendimento automatizado</p>
             </div>
             
             <div className="space-y-4">
@@ -156,8 +157,8 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
                   key={agent.id}
                   className={`group relative p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300 hover:shadow-xl ${
                     selectedServices.includes(agent.id)
-                      ? 'border-purple-500 bg-gradient-to-r from-purple-50 to-blue-50 shadow-lg'
-                      : 'border-gray-200 hover:border-purple-300 bg-white hover:bg-gradient-to-r hover:from-purple-25 hover:to-blue-25'
+                      ? 'border-3amg-orange bg-gradient-to-r from-orange-900/20 to-gray-800/50 shadow-lg'
+                      : 'border-gray-700 hover:border-3amg-orange bg-gray-800/50 hover:bg-gradient-to-r hover:from-orange-900/10 hover:to-gray-800/50'
                   }`}
                   onClick={() => handleServiceToggle(agent.id)}
                 >
@@ -178,8 +179,8 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
                       {agent.icon}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-xl text-gray-800 mb-2">{agent.name}</h4>
-                      <p className="text-gray-600 leading-relaxed">{agent.description}</p>
+                      <h4 className="font-bold text-xl text-white mb-2">{agent.name}</h4>
+                      <p className="text-gray-300 leading-relaxed">{agent.description}</p>
                     </div>
                   </div>
                 </div>
@@ -187,18 +188,18 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
             </div>
           </div>
 
-          <div className="flex justify-between items-center pt-8 border-t border-gray-200">
+          <div className="flex justify-between items-center pt-8 border-t border-gray-700">
             <Button 
               onClick={onPrevious}
               variant="outline"
-              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 hover:bg-gray-50"
+              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 hover:bg-gray-800 border-gray-600 text-gray-300"
             >
               <ArrowLeft className="w-4 h-4" />
               Voltar
             </Button>
             
             <div className="text-center">
-              <p className="text-sm text-gray-500 mb-2">
+              <p className="text-sm text-gray-400 mb-2">
                 {selectedServices.length} {selectedServices.length === 1 ? 'item selecionado' : 'itens selecionados'}
               </p>
             </div>
@@ -206,7 +207,7 @@ const ServiceSelection = ({ selectedServices, onServicesChange, onNext, onPrevio
             <Button 
               onClick={onNext}
               disabled={selectedServices.length === 0}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 disabled:opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="bg-gradient-to-r from-3amg-orange to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 disabled:opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Continuar
               <ArrowRight className="w-4 h-4" />
