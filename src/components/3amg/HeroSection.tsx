@@ -6,8 +6,18 @@ import { ArrowRight, Code, Cpu, Zap, Terminal, Database, Workflow } from "lucide
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-3amg-dark via-3amg-dark-light to-3amg-dark">
+      {/* AI Agent Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/lovable-uploads/0b29d11e-f584-4046-85c3-00c9dc431a1e.png"
+          alt="AI Agent Background"
+          className="w-full h-full object-cover opacity-30 mix-blend-overlay"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-3amg-dark/80 via-3amg-dark/60 to-3amg-dark/80"></div>
+      </div>
+
       {/* Advanced Tech Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-10">
         {/* Animated Grid */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -65,7 +75,7 @@ const HeroSection = () => {
         <div className="absolute top-1/2 right-1/3 w-20 h-20 bg-3amg-red rounded-full opacity-15 animate-pulse-slow blur-xl" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      <div className="container mx-auto px-4 z-10 text-center">
+      <div className="container mx-auto px-4 z-20 text-center">
         {/* Dynamic Header */}
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 bg-3amg-dark-light/50 backdrop-blur-sm border border-3amg-orange/30 rounded-full px-6 py-2 mb-6">
@@ -143,7 +153,7 @@ const HeroSection = () => {
       </div>
 
       {/* Enhanced Bottom Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent z-10"></div>
     </section>
   );
 };
