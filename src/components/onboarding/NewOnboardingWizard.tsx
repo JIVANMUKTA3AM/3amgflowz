@@ -1,13 +1,15 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, ArrowRight, ArrowLeft, Users } from "lucide-react";
+import { CheckCircle, ArrowRight, ArrowLeft, Users, CreditCard } from "lucide-react";
 import ServiceSelection from "./ServiceSelection";
 import ChannelAgentSelection from "./ChannelAgentSelection";
 import SubscriberCountStep from "./SubscriberCountStep";
 import IntegrationConfiguration from "./IntegrationConfiguration";
 import ReviewAndActivate from "./ReviewAndActivate";
+import PostOnboardingPayment from "./PostOnboardingPayment";
 import FinalActivation from "./FinalActivation";
 import { useOnboardingNavigation } from "@/hooks/useOnboardingNavigation";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
@@ -31,7 +33,8 @@ const NewOnboardingWizard = () => {
     { id: 3, name: "Canais e Agentes", description: "Configure canais e agentes", icon: CheckCircle },
     { id: 4, name: "Integrações", description: "Configure suas integrações", icon: CheckCircle },
     { id: 5, name: "Revisão", description: "Revise suas configurações", icon: CheckCircle },
-    { id: 6, name: "Ativação", description: "Active sua conta", icon: CheckCircle }
+    { id: 6, name: "Pagamento", description: "Escolha seu plano", icon: CreditCard },
+    { id: 7, name: "Ativação", description: "Active sua conta", icon: CheckCircle }
   ];
 
   const handleNext = () => {
@@ -52,6 +55,11 @@ const NewOnboardingWizard = () => {
     nextStep();
   };
 
+  const handlePaymentComplete = () => {
+    // Avançar para ativação final após pagamento
+    nextStep();
+  };
+
   const handleComplete = async () => {
     const finalConfig = {
       selected_services: selectedServices,
@@ -69,7 +77,7 @@ const NewOnboardingWizard = () => {
   };
 
   const renderStepIndicator = () => (
-    <div className="flex items-center justify-center space-x-4 mb-8">
+    <div className="flex items-center justify-center space-x-4 mb-8 overflow-x-auto">
       {steps.map((step, index) => (
         <div key={step.id} className="flex items-center">
           <div 
@@ -82,7 +90,7 @@ const NewOnboardingWizard = () => {
             {currentStep > step.id ? (
               <CheckCircle className="w-5 h-5" />
             ) : (
-              <span className="text-sm font-medium">{step.id}</span>
+              <step.icon className="w-5 h-5" />
             )}
           </div>
           <div className="ml-2 text-sm">
@@ -157,6 +165,16 @@ const NewOnboardingWizard = () => {
         );
       
       case 6:
+        return (
+          <PostOnboardingPayment
+            selectedServices={selectedServices}
+            subscriberCount={subscriberCount}
+            onPaymentComplete={handlePaymentComplete}
+            onPrevious={previousStep}
+          />
+        );
+      
+      case 7:
         return (
           <FinalActivation
             onComplete={handleComplete}
