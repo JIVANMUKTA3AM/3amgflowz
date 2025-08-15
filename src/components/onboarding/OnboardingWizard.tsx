@@ -164,28 +164,28 @@ export const OnboardingWizard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-blue-50/30 p-4">
+    <div className="min-h-screen bg-3amg-dark p-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <Button
               variant="outline"
               onClick={() => navigate('/')}
-              className="gap-2"
+              className="gap-2 border-gray-600 text-gray-300 hover:bg-gray-800"
             >
               <ArrowLeft className="h-4 w-4" />
               Voltar ao Início
             </Button>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-gray-400">
               Passo {currentStep + 1} de {STEPS.length}
             </div>
           </div>
           
           <div className="mb-4">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold text-white mb-2">
               {STEPS[currentStep]?.title}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-300">
               {STEPS[currentStep]?.description}
             </p>
           </div>
@@ -193,7 +193,7 @@ export const OnboardingWizard = () => {
           <Progress value={progressPercentage} className="w-full" />
         </div>
 
-        <Card>
+        <Card className="bg-gray-900/90 border-gray-700">
           <CardContent className="p-8">
             {renderStepContent()}
           </CardContent>

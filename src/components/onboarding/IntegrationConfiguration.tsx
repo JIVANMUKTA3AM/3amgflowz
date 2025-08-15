@@ -164,21 +164,21 @@ const IntegrationConfiguration = ({
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6 flex items-center justify-center">
-      <Card className="w-full max-w-4xl border-0 shadow-2xl bg-white/95 backdrop-blur-xl">
-        <CardHeader className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white rounded-t-lg">
+    <div className="min-h-screen bg-3amg-dark p-6 flex items-center justify-center">
+      <Card className="w-full max-w-4xl border-0 shadow-2xl bg-gray-900/90 backdrop-blur-xl">
+        <CardHeader className="bg-gradient-to-r from-3amg-orange to-orange-600 text-white rounded-t-lg">
           <CardTitle className="text-3xl font-bold text-center">
             Configurações de Integração
           </CardTitle>
-          <p className="text-purple-100 text-center mt-2">
+          <p className="text-orange-100 text-center mt-2">
             Configure como o sistema irá se comunicar com seus equipamentos
           </p>
         </CardHeader>
         
-        <CardContent className="p-8 space-y-8">
+        <CardContent className="p-8 space-y-8 bg-gray-900/50">
           {/* SNMP Configuration */}
-          <Card className="border-2 border-blue-100">
-            <CardHeader className="bg-blue-50">
+          <Card className="border-2 border-gray-700 bg-gray-800/50">
+            <CardHeader className="bg-gray-800/70">
               <div className="flex items-center space-x-3">
                 <Checkbox
                   id="snmp"
@@ -186,27 +186,27 @@ const IntegrationConfiguration = ({
                   onCheckedChange={handleSNMPChange}
                 />
                 <div className="flex items-center space-x-2">
-                  <Wifi className="w-5 h-5 text-blue-600" />
-                  <CardTitle className="text-blue-800">SNMP</CardTitle>
+                  <Wifi className="w-5 h-5 text-3amg-orange" />
+                  <CardTitle className="text-white">SNMP</CardTitle>
                 </div>
               </div>
             </CardHeader>
             
             {integrationData.snmp_enabled && (
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-6 space-y-4 bg-gray-800/30">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="olt_brand">Marca</Label>
+                    <Label htmlFor="olt_brand" className="text-gray-300">Marca</Label>
                     <Select 
                       value={integrationData.snmp_config.olt_brand}
                       onValueChange={(value) => handleSNMPConfigChange('olt_brand', value)}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Selecione a marca" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-gray-800 border-gray-600">
                         {oltBrands.map((brand) => (
-                          <SelectItem key={brand.value} value={brand.value}>
+                          <SelectItem key={brand.value} value={brand.value} className="text-white hover:bg-gray-700">
                             {brand.label}
                           </SelectItem>
                         ))}
@@ -215,59 +215,63 @@ const IntegrationConfiguration = ({
                   </div>
                   
                   <div>
-                    <Label htmlFor="olt_model">Modelo</Label>
+                    <Label htmlFor="olt_model" className="text-gray-300">Modelo</Label>
                     <Input
                       id="olt_model"
                       value={integrationData.snmp_config.olt_model}
                       onChange={(e) => handleSNMPConfigChange('olt_model', e.target.value)}
                       placeholder="Ex: MA5608T, V1600G, UF-INSTANT"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     />
                   </div>
                   
                   <div>
-                    <Label htmlFor="olt_ip">IP</Label>
+                    <Label htmlFor="olt_ip" className="text-gray-300">IP</Label>
                     <Input
                       id="olt_ip"
                       value={integrationData.snmp_config.olt_ip}
                       onChange={(e) => handleSNMPConfigChange('olt_ip', e.target.value)}
                       placeholder="192.168.1.1"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     />
                   </div>
                   
                   <div>
-                    <Label htmlFor="snmp_version">Versão SNMP</Label>
+                    <Label htmlFor="snmp_version" className="text-gray-300">Versão SNMP</Label>
                     <Select 
                       value={integrationData.snmp_config.snmp_version}
                       onValueChange={(value) => handleSNMPConfigChange('snmp_version', value)}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                         <SelectValue placeholder="Versão" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="v1">v1</SelectItem>
-                        <SelectItem value="v2c">v2c</SelectItem>
-                        <SelectItem value="v3">v3</SelectItem>
+                      <SelectContent className="bg-gray-800 border-gray-600">
+                        <SelectItem value="v1" className="text-white hover:bg-gray-700">v1</SelectItem>
+                        <SelectItem value="v2c" className="text-white hover:bg-gray-700">v2c</SelectItem>
+                        <SelectItem value="v3" className="text-white hover:bg-gray-700">v3</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   
                   <div>
-                    <Label htmlFor="snmp_cred">Community/User</Label>
+                    <Label htmlFor="snmp_cred" className="text-gray-300">Community/User</Label>
                     <Input
                       id="snmp_cred"
                       value={integrationData.snmp_config.snmp_cred}
                       onChange={(e) => handleSNMPConfigChange('snmp_cred', e.target.value)}
                       placeholder="public ou username"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     />
                   </div>
                   
                   <div>
-                    <Label htmlFor="snmp_port">Porta</Label>
+                    <Label htmlFor="snmp_port" className="text-gray-300">Porta</Label>
                     <Input
                       id="snmp_port"
                       value={integrationData.snmp_config.snmp_port}
                       onChange={(e) => handleSNMPConfigChange('snmp_port', e.target.value)}
                       placeholder="161"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     />
                   </div>
                 </div>
@@ -276,7 +280,7 @@ const IntegrationConfiguration = ({
                   <Button
                     onClick={testSNMPConnection}
                     disabled={testing.snmp}
-                    className="flex items-center space-x-2"
+                    className="flex items-center space-x-2 bg-3amg-orange hover:bg-orange-600"
                   >
                     {testing.snmp ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wifi className="w-4 h-4" />}
                     <span>{testing.snmp ? 'Testando...' : 'Testar Conexão'}</span>
@@ -285,11 +289,11 @@ const IntegrationConfiguration = ({
                   {testResults.snmp !== undefined && (
                     <div className="flex items-center space-x-2">
                       {testResults.snmp ? (
-                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <CheckCircle className="w-5 h-5 text-green-500" />
                       ) : (
-                        <AlertCircle className="w-5 h-5 text-red-600" />
+                        <AlertCircle className="w-5 h-5 text-red-500" />
                       )}
-                      <span className={testResults.snmp ? 'text-green-600' : 'text-red-600'}>
+                      <span className={testResults.snmp ? 'text-green-500' : 'text-red-500'}>
                         {testResults.snmp ? 'Conexão OK' : 'Erro na conexão'}
                       </span>
                     </div>
@@ -300,8 +304,8 @@ const IntegrationConfiguration = ({
           </Card>
 
           {/* API Configuration */}
-          <Card className="border-2 border-green-100">
-            <CardHeader className="bg-green-50">
+          <Card className="border-2 border-gray-700 bg-gray-800/50">
+            <CardHeader className="bg-gray-800/70">
               <div className="flex items-center space-x-3">
                 <Checkbox
                   id="api"
@@ -309,33 +313,35 @@ const IntegrationConfiguration = ({
                   onCheckedChange={handleAPIChange}
                 />
                 <div className="flex items-center space-x-2">
-                  <Globe className="w-5 h-5 text-green-600" />
-                  <CardTitle className="text-green-800">API OLT</CardTitle>
+                  <Globe className="w-5 h-5 text-3amg-orange" />
+                  <CardTitle className="text-white">API OLT</CardTitle>
                 </div>
               </div>
             </CardHeader>
             
             {integrationData.api_enabled && (
-              <CardContent className="p-6 space-y-4">
+              <CardContent className="p-6 space-y-4 bg-gray-800/30">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <Label htmlFor="api_base_url">Base URL</Label>
+                    <Label htmlFor="api_base_url" className="text-gray-300">Base URL</Label>
                     <Input
                       id="api_base_url"
                       value={integrationData.api_config.api_base_url}
                       onChange={(e) => handleAPIConfigChange('api_base_url', e.target.value)}
                       placeholder="http://192.168.1.1:8080/api"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     />
                   </div>
                   
                   <div className="md:col-span-2">
-                    <Label htmlFor="api_token">Token</Label>
+                    <Label htmlFor="api_token" className="text-gray-300">Token</Label>
                     <Input
                       id="api_token"
                       type="password"
                       value={integrationData.api_config.api_token}
                       onChange={(e) => handleAPIConfigChange('api_token', e.target.value)}
                       placeholder="Bearer token ou API key"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     />
                   </div>
                 </div>
@@ -344,7 +350,7 @@ const IntegrationConfiguration = ({
                   <Button
                     onClick={testAPIConnection}
                     disabled={testing.api}
-                    className="flex items-center space-x-2"
+                    className="flex items-center space-x-2 bg-3amg-orange hover:bg-orange-600"
                   >
                     {testing.api ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
                     <span>{testing.api ? 'Testando...' : 'Testar Conexão'}</span>
@@ -353,11 +359,11 @@ const IntegrationConfiguration = ({
                   {testResults.api !== undefined && (
                     <div className="flex items-center space-x-2">
                       {testResults.api ? (
-                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        <CheckCircle className="w-5 h-5 text-green-500" />
                       ) : (
-                        <AlertCircle className="w-5 h-5 text-red-600" />
+                        <AlertCircle className="w-5 h-5 text-red-500" />
                       )}
-                      <span className={testResults.api ? 'text-green-600' : 'text-red-600'}>
+                      <span className={testResults.api ? 'text-green-500' : 'text-red-500'}>
                         {testResults.api ? 'API OK' : 'Erro na API'}
                       </span>
                     </div>
@@ -368,22 +374,22 @@ const IntegrationConfiguration = ({
           </Card>
 
           {/* Mode Display */}
-          <Card className="border-2 border-purple-100 bg-purple-50">
+          <Card className="border-2 border-3amg-orange/30 bg-3amg-orange/10">
             <CardContent className="p-4">
               <div className="text-center">
-                <p className="text-sm text-gray-600">Modo de operação selecionado:</p>
-                <p className="text-lg font-bold text-purple-800 uppercase">
+                <p className="text-sm text-gray-300">Modo de operação selecionado:</p>
+                <p className="text-lg font-bold text-3amg-orange uppercase">
                   {integrationData.mode}
                 </p>
               </div>
             </CardContent>
           </Card>
 
-          <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+          <div className="flex justify-between items-center pt-6 border-t border-gray-700">
             <Button 
               onClick={onPrevious}
               variant="outline"
-              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 hover:bg-gray-50"
+              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 hover:bg-gray-800 border-gray-600 text-gray-300"
             >
               <ArrowLeft className="w-4 h-4" />
               Voltar
@@ -392,7 +398,7 @@ const IntegrationConfiguration = ({
             <Button 
               onClick={onNext}
               disabled={!canProceed}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50"
+              className="bg-gradient-to-r from-3amg-orange to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50"
             >
               Finalizar Configuração
               <ArrowRight className="w-4 h-4" />

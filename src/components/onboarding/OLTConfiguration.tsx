@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -129,25 +130,25 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6 flex items-center justify-center">
-      <Card className="w-full max-w-4xl border-0 shadow-2xl bg-white/95 backdrop-blur-xl">
-        <CardHeader className="bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white rounded-t-lg">
+    <div className="min-h-screen bg-3amg-dark p-6 flex items-center justify-center">
+      <Card className="w-full max-w-4xl border-0 shadow-2xl bg-gray-900/90 backdrop-blur-xl">
+        <CardHeader className="bg-gradient-to-r from-3amg-orange to-orange-600 text-white rounded-t-lg">
           <div className="flex items-center gap-3">
             <Sparkles className="w-8 h-8 text-yellow-300" />
             <div>
               <CardTitle className="text-3xl font-bold">
                 Configure suas OLTs
               </CardTitle>
-              <p className="text-purple-100 mt-2">
+              <p className="text-orange-100 mt-2">
                 Configure as <span className="font-bold text-yellow-300">OLTs</span> para que os agentes do <span className="font-bold text-yellow-300">3AMG FLOWS</span> tenham acesso aos dados da rede
               </p>
             </div>
           </div>
         </CardHeader>
         
-        <CardContent className="p-8 space-y-8">
+        <CardContent className="p-8 space-y-8 bg-gray-900/50">
           <div className="text-center">
-            <div className={`flex items-center gap-4 p-6 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl shadow-xl mb-8`}>
+            <div className={`flex items-center gap-4 p-6 bg-gradient-to-r from-3amg-orange to-orange-600 rounded-2xl shadow-xl mb-8`}>
               <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
                 <Network className="w-10 h-10 text-white" />
               </div>
@@ -163,10 +164,10 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
               const selectedBrand = oltBrands.find(brand => brand.value === config.brand);
               
               return (
-                <Card key={config.id} className="border-2 border-purple-100 shadow-lg bg-gradient-to-br from-purple-50/50 to-blue-50/50">
-                  <CardHeader className="bg-gradient-to-r from-purple-100 to-blue-100">
+                <Card key={config.id} className="border-2 border-gray-700 shadow-lg bg-gray-800/50">
+                  <CardHeader className="bg-gray-800/70">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg flex items-center gap-2 text-purple-800">
+                      <CardTitle className="text-lg flex items-center gap-2 text-3amg-orange">
                         <Database className="w-5 h-5" />
                         OLT {index + 1}
                       </CardTitle>
@@ -175,50 +176,50 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
                           onClick={() => removeOLT(index)}
                           variant="ghost"
                           size="sm"
-                          className="text-red-600 hover:text-red-800 hover:bg-red-100"
+                          className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent className="p-6 space-y-6">
+                  <CardContent className="p-6 space-y-6 bg-gray-800/30">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <Label htmlFor={`name-${index}`} className="text-lg font-semibold text-gray-700">Nome da OLT</Label>
+                        <Label htmlFor={`name-${index}`} className="text-lg font-semibold text-gray-300">Nome da OLT</Label>
                         <Input
                           id={`name-${index}`}
                           value={config.name}
                           onChange={(e) => handleConfigChange(index, 'name', e.target.value)}
                           placeholder="ex: OLT Centro"
-                          className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl text-lg p-4"
+                          className="mt-2 border-2 border-gray-600 focus:border-3amg-orange rounded-xl text-lg p-4 bg-gray-700 text-white placeholder-gray-400"
                         />
                       </div>
                       <div>
-                        <Label htmlFor={`ip-${index}`} className="text-lg font-semibold text-gray-700">Endereço IP</Label>
+                        <Label htmlFor={`ip-${index}`} className="text-lg font-semibold text-gray-300">Endereço IP</Label>
                         <Input
                           id={`ip-${index}`}
                           value={config.ipAddress}
                           onChange={(e) => handleConfigChange(index, 'ipAddress', e.target.value)}
                           placeholder="192.168.1.100"
-                          className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl text-lg p-4"
+                          className="mt-2 border-2 border-gray-600 focus:border-3amg-orange rounded-xl text-lg p-4 bg-gray-700 text-white placeholder-gray-400"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <Label htmlFor={`brand-${index}`} className="text-lg font-semibold text-gray-700">Marca</Label>
+                        <Label htmlFor={`brand-${index}`} className="text-lg font-semibold text-gray-300">Marca</Label>
                         <Select 
                           value={config.brand} 
                           onValueChange={(value) => handleConfigChange(index, 'brand', value)}
                         >
-                          <SelectTrigger className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl p-4">
+                          <SelectTrigger className="mt-2 border-2 border-gray-600 focus:border-3amg-orange rounded-xl p-4 bg-gray-700 text-white">
                             <SelectValue placeholder="Selecione a marca" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-gray-800 border-gray-600">
                             {oltBrands.map((brand) => (
-                              <SelectItem key={brand.value} value={brand.value}>
+                              <SelectItem key={brand.value} value={brand.value} className="text-white hover:bg-gray-700">
                                 {brand.label}
                               </SelectItem>
                             ))}
@@ -226,18 +227,18 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor={`model-${index}`} className="text-lg font-semibold text-gray-700">Modelo</Label>
+                        <Label htmlFor={`model-${index}`} className="text-lg font-semibold text-gray-300">Modelo</Label>
                         <Select 
                           value={config.model} 
                           onValueChange={(value) => handleConfigChange(index, 'model', value)}
                           disabled={!config.brand}
                         >
-                          <SelectTrigger className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl p-4">
+                          <SelectTrigger className="mt-2 border-2 border-gray-600 focus:border-3amg-orange rounded-xl p-4 bg-gray-700 text-white">
                             <SelectValue placeholder="Selecione o modelo" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-gray-800 border-gray-600">
                             {selectedBrand?.models.map((model) => (
-                              <SelectItem key={model} value={model}>
+                              <SelectItem key={model} value={model} className="text-white hover:bg-gray-700">
                                 {model}
                               </SelectItem>
                             ))}
@@ -248,34 +249,34 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div>
-                        <Label htmlFor={`community-${index}`} className="text-lg font-semibold text-gray-700">SNMP Community</Label>
+                        <Label htmlFor={`community-${index}`} className="text-lg font-semibold text-gray-300">SNMP Community</Label>
                         <Input
                           id={`community-${index}`}
                           value={config.snmpCommunity}
                           onChange={(e) => handleConfigChange(index, 'snmpCommunity', e.target.value)}
                           placeholder="public"
-                          className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl text-lg p-4"
+                          className="mt-2 border-2 border-gray-600 focus:border-3amg-orange rounded-xl text-lg p-4 bg-gray-700 text-white placeholder-gray-400"
                         />
                       </div>
                       <div>
-                        <Label htmlFor={`username-${index}`} className="text-lg font-semibold text-gray-700">Usuário (opcional)</Label>
+                        <Label htmlFor={`username-${index}`} className="text-lg font-semibold text-gray-300">Usuário (opcional)</Label>
                         <Input
                           id={`username-${index}`}
                           value={config.username || ''}
                           onChange={(e) => handleConfigChange(index, 'username', e.target.value)}
                           placeholder="admin"
-                          className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl text-lg p-4"
+                          className="mt-2 border-2 border-gray-600 focus:border-3amg-orange rounded-xl text-lg p-4 bg-gray-700 text-white placeholder-gray-400"
                         />
                       </div>
                       <div>
-                        <Label htmlFor={`password-${index}`} className="text-lg font-semibold text-gray-700">Senha (opcional)</Label>
+                        <Label htmlFor={`password-${index}`} className="text-lg font-semibold text-gray-300">Senha (opcional)</Label>
                         <Input
                           id={`password-${index}`}
                           type="password"
                           value={config.password || ''}
                           onChange={(e) => handleConfigChange(index, 'password', e.target.value)}
                           placeholder="••••••••"
-                          className="mt-2 border-2 border-purple-200 focus:border-purple-400 rounded-xl text-lg p-4"
+                          className="mt-2 border-2 border-gray-600 focus:border-3amg-orange rounded-xl text-lg p-4 bg-gray-700 text-white placeholder-gray-400"
                         />
                       </div>
                     </div>
@@ -287,18 +288,18 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
             <Button
               onClick={addOLT}
               variant="outline"
-              className="w-full py-6 border-dashed border-2 border-purple-300 hover:border-purple-500 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 transition-all duration-300 flex items-center gap-2 rounded-xl text-lg font-medium"
+              className="w-full py-6 border-dashed border-2 border-gray-600 hover:border-3amg-orange hover:bg-gray-800/50 transition-all duration-300 flex items-center gap-2 rounded-xl text-lg font-medium text-gray-300 hover:text-3amg-orange"
             >
               <Plus className="w-5 h-5" />
               Adicionar Mais OLT
             </Button>
           </div>
 
-          <div className="flex justify-between items-center pt-8 border-t border-gray-200">
+          <div className="flex justify-between items-center pt-8 border-t border-gray-700">
             <Button 
               onClick={onPrevious}
               variant="outline"
-              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 hover:bg-gray-50"
+              className="px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 hover:bg-gray-800 border-gray-600 text-gray-300"
               disabled={isSaving}
             >
               <ArrowLeft className="w-4 h-4" />
@@ -306,7 +307,7 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
             </Button>
             
             <div className="text-center">
-              <p className="text-sm text-gray-500 mb-2">
+              <p className="text-sm text-gray-400 mb-2">
                 {configs.length} {configs.length === 1 ? 'OLT configurada' : 'OLTs configuradas'}
               </p>
             </div>
@@ -314,7 +315,7 @@ const OLTConfiguration = ({ selectedServices, oltConfigs, onUpdate, onNext, onPr
             <Button 
               onClick={handleNext}
               disabled={isSaving}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="bg-gradient-to-r from-3amg-orange to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               {isSaving ? (
                 <>
