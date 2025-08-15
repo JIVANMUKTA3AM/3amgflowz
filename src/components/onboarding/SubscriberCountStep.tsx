@@ -91,7 +91,7 @@ const SubscriberCountStep = ({
                   className={
                     subscriberCount === option 
                       ? "bg-3amg-orange border-3amg-orange text-white hover:bg-3amg-orange-dark" 
-                      : "border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-3amg-orange hover:text-3amg-orange"
+                      : "bg-transparent border-3amg-orange/30 text-3amg-orange hover:bg-3amg-orange/10 hover:border-3amg-orange"
                   }
                 >
                   {option.toLocaleString()}
@@ -158,3 +158,4 @@ const SubscriberCountStep = ({
 };
 
 export default SubscriberCountStep;
+
