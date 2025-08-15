@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { BarChart3, MessageCircle, Users, Settings, Users2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,7 +19,6 @@ const ClientDashboard = () => {
   const [isClientFormOpen, setIsClientFormOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
-  // Métricas simuladas do cliente
   const clientMetrics = {
     conversasHoje: 24,
     conversasMes: 456,
@@ -30,7 +28,6 @@ const ClientDashboard = () => {
     integracoesAtivas: 2
   };
 
-  // Dados mock para os componentes - seguindo as interfaces corretas
   const mockConfigurations = [
     {
       id: "1",
@@ -76,43 +73,43 @@ const ClientDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-blue-50/30">
+    <div className="min-h-screen bg-3amg-dark">
       <ClientHeader />
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur-sm shadow-lg border border-white/50">
+          <TabsList className="grid w-full grid-cols-5 bg-gray-800/80 backdrop-blur-sm shadow-lg border border-gray-700">
             <TabsTrigger 
               value="overview" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
             >
               <BarChart3 className="h-4 w-4" />
               Visão Geral
             </TabsTrigger>
             <TabsTrigger 
               value="chat" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
             >
               <MessageCircle className="h-4 w-4" />
               Chat ao Vivo
             </TabsTrigger>
             <TabsTrigger 
               value="logs" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
             >
               <Users className="h-4 w-4" />
               Conversas
             </TabsTrigger>
             <TabsTrigger 
               value="crm" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
             >
               <Users2 className="h-4 w-4" />
               CRM
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-3amg-purple data-[state=active]:to-3amg-blue data-[state=active]:text-white transition-all duration-300"
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
             >
               <Settings className="h-4 w-4" />
               Configurações
@@ -141,21 +138,19 @@ const ClientDashboard = () => {
 
           <TabsContent value="crm" className="mt-8">
             <div className="space-y-8">
-              {/* CRM Metrics */}
               <CRMMetrics className="mb-8" />
 
-              {/* CRM Content in Tabs */}
               <Tabs defaultValue="clients" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-8">
-                  <TabsTrigger value="clients" className="flex items-center gap-2">
+                <TabsList className="grid w-full grid-cols-3 mb-8 bg-gray-800">
+                  <TabsTrigger value="clients" className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white text-gray-300">
                     <Users className="h-4 w-4" />
                     Clientes
                   </TabsTrigger>
-                  <TabsTrigger value="pipeline" className="flex items-center gap-2">
+                  <TabsTrigger value="pipeline" className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white text-gray-300">
                     <BarChart3 className="h-4 w-4" />
                     Pipeline
                   </TabsTrigger>
-                  <TabsTrigger value="interactions" className="flex items-center gap-2">
+                  <TabsTrigger value="interactions" className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white text-gray-300">
                     <MessageCircle className="h-4 w-4" />
                     Interações
                   </TabsTrigger>
@@ -187,7 +182,6 @@ const ClientDashboard = () => {
         </Tabs>
       </div>
 
-      {/* Modal de formulário de cliente */}
       <ClientForm
         isOpen={isClientFormOpen}
         onClose={() => {

@@ -19,7 +19,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen bg-3amg-dark">
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={isLoading} />
       
       {/* Hero Section */}
@@ -37,57 +37,57 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8">
         {/* Links de Acesso Rápido */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate("/admin-webhooks")}>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gray-900/90 border-gray-700" onClick={() => navigate("/admin-webhooks")}>
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Webhook className="h-5 w-5 text-blue-600" />
+              <CardTitle className="flex items-center gap-2 text-lg text-white">
+                <Webhook className="h-5 w-5 text-3amg-orange" />
                 Webhooks
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-300">
                 Configure endpoints e monitore eventos de webhook
               </p>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate("/client-dashboard")}>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gray-900/90 border-gray-700" onClick={() => navigate("/client-dashboard")}>
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <BarChart3 className="h-5 w-5 text-green-600" />
+              <CardTitle className="flex items-center gap-2 text-lg text-white">
+                <BarChart3 className="h-5 w-5 text-3amg-purple" />
                 Visão Cliente
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-300">
                 Acesse a interface dos provedores
               </p>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gray-900/90 border-gray-700">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Activity className="h-5 w-5 text-purple-600" />
+              <CardTitle className="flex items-center gap-2 text-lg text-white">
+                <Activity className="h-5 w-5 text-3amg-purple" />
                 Agentes
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-300">
                 Gerencie configurações dos agentes IA
               </p>
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow bg-gray-900/90 border-gray-700">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Bell className="h-5 w-5 text-orange-600" />
+              <CardTitle className="flex items-center gap-2 text-lg text-white">
+                <Bell className="h-5 w-5 text-3amg-orange" />
                 Alertas
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-300">
                 Monitore alertas e notificações
               </p>
             </CardContent>
@@ -101,14 +101,14 @@ const Dashboard = () => {
 
         {/* Tabs para diferentes visualizações */}
         <Tabs defaultValue="performance" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-white border border-gray-200">
-            <TabsTrigger value="performance" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-800 border border-gray-700">
+            <TabsTrigger value="performance" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white text-gray-300">
               Performance
             </TabsTrigger>
-            <TabsTrigger value="activity" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+            <TabsTrigger value="activity" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white text-gray-300">
               Atividade
             </TabsTrigger>
-            <TabsTrigger value="alerts" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white">
+            <TabsTrigger value="alerts" className="data-[state=active]:bg-gradient-3amg data-[state=active]:text-white text-gray-300">
               Alertas
             </TabsTrigger>
           </TabsList>

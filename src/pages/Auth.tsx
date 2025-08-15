@@ -155,7 +155,6 @@ const Auth = () => {
         title: "Cadastro realizado com sucesso!",
         description: "Verifique seu email para confirmar a conta.",
       });
-      // Limpar formulário após sucesso
       setFormData({
         email: '',
         password: '',
@@ -199,32 +198,39 @@ const Auth = () => {
 
   if (showResetForm) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-3amg-dark flex items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <div className="flex items-center justify-center mb-4">
+              <img 
+                src="/lovable-uploads/71a5762a-fd4e-406c-bf7c-1e3df758cc53.png" 
+                alt="3AMG Logo" 
+                className="w-12 h-12 object-contain"
+              />
+            </div>
+            <h1 className="text-3xl font-bold bg-gradient-3amg bg-clip-text text-transparent">
               3AMG
             </h1>
-            <p className="text-gray-600 mt-2">Recuperar senha</p>
+            <p className="text-gray-300 mt-2">Recuperar senha</p>
           </div>
 
-          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+          <Card className="shadow-2xl border-0 bg-gray-900/90 backdrop-blur-sm">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowResetForm(false)}
-                  className="p-0 h-auto"
+                  className="p-0 h-auto text-3amg-orange hover:text-3amg-orange-light"
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
                 <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Mail className="h-5 w-5 text-indigo-600" />
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Mail className="h-5 w-5 text-3amg-orange" />
                     Recuperar Senha
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-gray-300">
                     Digite seu email para receber o link de recuperação
                   </CardDescription>
                 </div>
@@ -233,7 +239,7 @@ const Auth = () => {
             <CardContent>
               <form onSubmit={handleResetPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="reset-email">Email</Label>
+                  <Label htmlFor="reset-email" className="text-gray-200">Email</Label>
                   <Input
                     id="reset-email"
                     name="email"
@@ -241,12 +247,13 @@ const Auth = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="seu@email.com"
+                    className="bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
                     required
                   />
                 </div>
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700" 
+                  className="w-full bg-gradient-3amg-orange hover:opacity-90 text-white" 
                   disabled={loading}
                 >
                   {loading ? (
@@ -267,33 +274,40 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-3amg-dark flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="flex items-center justify-center mb-4">
+            <img 
+              src="/lovable-uploads/71a5762a-fd4e-406c-bf7c-1e3df758cc53.png" 
+              alt="3AMG Logo" 
+              className="w-16 h-16 object-contain"
+            />
+          </div>
+          <h1 className="text-4xl font-bold bg-gradient-3amg bg-clip-text text-transparent">
             3AMG
           </h1>
-          <p className="text-gray-600 mt-2">Automação Inteligente para Provedores</p>
+          <p className="text-gray-300 mt-2">Automação Inteligente para Provedores</p>
         </div>
 
-        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+        <Card className="shadow-2xl border-0 bg-gray-900/90 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle className="text-center">Acesse sua conta</CardTitle>
-            <CardDescription className="text-center">
+            <CardTitle className="text-center text-white">Acesse sua conta</CardTitle>
+            <CardDescription className="text-center text-gray-300">
               Entre na sua conta ou crie uma nova para começar
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Entrar</TabsTrigger>
-                <TabsTrigger value="register">Criar Conta</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-gray-800">
+                <TabsTrigger value="login" className="data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white">Entrar</TabsTrigger>
+                <TabsTrigger value="register" className="data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white">Criar Conta</TabsTrigger>
               </TabsList>
               
               <TabsContent value="login">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
+                    <Label htmlFor="login-email" className="text-gray-200">Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -303,13 +317,13 @@ const Auth = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="seu@email.com"
-                        className="pl-10"
+                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
                         required
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Senha</Label>
+                    <Label htmlFor="login-password" className="text-gray-200">Senha</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -319,7 +333,7 @@ const Auth = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="••••••••"
-                        className="pl-10"
+                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
                         required
                       />
                     </div>
@@ -328,7 +342,7 @@ const Auth = () => {
                     <Button
                       type="button"
                       variant="link"
-                      className="px-0 text-sm text-indigo-600 hover:text-indigo-800"
+                      className="px-0 text-sm text-3amg-orange hover:text-3amg-orange-light"
                       onClick={() => setShowResetForm(true)}
                     >
                       Esqueceu a senha?
@@ -336,7 +350,7 @@ const Auth = () => {
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700" 
+                    className="w-full bg-gradient-3amg-orange hover:opacity-90 text-white" 
                     disabled={loading}
                   >
                     {loading ? (
@@ -355,7 +369,7 @@ const Auth = () => {
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-2">
-                      <Label htmlFor="register-firstName">Nome</Label>
+                      <Label htmlFor="register-firstName" className="text-gray-200">Nome</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
@@ -365,13 +379,13 @@ const Auth = () => {
                           value={formData.firstName}
                           onChange={handleInputChange}
                           placeholder="Nome"
-                          className="pl-10"
+                          className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
                           required
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-lastName">Sobrenome</Label>
+                      <Label htmlFor="register-lastName" className="text-gray-200">Sobrenome</Label>
                       <Input
                         id="register-lastName"
                         name="lastName"
@@ -379,12 +393,13 @@ const Auth = () => {
                         value={formData.lastName}
                         onChange={handleInputChange}
                         placeholder="Sobrenome"
+                        className="bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
                         required
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="register-email">Email</Label>
+                    <Label htmlFor="register-email" className="text-gray-200">Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -394,13 +409,13 @@ const Auth = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="seu@email.com"
-                        className="pl-10"
+                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
                         required
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="register-password">Senha</Label>
+                    <Label htmlFor="register-password" className="text-gray-200">Senha</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -410,13 +425,13 @@ const Auth = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         placeholder="••••••••"
-                        className="pl-10"
+                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
                         required
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="register-confirmPassword">Confirmar Senha</Label>
+                    <Label htmlFor="register-confirmPassword" className="text-gray-200">Confirmar Senha</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -426,14 +441,14 @@ const Auth = () => {
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
                         placeholder="••••••••"
-                        className="pl-10"
+                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
                         required
                       />
                     </div>
                   </div>
                   <Button 
                     type="submit" 
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700" 
+                    className="w-full bg-gradient-3amg-orange hover:opacity-90 text-white" 
                     disabled={loading}
                   >
                     {loading ? (
@@ -451,14 +466,14 @@ const Auth = () => {
           </CardContent>
         </Card>
 
-        <div className="text-center mt-6 text-sm text-gray-600">
+        <div className="text-center mt-6 text-sm text-gray-400">
           <p>
             Ao criar uma conta, você concorda com nossos{' '}
-            <a href="/termos" className="text-indigo-600 hover:underline">
+            <a href="/termos" className="text-3amg-orange hover:text-3amg-orange-light hover:underline">
               Termos de Uso
             </a>{' '}
             e{' '}
-            <a href="/privacidade" className="text-indigo-600 hover:underline">
+            <a href="/privacidade" className="text-3amg-orange hover:text-3amg-orange-light hover:underline">
               Política de Privacidade
             </a>
           </p>
