@@ -82,63 +82,68 @@ const AgentsTabContent = ({
     <>
       
       <TabsContent value="chat">
-        <AgentChat configurations={configurations || []} />
+        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+          <AgentChat configurations={configurations || []} />
+        </div>
       </TabsContent>
       
       
       <TabsContent value="configurations">
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Configurações dos Agentes</h2>
-            <Button onClick={() => setShowForm(true)} className="gap-2">
+            <h2 className="text-2xl font-bold text-3amg-orange">Configurações dos Agentes</h2>
+            <Button onClick={() => setShowForm(true)} className="gap-2 bg-3amg-orange hover:bg-3amg-orange/80">
               <Plus className="h-4 w-4" />
               Novo Agente
             </Button>
           </div>
 
           {showForm && (
-            <AgentConfigurationForm
-              configuration={editingConfiguration}
-              onSave={handleSaveAgent}
-              onCancel={() => {
-                setShowForm(false);
-                setEditingAgent(null);
-              }}
-              isLoading={isCreating || isUpdating}
-            />
+            <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+              <AgentConfigurationForm
+                configuration={editingConfiguration}
+                onSave={handleSaveAgent}
+                onCancel={() => {
+                  setShowForm(false);
+                  setEditingAgent(null);
+                }}
+                isLoading={isCreating || isUpdating}
+              />
+            </div>
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {configurations?.map((config) => (
-              <Card key={config.id}>
+              <Card key={config.id} className="bg-gray-900/90 border-gray-700 backdrop-blur-sm">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{config.name}</CardTitle>
-                    <Badge variant={config.is_active ? "default" : "secondary"}>
+                    <CardTitle className="text-lg text-3amg-orange">{config.name}</CardTitle>
+                    <Badge variant={config.is_active ? "default" : "secondary"} 
+                           className={config.is_active ? "bg-green-600 hover:bg-green-700" : ""}>
                       {config.is_active ? "Ativo" : "Inativo"}
                     </Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2 text-sm">
-                    <div><strong>Tipo:</strong> {config.agent_type}</div>
-                    <div><strong>Modelo:</strong> {config.model}</div>
-                    <div><strong>Temperatura:</strong> {config.temperature}</div>
-                    <div><strong>Max Tokens:</strong> {config.max_tokens}</div>
+                  <div className="space-y-2 text-sm text-gray-300">
+                    <div><strong className="text-gray-200">Tipo:</strong> {config.agent_type}</div>
+                    <div><strong className="text-gray-200">Modelo:</strong> {config.model}</div>
+                    <div><strong className="text-gray-200">Temperatura:</strong> {config.temperature}</div>
+                    <div><strong className="text-gray-200">Max Tokens:</strong> {config.max_tokens}</div>
                   </div>
 
                   {config.webhook_url && (
-                    <div className="mt-3 p-2 bg-gray-50 rounded">
-                      <div className="text-xs font-medium text-gray-600 mb-1">Webhook N8N:</div>
+                    <div className="mt-3 p-2 bg-gray-800 rounded border border-gray-600">
+                      <div className="text-xs font-medium text-gray-400 mb-1">Webhook N8N:</div>
                       <div className="flex items-center gap-1">
-                        <div className="text-xs text-gray-700 truncate flex-1" title={config.webhook_url}>
+                        <div className="text-xs text-gray-300 truncate flex-1" title={config.webhook_url}>
                           {config.webhook_url}
                         </div>
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => copyWebhookUrl(config.webhook_url!)}
-                          className="h-6 w-6 p-0"
+                          className="h-6 w-6 p-0 hover:bg-gray-700"
                         >
                           <Copy className="h-3 w-3" />
                         </Button>
@@ -146,7 +151,7 @@ const AgentsTabContent = ({
                           size="sm"
                           variant="ghost"
                           onClick={() => openWebhookUrl(config.webhook_url!)}
-                          className="h-6 w-6 p-0"
+                          className="h-6 w-6 p-0 hover:bg-gray-700"
                         >
                           <ExternalLink className="h-3 w-3" />
                         </Button>
@@ -155,7 +160,7 @@ const AgentsTabContent = ({
                   )}
 
                   <div className="mt-4 space-y-2">
-                    <p className="text-sm text-gray-600 line-clamp-2">
+                    <p className="text-sm text-gray-400 line-clamp-2">
                       {config.prompt}
                     </p>
                   </div>
@@ -164,6 +169,7 @@ const AgentsTabContent = ({
                       size="sm" 
                       variant="outline" 
                       onClick={() => handleEditAgent(config.id)}
+                      className="border-gray-600 text-gray-300 hover:bg-gray-800"
                     >
                       Editar
                     </Button>
@@ -184,64 +190,78 @@ const AgentsTabContent = ({
       </TabsContent>
 
       <TabsContent value="workflows">
-        <WorkflowManagement />
+        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+          <WorkflowManagement />
+        </div>
       </TabsContent>
 
       <TabsContent value="integrations">
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Integrações</h2>
-            <Button onClick={() => setShowIntegrationForm(true)} className="gap-2">
+            <h2 className="text-2xl font-bold text-3amg-orange">Integrações</h2>
+            <Button onClick={() => setShowIntegrationForm(true)} className="gap-2 bg-3amg-orange hover:bg-3amg-orange/80">
               <Plus className="h-4 w-4" />
               Nova Integração
             </Button>
           </div>
 
           {showIntegrationForm && (
-            <IntegrationConfigForm
-              integration={editingIntegration}
-              onClose={() => {
-                setShowIntegrationForm(false);
-                setEditingIntegration(null);
-              }}
-            />
+            <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+              <IntegrationConfigForm
+                integration={editingIntegration}
+                onClose={() => {
+                  setShowIntegrationForm(false);
+                  setEditingIntegration(null);
+                }}
+              />
+            </div>
           )}
 
-          <AgentIntegrations 
-            integrations={integrations || []}
-            onEdit={handleEditIntegration}
-          />
+          <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+            <AgentIntegrations 
+              integrations={integrations || []}
+              onEdit={handleEditIntegration}
+            />
+          </div>
         </div>
       </TabsContent>
 
       <TabsContent value="executions">
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Execuções de Workflow</h2>
+            <h2 className="text-2xl font-bold text-3amg-orange">Execuções de Workflow</h2>
           </div>
-          <WorkflowExecutions executions={executions || []} />
+          <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+            <WorkflowExecutions executions={executions || []} />
+          </div>
         </div>
       </TabsContent>
       
       
       <TabsContent value="logs">
-        <ConversationLogs 
-          conversations={conversations || []} 
-          configurations={configurations || []}
-        />
+        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+          <ConversationLogs 
+            conversations={conversations || []} 
+            configurations={configurations || []}
+          />
+        </div>
       </TabsContent>
       
       
       <TabsContent value="metrics">
-        <AgentMetrics 
-          metrics={metrics || []}
-          configurations={configurations || []}
-          conversations={conversations || []}
-        />
+        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+          <AgentMetrics 
+            metrics={metrics || []}
+            configurations={configurations || []}
+            conversations={conversations || []}
+          />
+        </div>
       </TabsContent>
       
       <TabsContent value="training">
-        <AgentTrainingSystem />
+        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
+          <AgentTrainingSystem />
+        </div>
       </TabsContent>
     </>
   );
