@@ -193,35 +193,37 @@ const TechSection = () => {
                     return (
                       <div
                         key={index}
-                        className="group relative bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-8 hover:border-3amg-orange/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-3amg-orange/20"
+                        className="group relative bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-8 hover:border-3amg-orange/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-3amg-orange/20 mx-auto w-full max-w-md"
                       >
                         {/* Background Glow Effect */}
                         <div className={`absolute inset-0 bg-gradient-to-br ${tech.gradient} opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300`}></div>
                         
-                        {/* Centered Icon and Header */}
-                        <div className="relative z-10 text-center mb-6">
-                          <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${tech.gradient} p-0.5 group-hover:scale-110 transition-transform duration-300 mx-auto mb-4`}>
+                        {/* Centralized Content Container */}
+                        <div className="relative z-10 flex flex-col items-center text-center h-full">
+                          {/* Icon */}
+                          <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${tech.gradient} p-0.5 group-hover:scale-110 transition-transform duration-300 mb-6`}>
                             <div className="w-full h-full bg-gray-800 rounded-full flex items-center justify-center">
                               <IconComponent className="w-10 h-10 text-white group-hover:text-3amg-orange transition-colors duration-300" />
                             </div>
                           </div>
                           
-                          <h4 className="text-2xl font-bold text-white mb-3 group-hover:text-3amg-orange transition-colors duration-300">
+                          {/* Title */}
+                          <h4 className="text-2xl font-bold text-white mb-4 group-hover:text-3amg-orange transition-colors duration-300">
                             {tech.name}
                           </h4>
                           
-                          <Badge className={`bg-gradient-to-r ${tech.gradient} text-white text-sm mb-4`}>
+                          {/* Badge */}
+                          <Badge className={`bg-gradient-to-r ${tech.gradient} text-white text-sm mb-6`}>
                             {tech.category}
                           </Badge>
                           
-                          <p className="text-gray-400 text-base mb-4 group-hover:text-gray-300 transition-colors duration-300 leading-relaxed">
+                          {/* Short Description */}
+                          <p className="text-gray-400 text-base mb-6 group-hover:text-gray-300 transition-colors duration-300 leading-relaxed">
                             {tech.description}
                           </p>
-                        </div>
-                        
-                        {/* Detailed Description */}
-                        <div className="relative z-10 text-center">
-                          <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
+                          
+                          {/* Detailed Description */}
+                          <p className="text-gray-300 text-sm leading-relaxed group-hover:text-gray-200 transition-colors duration-300 flex-grow">
                             {tech.longDescription}
                           </p>
                         </div>
