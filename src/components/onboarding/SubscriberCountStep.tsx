@@ -88,7 +88,11 @@ const SubscriberCountStep = ({
                   variant="outline"
                   size="sm"
                   onClick={() => handleInputChange(option.toString())}
-                  className={subscriberCount === option ? "bg-3amg-orange border-3amg-orange text-white" : "border-gray-600 text-gray-300 hover:bg-gray-800"}
+                  className={
+                    subscriberCount === option 
+                      ? "bg-3amg-orange border-3amg-orange text-white hover:bg-3amg-orange-dark" 
+                      : "border-gray-600 text-gray-300 hover:bg-gray-800 hover:border-3amg-orange hover:text-3amg-orange"
+                  }
                 >
                   {option.toLocaleString()}
                 </Button>
@@ -143,7 +147,7 @@ const SubscriberCountStep = ({
         <Button 
           onClick={onNext}
           disabled={subscriberCount < 0}
-          className="bg-3amg-orange hover:bg-orange-600"
+          className="bg-3amg-orange hover:bg-3amg-orange-dark"
         >
           Continuar
           <ArrowRight className="ml-2 h-4 w-4" />
