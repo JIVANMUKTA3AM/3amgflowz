@@ -13,7 +13,7 @@ const CodeRainBackground = () => {
 
     // Código para criar o efeito de chuva de código
     const codeChars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz{}[]()+-*/=<>?:;.,|\\~`!@#$%^&_';
-    const fontSize = 14;
+    const fontSize = 16;
     let columns: number;
     let drops: number[] = [];
 
@@ -26,10 +26,9 @@ const CodeRainBackground = () => {
 
     const draw = () => {
       // Overlay escuro semi-transparente para criar o efeito de fade
-      ctx.fillStyle = 'rgba(26, 26, 26, 0.05)';
+      ctx.fillStyle = 'rgba(26, 26, 26, 0.08)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = '#FF6B35'; // Cor laranja da 3AMG
       ctx.font = `${fontSize}px 'Courier New', monospace`;
 
       // Desenhar os caracteres caindo
@@ -38,7 +37,8 @@ const CodeRainBackground = () => {
         const x = i * fontSize;
         const y = drops[i] * fontSize;
 
-        ctx.fillStyle = `rgba(255, 107, 53, ${Math.random() * 0.8 + 0.2})`; // Opacidade mais visível
+        // Cor mais intensa para ser mais visível
+        ctx.fillStyle = `rgba(255, 107, 53, ${Math.random() * 0.9 + 0.3})`;
         ctx.fillText(text, x, y);
 
         // Reset da gota se chegou ao final ou aleatoriamente
@@ -52,8 +52,8 @@ const CodeRainBackground = () => {
     // Inicializar
     resizeCanvas();
     
-    // Animar
-    const interval = setInterval(draw, 50); // Velocidade mais rápida
+    // Animar - velocidade otimizada
+    const interval = setInterval(draw, 60);
 
     // Redimensionar quando a janela mudar
     const handleResize = () => resizeCanvas();
@@ -68,7 +68,7 @@ const CodeRainBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-20"
+      className="fixed inset-0 pointer-events-none z-0 opacity-40"
       style={{ background: 'transparent' }}
     />
   );

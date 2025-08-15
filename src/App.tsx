@@ -7,7 +7,7 @@ import CodeRainBackground from "@/components/CodeRainBackground";
 function App() {
   return (
     <Router>
-      <div className="relative min-h-screen">
+      <div className="relative min-h-screen bg-gray-900">
         {/* Background de códigos escorrendo em todas as páginas */}
         <CodeRainBackground />
         
