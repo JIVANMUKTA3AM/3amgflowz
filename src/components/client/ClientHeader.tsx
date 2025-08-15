@@ -14,18 +14,18 @@ const ClientHeader = ({ handleWorkflowTrigger, isLoading }: ClientHeaderProps) =
   const { user } = useAuth();
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-3amg-dark shadow-sm border-b border-3amg-orange/20">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gradient-3amg rounded-lg"></div>
-            <span className="font-bold text-xl text-gray-900">3AMG</span>
+            <span className="font-bold text-xl text-white">3AMG</span>
           </Link>
 
           <div className="flex items-center space-x-4">
             {user && (
-              <div className="text-sm text-gray-600">
-                Logado como: <span className="font-medium">{user.email}</span>
+              <div className="text-sm text-gray-300">
+                Logado como: <span className="font-medium text-3amg-orange">{user.email}</span>
               </div>
             )}
             
@@ -53,7 +53,7 @@ const ClientHeader = ({ handleWorkflowTrigger, isLoading }: ClientHeaderProps) =
               <UserMenu />
             ) : (
               <Link to="/auth">
-                <Button>Entrar</Button>
+                <Button className="bg-gradient-3amg hover:opacity-90">Entrar</Button>
               </Link>
             )}
           </div>

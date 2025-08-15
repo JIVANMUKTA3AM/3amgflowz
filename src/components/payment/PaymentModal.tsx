@@ -24,12 +24,12 @@ const PaymentModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-gray-900/95 border-gray-700 text-white">
         <DialogHeader>
-          <DialogTitle>Escolha o método de pagamento</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-3amg-orange">Escolha o método de pagamento</DialogTitle>
+          <DialogDescription className="text-gray-300">
             Fatura: {invoice.description}<br />
-            Valor: {formatCurrency(invoice.amount)}
+            Valor: <span className="text-3amg-orange font-medium">{formatCurrency(invoice.amount)}</span>
           </DialogDescription>
         </DialogHeader>
         
@@ -40,6 +40,7 @@ const PaymentModal = ({
             variant="outline" 
             onClick={() => onOpenChange(false)}
             disabled={isLoading}
+            className="border-gray-600 text-gray-300 hover:bg-gray-800"
           >
             Cancelar
           </Button>
