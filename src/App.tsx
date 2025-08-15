@@ -5,6 +5,8 @@ import RoleBasedRouter from "@/components/RoleBasedRouter";
 import CodeRainBackground from "@/components/CodeRainBackground";
 
 function App() {
+  console.log('App component rendered');
+  
   return (
     <Router>
       <div className="relative min-h-screen bg-gray-900">
