@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Code, Cpu, Zap, Terminal, Database, Workflow } from "lucide-react";
@@ -11,9 +10,9 @@ const HeroSection = () => {
         <img
           src="/lovable-uploads/0b29d11e-f584-4046-85c3-00c9dc431a1e.png"
           alt="AI Agent Background"
-          className="w-full h-full object-cover opacity-30 mix-blend-overlay"
+          className="w-full h-full object-cover opacity-20 mix-blend-overlay"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-3amg-dark/80 via-3amg-dark/60 to-3amg-dark/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-3amg-dark/90 via-3amg-dark/70 to-3amg-dark/90"></div>
       </div>
 
       {/* Advanced Tech Background */}
@@ -50,35 +49,16 @@ const HeroSection = () => {
           );
         })}
 
-        {/* Binary Rain */}
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute text-3amg-purple font-mono text-xs animate-binary-rain opacity-30"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${3 + Math.random() * 2}s`,
-            }}
-          >
-            {Array.from({ length: 10 }).map((_, j) => (
-              <div key={j} className="mb-2">
-                {Math.random() > 0.5 ? '1' : '0'}
-              </div>
-            ))}
-          </div>
-        ))}
-
         {/* Glowing Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-3amg-orange rounded-full opacity-20 animate-pulse-slow blur-xl"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-3amg-purple rounded-full opacity-20 animate-pulse-slow blur-xl" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 right-1/3 w-20 h-20 bg-3amg-red rounded-full opacity-15 animate-pulse-slow blur-xl" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-3amg-orange rounded-full opacity-10 animate-pulse-slow blur-xl"></div>
+        <div className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-3amg-purple rounded-full opacity-10 animate-pulse-slow blur-xl" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 right-1/3 w-20 h-20 bg-3amg-red rounded-full opacity-10 animate-pulse-slow blur-xl" style={{ animationDelay: '2s' }}></div>
       </div>
 
       <div className="container mx-auto px-4 z-20 text-center">
         {/* Dynamic Header */}
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-3amg-dark-light/50 backdrop-blur-sm border border-3amg-orange/30 rounded-full px-6 py-2 mb-6">
+          <div className="inline-flex items-center gap-2 bg-3amg-dark-light/70 backdrop-blur-sm border border-3amg-orange/30 rounded-full px-6 py-2 mb-6">
             <div className="w-2 h-2 bg-3amg-orange rounded-full animate-ping"></div>
             <span className="text-3amg-orange text-sm font-medium">API-First • Enterprise Ready • 99.9% Uptime</span>
           </div>
@@ -99,6 +79,7 @@ const HeroSection = () => {
           </h2>
         </div>
 
+        
         <p className="text-xl md:text-2xl text-gray-300 max-w-5xl mx-auto mb-8 leading-relaxed">
           Reduza custos operacionais em até <span className="text-3amg-orange font-bold">70%</span> com nossa plataforma de 
           <span className="text-3amg-orange font-semibold"> agentes IA multi-canal</span>, integrações avançadas via 
@@ -108,15 +89,15 @@ const HeroSection = () => {
 
         {/* Key Benefits */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
-          <div className="bg-3amg-dark-light/30 backdrop-blur-sm border border-3amg-orange/20 rounded-lg p-4">
+          <div className="bg-3amg-dark-light/40 backdrop-blur-sm border border-3amg-orange/20 rounded-lg p-4">
             <div className="text-2xl font-bold text-3amg-orange mb-1">-70%</div>
             <div className="text-sm text-gray-300">Redução de Custos Operacionais</div>
           </div>
-          <div className="bg-3amg-dark-light/30 backdrop-blur-sm border border-3amg-purple/20 rounded-lg p-4">
+          <div className="bg-3amg-dark-light/40 backdrop-blur-sm border border-3amg-purple/20 rounded-lg p-4">
             <div className="text-2xl font-bold text-3amg-purple mb-1">24/7</div>
             <div className="text-sm text-gray-300">Atendimento Automatizado</div>
           </div>
-          <div className="bg-3amg-dark-light/30 backdrop-blur-sm border border-3amg-orange/20 rounded-lg p-4">
+          <div className="bg-3amg-dark-light/40 backdrop-blur-sm border border-3amg-orange/20 rounded-lg p-4">
             <div className="text-2xl font-bold text-3amg-orange mb-1">99.9%</div>
             <div className="text-sm text-gray-300">SLA de Disponibilidade</div>
           </div>
