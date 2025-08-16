@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Code, Cpu, Zap, Terminal, Database, Workflow } from "lucide-react";
@@ -71,9 +72,9 @@ const HeroSection = () => {
         
         <div className="relative mb-6">
           <h2 className="text-3xl md:text-5xl font-semibold text-white mb-4">
-            Plataforma Enterprise de
+            Plataforma de Agentes IA para
             <span className="relative mx-3">
-              <span className="bg-gradient-3amg bg-clip-text text-transparent">Automação IA</span>
+              <span className="bg-gradient-3amg bg-clip-text text-transparent">Provedores e Empresas Tech</span>
               <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-3amg rounded-full animate-pulse"></div>
             </span>
           </h2>
@@ -81,10 +82,10 @@ const HeroSection = () => {
 
         
         <p className="text-xl md:text-2xl text-gray-300 max-w-5xl mx-auto mb-8 leading-relaxed">
-          Reduza custos operacionais em até <span className="text-3amg-orange font-bold">70%</span> com nossa plataforma de 
-          <span className="text-3amg-orange font-semibold"> agentes IA multi-canal</span>, integrações avançadas via 
-          <span className="text-3amg-purple font-semibold"> N8N e APIs REST</span>. Escale seu atendimento para 
-          <span className="text-3amg-orange font-bold"> milhares de interações simultâneas</span> sem aumentar headcount.
+          Reduza custos operacionais em até <span className="text-3amg-orange font-bold">70%</span> e escale seu atendimento sem aumentar equipe. 
+          Nossa plataforma integra <span className="text-3amg-purple font-semibold">n8n e APIs REST</span> para automatizar processos, 
+          garantir <span className="text-3amg-orange font-bold">99,9% de disponibilidade</span> e atender clientes 
+          <span className="text-3amg-orange font-bold"> 24/7</span>.
         </p>
 
         {/* Key Benefits */}
