@@ -30,7 +30,7 @@ const ProtectedRoute = ({ children, requireRole }: ProtectedRouteProps) => {
 
   // Se não está autenticado, redireciona para login
   if (!user) {
-    return <Navigate to="/auth" state={{ from: location }} replace />;
+    return <Navigate to="/auth" state={{ from: location, redirectToOnboarding: true }} replace />;
   }
 
   // Se tem role específico requerido, verifica se o usuário tem permissão
@@ -52,9 +52,8 @@ const ProtectedRoute = ({ children, requireRole }: ProtectedRouteProps) => {
   }
 
   // Para usuários regulares, verificar se precisam completar o onboarding
-  if (profile?.agent_settings?.needs_onboarding && 
-      profile?.agent_settings?.checkout_completed && 
-      !profile?.agent_settings?.onboarding_completed) {
+  // Se é um novo usuário (sem configuração de onboarding), direcionar para onboarding
+  if (!profile?.agent_settings?.onboarding_completed) {
     return <Navigate to="/onboarding" replace />;
   }
 

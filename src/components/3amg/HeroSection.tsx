@@ -1,7 +1,8 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Code, Cpu, Zap, Terminal, Database, Workflow } from "lucide-react";
+import { ArrowRight, Code, Cpu, Zap, Terminal, Database, Workflow, Rocket } from "lucide-react";
 
 const HeroSection = () => {
   return (
@@ -108,7 +109,8 @@ const HeroSection = () => {
         <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
           <Link to="/auth">
             <Button size="lg" className="group bg-gradient-3amg-orange hover:opacity-90 text-white font-semibold px-10 py-6 text-xl rounded-full shadow-2xl hover:shadow-3amg-orange/50 transition-all duration-300">
-              Iniciar Trial Enterprise
+              <Rocket className="mr-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+              Assine Já - Comece Hoje
               <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
@@ -141,3 +143,4 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+

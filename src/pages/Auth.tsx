@@ -1,483 +1,156 @@
-
 import { useState, useEffect } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
-import { Loader2, Mail, Lock, User, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Auth = () => {
-  const { user, signIn, signUp, resetPassword } = useAuth();
-  const [searchParams] = useSearchParams();
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showResetForm, setShowResetForm] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    firstName: '',
-    lastName: '',
-  });
+  const { signIn, signUp, user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // Verificar se há parâmetros de recuperação de senha
+  // Redirect if already authenticated
   useEffect(() => {
-    const type = searchParams.get('type');
-    if (type === 'recovery') {
-      toast({
-        title: "Link de recuperação válido",
-        description: "Agora você pode definir uma nova senha.",
-      });
+    if (user) {
+      const from = location.state?.from?.pathname;
+      const shouldRedirectToOnboarding = location.state?.redirectToOnboarding;
+      
+      if (shouldRedirectToOnboarding || from === '/onboarding') {
+        navigate('/onboarding');
+      } else {
+        navigate(from || '/client-dashboard');
+      }
     }
-  }, [searchParams]);
+  }, [user, navigate, location.state]);
 
-  // Redirecionar se já estiver logado
-  if (user) {
-    return <Navigate to="/" replace />;
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
-  const validateForm = (isSignUp: boolean = false) => {
-    if (!formData.email || !formData.password) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
       toast({
-        title: "Campos obrigatórios",
+        title: "Erro",
         description: "Por favor, preencha todos os campos.",
-        variant: "destructive",
-      });
-      return false;
-    }
-
-    if (formData.password.length < 6) {
-      toast({
-        title: "Senha muito curta",
-        description: "A senha deve ter pelo menos 6 caracteres.",
-        variant: "destructive",
-      });
-      return false;
-    }
-
-    if (isSignUp) {
-      if (formData.password !== formData.confirmPassword) {
-        toast({
-          title: "Senhas não conferem",
-          description: "As senhas digitadas não são iguais.",
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      if (!formData.firstName || !formData.lastName) {
-        toast({
-          title: "Nome obrigatório",
-          description: "Por favor, preencha seu nome completo.",
-          variant: "destructive",
-        });
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setLoading(true);
-    const { error } = await signIn(formData.email, formData.password);
-    
-    if (error) {
-      let errorMessage = "Erro desconhecido.";
-      
-      if (error.message.includes("Invalid login credentials")) {
-        errorMessage = "Email ou senha incorretos.";
-      } else if (error.message.includes("Email not confirmed")) {
-        errorMessage = "Verifique seu email antes de fazer login.";
-      } else if (error.message.includes("Too many requests")) {
-        errorMessage = "Muitas tentativas. Tente novamente em alguns minutos.";
-      } else {
-        errorMessage = error.message;
-      }
-
-      toast({
-        title: "Erro no login",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Login realizado com sucesso!",
-        description: "Bem-vindo de volta.",
-      });
-    }
-    setLoading(false);
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm(true)) return;
-
-    setLoading(true);
-    const { error } = await signUp(formData.email, formData.password, {
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-    });
-    
-    if (error) {
-      let errorMessage = "Erro desconhecido.";
-      
-      if (error.message.includes("already registered")) {
-        errorMessage = "Este email já está cadastrado. Tente fazer login.";
-      } else if (error.message.includes("Password should be")) {
-        errorMessage = "A senha deve ter pelo menos 6 caracteres.";
-      } else if (error.message.includes("invalid email")) {
-        errorMessage = "Email inválido.";
-      } else {
-        errorMessage = error.message;
-      }
-
-      toast({
-        title: "Erro no cadastro",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Cadastro realizado com sucesso!",
-        description: "Verifique seu email para confirmar a conta.",
-      });
-      setFormData({
-        email: '',
-        password: '',
-        confirmPassword: '',
-        firstName: '',
-        lastName: '',
-      });
-    }
-    setLoading(false);
-  };
-
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.email) {
-      toast({
-        title: "Email obrigatório",
-        description: "Digite seu email para recuperar a senha.",
         variant: "destructive",
       });
       return;
     }
 
     setLoading(true);
-    const { error } = await resetPassword(formData.email);
-    
-    if (error) {
+    try {
+      if (isLogin) {
+        await signIn(email, password);
+        toast({
+          title: "Login realizado com sucesso!",
+          description: "Bem-vindo de volta.",
+        });
+      } else {
+        await signUp(email, password);
+        toast({
+          title: "Conta criada com sucesso!",
+          description: "Você será redirecionado para completar seu perfil.",
+        });
+      }
+    } catch (error: any) {
       toast({
-        title: "Erro ao enviar email",
-        description: error.message,
+        title: "Erro na autenticação",
+        description: error.message || "Tente novamente.",
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Email enviado!",
-        description: "Verifique sua caixa de entrada para redefinir a senha.",
-      });
-      setShowResetForm(false);
     }
     setLoading(false);
   };
 
-  if (showResetForm) {
-    return (
-      <div className="min-h-screen bg-3amg-dark flex items-center justify-center px-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <img 
-                src="/lovable-uploads/71a5762a-fd4e-406c-bf7c-1e3df758cc53.png" 
-                alt="3AMG Logo" 
-                className="w-12 h-12 object-contain"
-              />
-            </div>
-            <h1 className="text-3xl font-bold bg-gradient-3amg bg-clip-text text-transparent">
-              3AMG
-            </h1>
-            <p className="text-gray-300 mt-2">Recuperar senha</p>
-          </div>
-
-          <Card className="shadow-2xl border-0 bg-gray-900/90 backdrop-blur-sm">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowResetForm(false)}
-                  className="p-0 h-auto text-3amg-orange hover:text-3amg-orange-light"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <div>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <Mail className="h-5 w-5 text-3amg-orange" />
-                    Recuperar Senha
-                  </CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Digite seu email para receber o link de recuperação
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleResetPassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="reset-email" className="text-gray-200">Email</Label>
-                  <Input
-                    id="reset-email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="seu@email.com"
-                    className="bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
-                    required
-                  />
-                </div>
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-3amg-orange hover:opacity-90 text-white" 
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Enviando...
-                    </>
-                  ) : (
-                    'Enviar Link de Recuperação'
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-3amg-dark flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <img 
-              src="/lovable-uploads/71a5762a-fd4e-406c-bf7c-1e3df758cc53.png" 
-              alt="3AMG Logo" 
-              className="w-16 h-16 object-contain"
-            />
-          </div>
-          <h1 className="text-4xl font-bold bg-gradient-3amg bg-clip-text text-transparent">
-            3AMG
-          </h1>
-          <p className="text-gray-300 mt-2">Automação Inteligente para Provedores</p>
-        </div>
-
-        <Card className="shadow-2xl border-0 bg-gray-900/90 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-center text-white">Acesse sua conta</CardTitle>
-            <CardDescription className="text-center text-gray-300">
-              Entre na sua conta ou crie uma nova para começar
+    <div className="min-h-screen bg-3amg-dark flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <Card className="bg-gray-900/90 border-gray-700">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-white">{isLogin ? 'Entrar' : 'Criar Conta'}</CardTitle>
+            <CardDescription className="text-gray-400">
+              {isLogin ? 'Entre com seu email e senha' : 'Crie uma nova conta'}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 bg-gray-800">
-                <TabsTrigger value="login" className="data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white">Entrar</TabsTrigger>
-                <TabsTrigger value="register" className="data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white">Criar Conta</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="login">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email" className="text-gray-200">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="login-email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="seu@email.com"
-                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
-                        required
-                      />
-                    </div>
+          <CardContent className="grid gap-4">
+            <form onSubmit={handleSubmit}>
+              <div className="grid gap-2">
+                <div className="space-y-2">
+                  <div className="text-gray-300 flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Email
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password" className="text-gray-200">Senha</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="login-password"
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        placeholder="••••••••"
-                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
-                        required
-                      />
-                    </div>
+                  <Input
+                    type="email"
+                    placeholder="seuemail@exemplo.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-gray-800 text-gray-300 border-gray-700 focus-visible:ring-gray-600"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <div className="text-gray-300 flex items-center gap-2">
+                    <Lock className="h-4 w-4" />
+                    Senha
                   </div>
-                  <div className="flex justify-end">
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="********"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="bg-gray-800 text-gray-300 border-gray-700 focus-visible:ring-gray-600 pr-10"
+                    />
                     <Button
                       type="button"
-                      variant="link"
-                      className="px-0 text-sm text-3amg-orange hover:text-3amg-orange-light"
-                      onClick={() => setShowResetForm(true)}
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-fit w-fit p-2 hover:bg-gray-700 rounded-full"
                     >
-                      Esqueceu a senha?
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                      <span className="sr-only">Mostrar senha</span>
                     </Button>
                   </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-3amg-orange hover:opacity-90 text-white" 
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Entrando...
-                      </>
-                    ) : (
-                      'Entrar'
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-              
-              <TabsContent value="register">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="register-firstName" className="text-gray-200">Nome</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="register-firstName"
-                          name="firstName"
-                          type="text"
-                          value={formData.firstName}
-                          onChange={handleInputChange}
-                          placeholder="Nome"
-                          className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-lastName" className="text-gray-200">Sobrenome</Label>
-                      <Input
-                        id="register-lastName"
-                        name="lastName"
-                        type="text"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        placeholder="Sobrenome"
-                        className="bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-email" className="text-gray-200">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="register-email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="seu@email.com"
-                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-password" className="text-gray-200">Senha</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="register-password"
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        placeholder="••••••••"
-                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-confirmPassword" className="text-gray-200">Confirmar Senha</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="register-confirmPassword"
-                        name="confirmPassword"
-                        type="password"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        placeholder="••••••••"
-                        className="pl-10 bg-gray-800 border-gray-700 text-white focus:border-3amg-orange"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-3amg-orange hover:opacity-90 text-white" 
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Criando conta...
-                      </>
-                    ) : (
-                      'Criar Conta'
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+                </div>
+              </div>
+              <Button disabled={loading} className="w-full mt-4 bg-3amg-orange text-white hover:bg-3amg-orange/90">
+                {loading ? 'Carregando...' : isLogin ? 'Entrar' : 'Criar Conta'}
+              </Button>
+            </form>
           </CardContent>
         </Card>
-
-        <div className="text-center mt-6 text-sm text-gray-400">
-          <p>
-            Ao criar uma conta, você concorda com nossos{' '}
-            <a href="/termos" className="text-3amg-orange hover:text-3amg-orange-light hover:underline">
-              Termos de Uso
-            </a>{' '}
-            e{' '}
-            <a href="/privacidade" className="text-3amg-orange hover:text-3amg-orange-light hover:underline">
-              Política de Privacidade
-            </a>
-          </p>
+        <div className="text-center text-sm text-gray-500">
+          {isLogin ? (
+            <>
+              Não tem uma conta?{' '}
+              <Link to="/auth" onClick={() => setIsLogin(false)} className="text-3amg-orange hover:underline underline-offset-2">
+                Criar conta
+              </Link>
+            </>
+          ) : (
+            <>
+              Já tem uma conta?{' '}
+              <Link to="/auth" onClick={() => setIsLogin(true)} className="text-3amg-orange hover:underline underline-offset-2">
+                Entrar
+              </Link>
+            </>
+          )}
         </div>
+        <Link to="/" className="absolute top-4 left-4 text-gray-400 hover:text-gray-300 flex items-center">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar
+        </Link>
       </div>
     </div>
   );
