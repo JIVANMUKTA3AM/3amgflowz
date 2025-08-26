@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -22,7 +23,7 @@ const AgentMetrics = ({ metrics, configurations, conversations }: AgentMetricsPr
   const dailyMetrics = metrics.slice(0, 7).reverse().map(metric => ({
     date: new Date(metric.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
     conversations: metric.total_conversations,
-    response_time: metric.avg_response_time_ms || 0,
+    response_time: metric.average_response_time_ms || 0,
     tokens: metric.total_tokens_used,
   }));
 
@@ -35,7 +36,7 @@ const AgentMetrics = ({ metrics, configurations, conversations }: AgentMetricsPr
       conversations: agentConversations.length,
       avg_response_time: agentConversations.reduce((acc, conv) => acc + (conv.response_time_ms || 0), 0) / agentConversations.length || 0,
       total_tokens: agentConversations.reduce((acc, conv) => acc + (conv.tokens_used || 0), 0),
-      satisfaction: agentMetrics.reduce((acc, metric) => acc + (metric.user_satisfaction_avg || 0), 0) / agentMetrics.length || 0,
+      satisfaction: agentMetrics.reduce((acc, metric) => acc + (metric.success_rate || 0), 0) / agentMetrics.length || 0,
     };
   });
 
