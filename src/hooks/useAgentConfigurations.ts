@@ -19,6 +19,29 @@ export interface AgentConfiguration {
   updated_at: string;
 }
 
+export interface AgentConversation {
+  id: string;
+  agent_configuration_id: string;
+  session_id: string;
+  user_message: string;
+  agent_response: string;
+  response_time_ms?: number;
+  tokens_used?: number;
+  created_at: string;
+  user_id: string;
+}
+
+export interface AgentMetric {
+  id: string;
+  agent_configuration_id: string;
+  total_conversations: number;
+  total_tokens_used: number;
+  average_response_time_ms: number;
+  success_rate: number;
+  date: string;
+  user_id: string;
+}
+
 export const useAgentConfigurations = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -46,6 +69,50 @@ export const useAgentConfigurations = () => {
 
       console.log('Agent configurations fetched:', data);
       return data as AgentConfiguration[];
+    },
+    enabled: !!user?.id,
+  });
+
+  // Query para conversas
+  const { data: conversations } = useQuery({
+    queryKey: ['agent-conversations', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+
+      const { data, error } = await supabase
+        .from('agent_conversations')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching conversations:', error);
+        return [];
+      }
+
+      return data as AgentConversation[];
+    },
+    enabled: !!user?.id,
+  });
+
+  // Query para métricas
+  const { data: metrics } = useQuery({
+    queryKey: ['agent-metrics', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+
+      const { data, error } = await supabase
+        .from('agent_metrics')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('date', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching metrics:', error);
+        return [];
+      }
+
+      return data as AgentMetric[];
     },
     enabled: !!user?.id,
   });
@@ -202,6 +269,8 @@ export const useAgentConfigurations = () => {
 
   return {
     configurations: configurations || [],
+    conversations: conversations || [],
+    metrics: metrics || [],
     isLoading,
     error,
     createConfiguration: createConfiguration.mutate,
