@@ -35,6 +35,7 @@ import TestChat from "@/pages/TestChat";
 import WebhookTesting from "@/pages/WebhookTesting";
 import WebhooksManagement from "@/pages/WebhooksManagement";
 import WhatsAppConfig from "@/pages/WhatsAppConfig";
+import MonitoramentoSNMP from "@/pages/MonitoramentoSNMP";
 import NotFound from "@/pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -103,6 +104,7 @@ const RoleBasedRouter = () => {
       <Route path="/webhook-testing" element={<WebhookTesting />} />
       <Route path="/webhooks-management" element={<WebhooksManagement />} />
       <Route path="/whatsapp-config" element={<WhatsAppConfig />} />
+      <Route path="/monitoramento-snmp" element={<MonitoramentoSNMP />} />
       
       {/* Cliente específico */}
       <Route path="/client-webhook" element={<ClientWebhook />} />
