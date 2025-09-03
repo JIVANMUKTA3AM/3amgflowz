@@ -1,154 +1,156 @@
 
 import { useState } from "react";
-import { Tabs } from "@/components/ui/tabs";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { useWorkflow } from "@/hooks/useWorkflow";
-import { useAgentConfigurations } from "@/hooks/useAgentConfigurations";
-import { useAgentIntegrations } from "@/hooks/useAgentIntegrations";
-import { useWorkflowExecutions } from "@/hooks/useWorkflowExecutions";
-import AgentsSummaryCards from "@/components/agents/AgentsSummaryCards";
-import AgentsTabNavigation from "@/components/agents/AgentsTabNavigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Bot, Settings, BarChart3, Zap, MessageSquare } from "lucide-react";
 import AgentsTabContent from "@/components/agents/AgentsTabContent";
+import { useAgentConfigurations } from "@/hooks/useAgentConfigurations";
 
 const Agentes = () => {
-  try {
-    const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
-    const {
-      configurations,
-      conversations,
-      metrics,
-      isLoading,
-      createConfiguration,
-      isCreating,
-      updateConfiguration,
-      isUpdating,
-      deleteConfiguration,
-      isDeleting,
-    } = useAgentConfigurations();
+  const [activeTab, setActiveTab] = useState("agents");
+  const { configurations, conversations, isLoading } = useAgentConfigurations();
 
-    const { integrations } = useAgentIntegrations();
-    const { executions } = useWorkflowExecutions();
 
-    const [showForm, setShowForm] = useState(false);
-    const [editingAgent, setEditingAgent] = useState<string | null>(null);
-    const [showIntegrationForm, setShowIntegrationForm] = useState(false);
-    const [editingIntegration, setEditingIntegration] = useState<any>(null);
-
-    const handleSaveAgent = (agentData: any) => {
-      if (editingAgent) {
-        updateConfiguration({ id: editingAgent, ...agentData });
-      } else {
-        createConfiguration(agentData);
-      }
-      setShowForm(false);
-      setEditingAgent(null);
-    };
-
-    const handleEditAgent = (agentId: string) => {
-      setEditingAgent(agentId);
-      setShowForm(true);
-    };
-
-    const handleEditIntegration = (integration: any) => {
-      setEditingIntegration(integration);
-      setShowIntegrationForm(true);
-    };
-
-    const editingConfiguration = editingAgent 
-      ? configurations?.find(config => config.id === editingAgent)
-      : undefined;
-
-    const activeAgents = configurations?.filter(config => config.is_active).length || 0;
-    const totalConversations = conversations?.length || 0;
-    const activeIntegrations = integrations?.filter(int => int.is_active).length || 0;
-    const successfulExecutions = executions?.filter(exec => exec.status === 'success').length || 0;
-
-    if (isLoading) {
-      return (
-        <div className="min-h-screen bg-3amg-dark">
-          <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
-          <main className="container mx-auto px-4 py-8">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-3amg-orange mx-auto"></div>
-              <p className="mt-4 text-gray-300">Carregando agentes...</p>
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Bot className="h-6 w-6 text-blue-600" />
             </div>
-          </main>
-          <Footer />
-        </div>
-      );
-    }
-
-    return (
-      <div className="min-h-screen bg-3amg-dark">
-        <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
-        
-        <main className="container mx-auto px-4 py-8">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-3amg-orange mb-4">
-              Agentes de IA
-            </h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Configure, monitore e converse com seus agentes de inteligência artificial
-            </p>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Agentes IA</h1>
+              <p className="text-gray-600">
+                Configure e gerencie seus agentes inteligentes para automação de atendimento
+              </p>
+            </div>
           </div>
 
-          <AgentsSummaryCards
-            activeAgents={activeAgents}
-            totalConversations={totalConversations}
-            activeIntegrations={activeIntegrations}
-            successfulExecutions={successfulExecutions}
-          />
+          {!isLoading && (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-2">
+                    <Settings className="h-5 w-5 text-blue-600" />
+                    <div>
+                      <p className="text-2xl font-bold">{configurations.length}</p>
+                      <p className="text-sm text-gray-600">Total de Agentes</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Tabs defaultValue="chat" className="w-full">
-            <AgentsTabNavigation />
-            
-            <AgentsTabContent
-              configurations={configurations}
-              conversations={conversations}
-              metrics={metrics}
-              integrations={integrations}
-              executions={executions}
-              showForm={showForm}
-              setShowForm={setShowForm}
-              showIntegrationForm={showIntegrationForm}
-              setShowIntegrationForm={setShowIntegrationForm}
-              editingAgent={editingAgent}
-              editingConfiguration={editingConfiguration}
-              editingIntegration={editingIntegration}
-              isCreating={isCreating}
-              isUpdating={isUpdating}
-              isDeleting={isDeleting}
-              handleSaveAgent={handleSaveAgent}
-              handleEditAgent={handleEditAgent}
-              handleEditIntegration={handleEditIntegration}
-              deleteConfiguration={deleteConfiguration}
-              setEditingAgent={setEditingAgent}
-              setEditingIntegration={setEditingIntegration}
-            />
-          </Tabs>
-        </main>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-2">
+                    <Zap className="h-5 w-5 text-green-600" />
+                    <div>
+                      <p className="text-2xl font-bold">
+                        {configurations.filter(c => c.is_active).length}
+                      </p>
+                      <p className="text-sm text-gray-600">Agentes Ativos</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-        <Footer />
-      </div>
-    );
-  } catch (error) {
-    console.error('Erro na página de agentes:', error);
-    return (
-      <div className="min-h-screen bg-3amg-dark flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-400 mb-4">Erro ao carregar página</h1>
-          <p className="text-gray-300 mb-4">Ocorreu um erro ao carregar a página de agentes.</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="bg-3amg-orange text-white px-4 py-2 rounded hover:bg-3amg-orange/80"
-          >
-            Recarregar página
-          </button>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-2">
+                    <MessageSquare className="h-5 w-5 text-orange-600" />
+                    <div>
+                      <p className="text-2xl font-bold">{conversations.length}</p>
+                      <p className="text-sm text-gray-600">Conversas Hoje</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-2">
+                    <BarChart3 className="h-5 w-5 text-purple-600" />
+                    <div>
+                      <p className="text-2xl font-bold">
+                        {conversations.length > 0 
+                          ? Math.round(conversations.reduce((acc, conv) => acc + (conv.response_time_ms || 0), 0) / conversations.length) + 'ms'
+                          : '-'
+                        }
+                      </p>
+                      <p className="text-sm text-gray-600">Tempo Médio</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="agents">Agentes</TabsTrigger>
+            <TabsTrigger value="metrics">Métricas</TabsTrigger>
+            <TabsTrigger value="integrations">Integrações</TabsTrigger>
+            <TabsTrigger value="workflows">Workflows</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="agents" className="mt-6">
+            <AgentsTabContent />
+          </TabsContent>
+
+          <TabsContent value="metrics" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Métricas e Performance</CardTitle>
+                <CardDescription>
+                  Análise detalhada da performance dos seus agentes
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-center text-gray-500 py-8">
+                  Métricas em desenvolvimento...
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="integrations" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Integrações</CardTitle>
+                <CardDescription>
+                  Configure integrações com WhatsApp, Telegram e outras plataformas
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-center text-gray-500 py-8">
+                  Integrações em desenvolvimento...
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="workflows" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Workflows e Automações</CardTitle>
+                <CardDescription>
+                  Configure fluxos automatizados e regras de negócio
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-center text-gray-500 py-8">
+                  Workflows em desenvolvimento...
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
-    );
-  }
+    </div>
+  );
 };
 
 export default Agentes;

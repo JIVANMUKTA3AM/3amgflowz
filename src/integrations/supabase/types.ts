@@ -42,6 +42,7 @@ export type Database = {
           temperature: number | null
           updated_at: string
           user_id: string
+          webhook_url: string | null
         }
         Insert: {
           agent_type: string
@@ -55,6 +56,7 @@ export type Database = {
           temperature?: number | null
           updated_at?: string
           user_id: string
+          webhook_url?: string | null
         }
         Update: {
           agent_type?: string
@@ -68,6 +70,7 @@ export type Database = {
           temperature?: number | null
           updated_at?: string
           user_id?: string
+          webhook_url?: string | null
         }
         Relationships: []
       }
@@ -181,6 +184,7 @@ export type Database = {
           total_conversations: number | null
           total_tokens_used: number | null
           updated_at: string
+          user_id: string | null
           user_satisfaction_avg: number | null
         }
         Insert: {
@@ -192,6 +196,7 @@ export type Database = {
           total_conversations?: number | null
           total_tokens_used?: number | null
           updated_at?: string
+          user_id?: string | null
           user_satisfaction_avg?: number | null
         }
         Update: {
@@ -203,6 +208,7 @@ export type Database = {
           total_conversations?: number | null
           total_tokens_used?: number | null
           updated_at?: string
+          user_id?: string | null
           user_satisfaction_avg?: number | null
         }
         Relationships: [
@@ -475,6 +481,91 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          chat_session_id: string
+          content: string
+          id: string
+          message_type: string
+          metadata: Json | null
+          sent_at: string
+        }
+        Insert: {
+          chat_session_id: string
+          content: string
+          id?: string
+          message_type: string
+          metadata?: Json | null
+          sent_at?: string
+        }
+        Update: {
+          chat_session_id?: string
+          content?: string
+          id?: string
+          message_type?: string
+          metadata?: Json | null
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_chat_session_id_fkey"
+            columns: ["chat_session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          agent_configuration_id: string
+          channel_type: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          metadata: Json | null
+          session_id: string
+          telegram_chat_id: string | null
+          updated_at: string
+          user_id: string
+          whatsapp_phone: string | null
+        }
+        Insert: {
+          agent_configuration_id: string
+          channel_type: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          session_id: string
+          telegram_chat_id?: string | null
+          updated_at?: string
+          user_id: string
+          whatsapp_phone?: string | null
+        }
+        Update: {
+          agent_configuration_id?: string
+          channel_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          session_id?: string
+          telegram_chat_id?: string | null
+          updated_at?: string
+          user_id?: string
+          whatsapp_phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_sessions_agent_configuration_id_fkey"
+            columns: ["agent_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       client_interactions: {
         Row: {
@@ -1102,6 +1193,7 @@ export type Database = {
           crm_config: Json | null
           id: string
           is_completed: boolean
+          numero_assinantes: number | null
           olt_configs: Json | null
           selected_services: Json
           updated_at: string
@@ -1115,6 +1207,7 @@ export type Database = {
           crm_config?: Json | null
           id?: string
           is_completed?: boolean
+          numero_assinantes?: number | null
           olt_configs?: Json | null
           selected_services?: Json
           updated_at?: string
@@ -1128,6 +1221,7 @@ export type Database = {
           crm_config?: Json | null
           id?: string
           is_completed?: boolean
+          numero_assinantes?: number | null
           olt_configs?: Json | null
           selected_services?: Json
           updated_at?: string

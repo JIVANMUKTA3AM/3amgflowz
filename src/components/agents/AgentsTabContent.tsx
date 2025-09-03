@@ -1,269 +1,357 @@
-
-import { TabsContent } from "@/components/ui/tabs";
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Copy, ExternalLink } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Settings, Play, BarChart3, MessageSquare, Trash2, Edit } from "lucide-react";
+import { useAgentConfigurations } from "@/hooks/useAgentConfigurations";
 import AgentConfigurationForm from "./AgentConfigurationForm";
-import ConversationLogs from "./ConversationLogs";
+import LiveChat from "./LiveChat";
 import AgentMetrics from "./AgentMetrics";
-import AgentChat from "./AgentChat";
-import AgentIntegrations from "./AgentIntegrations";
-import WorkflowExecutions from "./WorkflowExecutions";
-import AgentTrainingSystem from "./AgentTrainingSystem";
-import IntegrationConfigForm from "./IntegrationConfigForm";
-import WorkflowManagement from "./WorkflowManagement";
-import { AgentConfiguration, AgentConversation, AgentMetric } from "@/hooks/useAgentConfigurations";
-import { AgentIntegration } from "@/hooks/useAgentIntegrations";
-import { WorkflowExecution } from "@/hooks/useWorkflowExecutions";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
-interface AgentsTabContentProps {
-  configurations: AgentConfiguration[] | undefined;
-  conversations: AgentConversation[] | undefined;
-  metrics: AgentMetric[] | undefined;
-  integrations: AgentIntegration[] | undefined;
-  executions: WorkflowExecution[] | undefined;
-  showForm: boolean;
-  setShowForm: (show: boolean) => void;
-  showIntegrationForm: boolean;
-  setShowIntegrationForm: (show: boolean) => void;
-  editingAgent: string | null;
-  editingConfiguration: AgentConfiguration | undefined;
-  editingIntegration: any;
-  isCreating: boolean;
-  isUpdating: boolean;
-  isDeleting: boolean;
-  handleSaveAgent: (agentData: any) => void;
-  handleEditAgent: (agentId: string) => void;
-  handleEditIntegration: (integration: any) => void;
-  deleteConfiguration: (id: string) => void;
-  setEditingAgent: (id: string | null) => void;
-  setEditingIntegration: (integration: any) => void;
-}
+const AgentsTabContent = () => {
+  const {
+    configurations,
+    conversations,
+    metrics,
+    isLoading,
+    createConfiguration,
+    updateConfiguration,
+    deleteConfiguration,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useAgentConfigurations();
 
-const AgentsTabContent = ({
-  configurations,
-  conversations,
-  metrics,
-  integrations,
-  executions,
-  showForm,
-  setShowForm,
-  showIntegrationForm,
-  setShowIntegrationForm,
-  editingAgent,
-  editingConfiguration,
-  editingIntegration,
-  isCreating,
-  isUpdating,
-  isDeleting,
-  handleSaveAgent,
-  handleEditAgent,
-  handleEditIntegration,
-  deleteConfiguration,
-  setEditingAgent,
-  setEditingIntegration,
-}: AgentsTabContentProps) => {
+  const [showForm, setShowForm] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<string | null>(null);
+  const [selectedAgentForChat, setSelectedAgentForChat] = useState<string | null>(null);
+  const [selectedAgentForMetrics, setSelectedAgentForMetrics] = useState<string | null>(null);
 
-  const copyWebhookUrl = (url: string) => {
-    navigator.clipboard.writeText(url);
-    toast({
-      title: "URL copiada!",
-      description: "A URL do webhook foi copiada para a área de transferência.",
-    });
+  const handleCreateNew = () => {
+    setEditingAgent(null);
+    setShowForm(true);
   };
 
-  const openWebhookUrl = (url: string) => {
-    window.open(url, '_blank');
+  const handleEdit = (agentId: string) => {
+    setEditingAgent(agentId);
+    setShowForm(true);
   };
+
+  const handleSaveAgent = (agentData: any) => {
+    console.log('Saving agent:', agentData);
+    
+    if (editingAgent) {
+      updateConfiguration({ id: editingAgent, ...agentData });
+    } else {
+      createConfiguration(agentData);
+    }
+    
+    setShowForm(false);
+    setEditingAgent(null);
+  };
+
+  const handleDelete = async (agentId: string, agentName: string) => {
+    if (window.confirm(`Tem certeza que deseja excluir o agente "${agentName}"?`)) {
+      deleteConfiguration(agentId);
+    }
+  };
+
+  const handleStartChat = (agentId: string) => {
+    setSelectedAgentForChat(agentId);
+  };
+
+  const handleViewMetrics = (agentId: string) => {
+    setSelectedAgentForMetrics(agentId);
+  };
+
+  const editingConfiguration = editingAgent 
+    ? configurations.find(config => config.id === editingAgent)
+    : undefined;
+
+  const selectedChatAgent = selectedAgentForChat 
+    ? configurations.find(config => config.id === selectedAgentForChat)
+    : null;
+
+  const selectedMetricsAgent = selectedAgentForMetrics 
+    ? configurations.find(config => config.id === selectedAgentForMetrics)
+    : null;
+
+  if (showForm) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold">
+              {editingAgent ? "Editar Agente" : "Novo Agente"}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Configure as preferências e comportamento do seu agente IA
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setShowForm(false);
+              setEditingAgent(null);
+            }}
+          >
+            Voltar
+          </Button>
+        </div>
+
+        <AgentConfigurationForm
+          configuration={editingConfiguration}
+          onSave={handleSaveAgent}
+          onCancel={() => {
+            setShowForm(false);
+            setEditingAgent(null);
+          }}
+          isLoading={isCreating || isUpdating}
+        />
+      </div>
+    );
+  }
+
+  if (selectedChatAgent) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold">Chat ao Vivo</h3>
+            <p className="text-sm text-muted-foreground">
+              Converse com {selectedChatAgent.name} em tempo real
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => setSelectedAgentForChat(null)}
+          >
+            Voltar
+          </Button>
+        </div>
+
+        <LiveChat agentConfig={selectedChatAgent} />
+      </div>
+    );
+  }
+
+  if (selectedMetricsAgent) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold">Métricas do Agente</h3>
+            <p className="text-sm text-muted-foreground">
+              Análise de performance do {selectedMetricsAgent.name}
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => setSelectedAgentForMetrics(null)}
+          >
+            Voltar
+          </Button>
+        </div>
+
+        <AgentMetrics 
+          configurations={[selectedMetricsAgent]}
+          conversations={conversations.filter(conv => conv.agent_configuration_id === selectedMetricsAgent.id)}
+          metrics={metrics.filter(metric => metric.agent_configuration_id === selectedMetricsAgent.id)}
+        />
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Carregando agentes...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      
-      <TabsContent value="chat">
-        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-          <AgentChat configurations={configurations || []} />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold">Agentes IA</h3>
+          <p className="text-sm text-muted-foreground">
+            Gerencie seus agentes inteligentes para diferentes tipos de atendimento
+          </p>
         </div>
-      </TabsContent>
-      
-      
-      <TabsContent value="configurations">
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-3amg-orange">Configurações dos Agentes</h2>
-            <Button onClick={() => setShowForm(true)} className="gap-2 bg-3amg-orange hover:bg-3amg-orange/80">
-              <Plus className="h-4 w-4" />
-              Novo Agente
-            </Button>
-          </div>
+        <Button onClick={handleCreateNew} className="bg-blue-600 hover:bg-blue-700">
+          <Plus className="h-4 w-4 mr-2" />
+          Novo Agente
+        </Button>
+      </div>
 
-          {showForm && (
-            <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-              <AgentConfigurationForm
-                configuration={editingConfiguration}
-                onSave={handleSaveAgent}
-                onCancel={() => {
-                  setShowForm(false);
-                  setEditingAgent(null);
-                }}
-                isLoading={isCreating || isUpdating}
-              />
+      {configurations.length === 0 ? (
+        <Card>
+          <CardContent className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Settings className="h-8 w-8 text-gray-400" />
             </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {configurations?.map((config) => (
-              <Card key={config.id} className="bg-gray-900/90 border-gray-700 backdrop-blur-sm">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg text-3amg-orange">{config.name}</CardTitle>
-                    <Badge variant={config.is_active ? "default" : "secondary"} 
-                           className={config.is_active ? "bg-green-600 hover:bg-green-700" : ""}>
-                      {config.is_active ? "Ativo" : "Inativo"}
-                    </Badge>
+            <h3 className="text-lg font-semibold mb-2">Nenhum agente configurado</h3>
+            <p className="text-muted-foreground mb-4">
+              Crie seu primeiro agente IA para começar a automatizar atendimentos
+            </p>
+            <Button onClick={handleCreateNew} className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="h-4 w-4 mr-2" />
+              Criar Primeiro Agente
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {configurations.map((config) => (
+            <Card key={config.id} className="group hover:shadow-lg transition-shadow">
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg">{config.name}</CardTitle>
+                    <CardDescription className="capitalize">
+                      {config.agent_type.replace('_', ' ')}
+                    </CardDescription>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-sm text-gray-300">
-                    <div><strong className="text-gray-200">Tipo:</strong> {config.agent_type}</div>
-                    <div><strong className="text-gray-200">Modelo:</strong> {config.model}</div>
-                    <div><strong className="text-gray-200">Temperatura:</strong> {config.temperature}</div>
-                    <div><strong className="text-gray-200">Max Tokens:</strong> {config.max_tokens}</div>
+                  <Badge variant={config.is_active ? "default" : "secondary"}>
+                    {config.is_active ? "Ativo" : "Inativo"}
+                  </Badge>
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                <div className="text-sm text-muted-foreground">
+                  <p className="line-clamp-2">{config.prompt}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span className="font-medium">Modelo:</span>
+                    <p className="text-muted-foreground">{config.model}</p>
                   </div>
+                  <div>
+                    <span className="font-medium">Temp:</span>
+                    <p className="text-muted-foreground">{config.temperature}</p>
+                  </div>
+                </div>
 
-                  {config.webhook_url && (
-                    <div className="mt-3 p-2 bg-gray-800 rounded border border-gray-600">
-                      <div className="text-xs font-medium text-gray-400 mb-1">Webhook N8N:</div>
-                      <div className="flex items-center gap-1">
-                        <div className="text-xs text-gray-300 truncate flex-1" title={config.webhook_url}>
-                          {config.webhook_url}
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => copyWebhookUrl(config.webhook_url!)}
-                          className="h-6 w-6 p-0 hover:bg-gray-700"
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => openWebhookUrl(config.webhook_url!)}
-                          className="h-6 w-6 p-0 hover:bg-gray-700"
-                        >
-                          <ExternalLink className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mt-4 space-y-2">
-                    <p className="text-sm text-gray-400 line-clamp-2">
-                      {config.prompt}
+                {config.webhook_url && (
+                  <div className="text-sm">
+                    <span className="font-medium">Webhook:</span>
+                    <p className="text-muted-foreground text-xs truncate">
+                      {config.webhook_url}
                     </p>
                   </div>
-                  <div className="mt-4 flex gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      onClick={() => handleEditAgent(config.id)}
-                      className="border-gray-600 text-gray-300 hover:bg-gray-800"
-                    >
-                      Editar
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="destructive" 
-                      onClick={() => deleteConfiguration(config.id)}
-                      disabled={isDeleting}
-                    >
-                      Excluir
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                )}
+
+                <div className="flex items-center gap-2 pt-2">
+                  <Button 
+                    size="sm" 
+                    onClick={() => handleStartChat(config.id)}
+                    className="flex-1"
+                    disabled={!config.is_active}
+                  >
+                    <MessageSquare className="h-3 w-3 mr-1" />
+                    Chat
+                  </Button>
+                  
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => handleViewMetrics(config.id)}
+                  >
+                    <BarChart3 className="h-3 w-3" />
+                  </Button>
+                  
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => handleEdit(config.id)}
+                  >
+                    <Edit className="h-3 w-3" />
+                  </Button>
+                  
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => handleDelete(config.id, config.name)}
+                    disabled={isDeleting}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </TabsContent>
+      )}
 
-      <TabsContent value="workflows">
-        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-          <WorkflowManagement />
-        </div>
-      </TabsContent>
+      {configurations.length > 0 && (
+        <div className="mt-8">
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList>
+              <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+              <TabsTrigger value="metrics">Métricas</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview" className="mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-2">
+                      <Settings className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <p className="text-2xl font-bold">{configurations.length}</p>
+                        <p className="text-sm text-muted-foreground">Agentes Configurados</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
-      <TabsContent value="integrations">
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-3amg-orange">Integrações</h2>
-            <Button onClick={() => setShowIntegrationForm(true)} className="gap-2 bg-3amg-orange hover:bg-3amg-orange/80">
-              <Plus className="h-4 w-4" />
-              Nova Integração
-            </Button>
-          </div>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-2">
+                      <Play className="h-5 w-5 text-green-600" />
+                      <div>
+                        <p className="text-2xl font-bold">
+                          {configurations.filter(c => c.is_active).length}
+                        </p>
+                        <p className="text-sm text-muted-foreground">Agentes Ativos</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
-          {showIntegrationForm && (
-            <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-              <IntegrationConfigForm
-                integration={editingIntegration}
-                onClose={() => {
-                  setShowIntegrationForm(false);
-                  setEditingIntegration(null);
-                }}
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-2">
+                      <MessageSquare className="h-5 w-5 text-orange-600" />
+                      <div>
+                        <p className="text-2xl font-bold">{conversations.length}</p>
+                        <p className="text-sm text-muted-foreground">Conversas Hoje</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="metrics" className="mt-6">
+              <AgentMetrics 
+                configurations={configurations}
+                conversations={conversations}
+                metrics={metrics}
               />
-            </div>
-          )}
-
-          <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-            <AgentIntegrations 
-              integrations={integrations || []}
-              onEdit={handleEditIntegration}
-            />
-          </div>
+            </TabsContent>
+          </Tabs>
         </div>
-      </TabsContent>
-
-      <TabsContent value="executions">
-        <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-3amg-orange">Execuções de Workflow</h2>
-          </div>
-          <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-            <WorkflowExecutions executions={executions || []} />
-          </div>
-        </div>
-      </TabsContent>
-      
-      
-      <TabsContent value="logs">
-        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-          <ConversationLogs 
-            conversations={conversations || []} 
-            configurations={configurations || []}
-          />
-        </div>
-      </TabsContent>
-      
-      
-      <TabsContent value="metrics">
-        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-          <AgentMetrics 
-            metrics={metrics || []}
-            configurations={configurations || []}
-            conversations={conversations || []}
-          />
-        </div>
-      </TabsContent>
-      
-      <TabsContent value="training">
-        <div className="bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-700 p-6">
-          <AgentTrainingSystem />
-        </div>
-      </TabsContent>
-    </>
+      )}
+    </div>
   );
 };
 

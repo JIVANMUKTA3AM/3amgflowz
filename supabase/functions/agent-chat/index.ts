@@ -1,17 +1,15 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface ChatRequest {
-  agent_configuration_id: string;
-  user_message: string;
-  session_id: string;
-}
+const logStep = (step: string, details?: any) => {
+  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
+  console.log(`[AGENT-CHAT] ${step}${detailsStr}`);
+};
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -19,495 +17,121 @@ serve(async (req) => {
   }
 
   try {
-    console.log('=== AGENT CHAT REQUEST START ===');
+    logStep("Function started");
     
-    const requestData = await req.json();
-    console.log('Request data received:', JSON.stringify(requestData, null, 2));
-    
-    const { agent_configuration_id, user_message, session_id }: ChatRequest = requestData;
-    
-    if (!agent_configuration_id || !user_message || !session_id) {
-      console.error('Missing required parameters:', { agent_configuration_id, user_message, session_id });
-      return new Response(
-        JSON.stringify({ 
-          error: 'Parâmetros obrigatórios ausentes',
-          agent_response: "Erro: parâmetros obrigatórios não fornecidos.",
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+    const openAIKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openAIKey) {
+      throw new Error('OPENAI_API_KEY is not configured');
     }
-    
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL');
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-    
-    if (!supabaseUrl || !supabaseKey) {
-      console.error('Missing Supabase configuration');
-      return new Response(
-        JSON.stringify({ 
-          error: 'Configuração do Supabase não encontrada',
-          agent_response: "Erro de configuração do servidor.",
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+
+    // Criar client do Supabase com chave de serviço
+    const supabaseServiceClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    // Autenticar usuário
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("No authorization header provided");
     }
-    
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    console.log('Supabase client initialized successfully');
-    
-    // Get agent configuration - Fix UUID validation
-    console.log('Fetching agent configuration for ID:', agent_configuration_id);
-    
-    // Validate UUID format
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(agent_configuration_id)) {
-      console.error('Invalid UUID format:', agent_configuration_id);
-      return new Response(
-        JSON.stringify({ 
-          error: 'ID do agente inválido',
-          agent_response: "Erro: ID do agente não é um UUID válido.",
-        }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData, error: userError } = await supabaseServiceClient.auth.getUser(token);
+    if (userError || !userData.user) {
+      throw new Error(`Authentication error: ${userError?.message}`);
     }
+
+    const user = userData.user;
+    logStep("User authenticated", { userId: user.id });
+
+    const { message, agentConfigId, sessionId, channelType } = await req.json();
     
-    const { data: agentConfig, error: configError } = await supabase
+    if (!message || !agentConfigId) {
+      throw new Error('Message and agentConfigId are required');
+    }
+
+    logStep("Request data", { message, agentConfigId, sessionId, channelType });
+
+    // Buscar configuração do agente
+    const { data: agentConfig, error: agentError } = await supabaseServiceClient
       .from('agent_configurations')
       .select('*')
-      .eq('id', agent_configuration_id)
-      .eq('is_active', true)
+      .eq('id', agentConfigId)
+      .eq('user_id', user.id)
       .single();
-    
-    if (configError) {
-      console.error('Error fetching agent config:', configError);
-      return new Response(
-        JSON.stringify({ 
-          error: `Erro na configuração do agente: ${configError.message}`,
-          agent_response: "Agente não encontrado ou inativo.",
-        }),
-        {
-          status: 404,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+
+    if (agentError || !agentConfig) {
+      throw new Error(`Agent configuration not found: ${agentError?.message}`);
     }
-    
-    if (!agentConfig) {
-      console.error('Agent configuration not found');
-      return new Response(
-        JSON.stringify({ 
-          error: 'Configuração do agente não encontrada',
-          agent_response: "Agente não encontrado ou inativo.",
-        }),
-        {
-          status: 404,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-    
-    console.log('Agent config found:', {
-      name: agentConfig.name,
-      model: agentConfig.model,
-      temperature: agentConfig.temperature,
-      max_tokens: agentConfig.max_tokens
-    });
-    
+
+    logStep("Agent config found", { name: agentConfig.name, model: agentConfig.model });
+
+    // Preparar chamada para OpenAI
     const startTime = Date.now();
     
-    // Determine which AI provider to use and call it
-    let aiResponse;
-    let tokensUsed = 0;
-    
-    try {
-      console.log('Calling AI provider for model:', agentConfig.model);
-      
-      if (agentConfig.model.includes('gpt') || agentConfig.model.includes('o1') || agentConfig.model.includes('o3') || agentConfig.model.includes('o4')) {
-        console.log('Using OpenAI API');
-        aiResponse = await callOpenAI(agentConfig, user_message);
-        tokensUsed = aiResponse.usage?.total_tokens || 0;
-      } else if (agentConfig.model.includes('claude') || agentConfig.model.includes('anthropic')) {
-        console.log('Using Anthropic API');
-        aiResponse = await callClaude(agentConfig, user_message);
-        tokensUsed = (aiResponse.usage?.input_tokens || 0) + (aiResponse.usage?.output_tokens || 0);
-      } else if (agentConfig.model.includes('gemini') || agentConfig.model.includes('google')) {
-        console.log('Using Google API');
-        aiResponse = await callGemini(agentConfig, user_message);
-        tokensUsed = aiResponse.usageMetadata?.totalTokenCount || 0;
-      } else if (agentConfig.model.includes('deepseek')) {
-        console.log('Using DeepSeek API');
-        aiResponse = await callDeepSeek(agentConfig, user_message);
-        tokensUsed = aiResponse.usage?.total_tokens || 0;
-      } else {
-        console.log('Unknown model, defaulting to OpenAI');
-        aiResponse = await callOpenAI(agentConfig, user_message);
-        tokensUsed = aiResponse.usage?.total_tokens || 0;
-      }
-      
-      console.log('AI response received successfully');
-    } catch (apiError) {
-      console.error('API call error:', apiError);
-      return new Response(
-        JSON.stringify({ 
-          error: `Erro na API de IA: ${apiError.message}`,
-          agent_response: "Erro ao se comunicar com o modelo de IA. Verifique se as chaves da API estão configuradas corretamente.",
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-    
-    const responseTime = Date.now() - startTime;
-    const agentResponseText = extractResponseText(aiResponse, agentConfig.model);
-    
-    console.log('Response generated successfully:', {
-      responseTime: `${responseTime}ms`,
-      tokensUsed,
-      responseLength: agentResponseText.length
+    const requestBody = {
+      model: agentConfig.model,
+      messages: [
+        { role: 'system', content: agentConfig.prompt },
+        { role: 'user', content: message }
+      ],
+      temperature: agentConfig.temperature || 0.7,
+      max_tokens: agentConfig.max_tokens || 1000,
+    };
+
+    logStep("Calling OpenAI", { model: agentConfig.model });
+
+    // Chamar OpenAI
+    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openAIKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
     });
-    
-    // Get user ID from the auth header
-    const authHeader = req.headers.get('authorization') || '';
-    const token = authHeader.replace('Bearer ', '');
-    
-    let userId = null;
-    if (token) {
-      try {
-        const { data: userData } = await supabase.auth.getUser(token);
-        userId = userData.user?.id;
-        console.log('User ID found for conversation logging:', userId);
-      } catch (authError) {
-        console.warn('Auth error, continuing without user ID:', authError);
-      }
+
+    if (!openAIResponse.ok) {
+      const errorData = await openAIResponse.text();
+      throw new Error(`OpenAI API error: ${openAIResponse.status} - ${errorData}`);
     }
-    
-    // Save conversation to database if user is authenticated
-    if (userId) {
-      try {
-        await supabase
-          .from('agent_conversations')
-          .insert({
-            user_id: userId,
-            agent_configuration_id,
-            session_id,
-            user_message,
-            agent_response: agentResponseText,
-            response_time_ms: responseTime,
-            tokens_used: tokensUsed,
-            model_used: agentConfig.model,
-          });
-        console.log('Conversation saved to database successfully');
-      } catch (dbError) {
-        console.warn('Database save error, continuing:', dbError);
-      }
+
+    const openAIData = await openAIResponse.json();
+    const responseTime = Date.now() - startTime;
+    const agentResponse = openAIData.choices[0]?.message?.content;
+    const tokensUsed = openAIData.usage?.total_tokens || 0;
+
+    if (!agentResponse) {
+      throw new Error('No response from OpenAI');
     }
-    
-    console.log('=== AGENT CHAT REQUEST SUCCESS ===');
-    
-    return new Response(
-      JSON.stringify({
-        agent_response: agentResponseText,
-        response_time_ms: responseTime,
-        tokens_used: tokensUsed,
-        model_used: agentConfig.model,
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+
+    logStep("OpenAI response received", { responseTime, tokensUsed, responseLength: agentResponse.length });
+
+    logStep("Function completed successfully");
+
+    return new Response(JSON.stringify({
+      success: true,
+      response: agentResponse,
+      sessionId: sessionId || `session_${Date.now()}`,
+      responseTime,
+      tokensUsed
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200,
+    });
+
   } catch (error) {
-    console.error('=== AGENT CHAT REQUEST ERROR ===');
-    console.error('Error details:', error);
-    console.error('Error stack:', error.stack);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logStep("ERROR", { message: errorMessage });
     
-    return new Response(
-      JSON.stringify({ 
-        error: `Erro interno do servidor: ${error.message}`,
-        agent_response: "Desculpe, ocorreu um erro interno. Tente novamente em alguns instantes.",
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    return new Response(JSON.stringify({ 
+      success: false,
+      error: errorMessage 
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    });
   }
 });
-
-async function callOpenAI(agentConfig: any, userMessage: string) {
-  const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
-  if (!openaiApiKey) {
-    throw new Error('Chave da API OpenAI não configurada');
-  }
-  
-  console.log('Making OpenAI API call with model:', agentConfig.model);
-  
-  // Map model names to available OpenAI models
-  let modelName = agentConfig.model;
-  if (agentConfig.model === 'gpt-4.1-2025-04-14') {
-    modelName = 'gpt-4o';
-  } else if (agentConfig.model === 'o3-2025-04-16') {
-    modelName = 'gpt-4o';
-  } else if (agentConfig.model === 'o4-mini-2025-04-16') {
-    modelName = 'gpt-4o-mini';
-  } else if (!agentConfig.model.startsWith('gpt-')) {
-    modelName = 'gpt-4o-mini'; // Default fallback
-  }
-  
-  const requestBody = {
-    model: modelName,
-    messages: [
-      { role: 'system', content: agentConfig.prompt },
-      { role: 'user', content: userMessage }
-    ],
-    temperature: agentConfig.temperature || 0.7,
-    max_tokens: agentConfig.max_tokens || 1000,
-  };
-  
-  console.log('OpenAI request body:', JSON.stringify(requestBody, null, 2));
-  
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${openaiApiKey}`,
-      'Content-Type': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('OpenAI API error response:', {
-      status: response.status,
-      statusText: response.statusText,
-      body: errorText
-    });
-    throw new Error(`Erro da API OpenAI: ${response.status} - ${errorText}`);
-  }
-  
-  const result = await response.json();
-  console.log('OpenAI API response received successfully');
-  return result;
-}
-
-async function callClaude(agentConfig: any, userMessage: string) {
-  const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
-  if (!anthropicApiKey) {
-    throw new Error('Chave da API Anthropic não configurada');
-  }
-  
-  console.log('Making Anthropic API call with model:', agentConfig.model);
-  
-  // Map model names to available Claude models
-  let modelName = agentConfig.model;
-  if (agentConfig.model === 'claude-opus-4-20250514') {
-    modelName = 'claude-3-5-sonnet-20241022';
-  } else if (agentConfig.model === 'claude-sonnet-4-20250514') {
-    modelName = 'claude-3-5-sonnet-20241022';
-  } else if (!agentConfig.model.startsWith('claude-')) {
-    modelName = 'claude-3-5-haiku-20241022'; // Default fallback
-  }
-  
-  const requestBody = {
-    model: modelName,
-    system: agentConfig.prompt,
-    messages: [
-      { role: 'user', content: userMessage }
-    ],
-    temperature: agentConfig.temperature || 0.7,
-    max_tokens: agentConfig.max_tokens || 1000,
-  };
-  
-  console.log('Anthropic request body:', JSON.stringify(requestBody, null, 2));
-  
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': anthropicApiKey,
-      'Content-Type': 'application/json',
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify(requestBody),
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('Anthropic API error response:', {
-      status: response.status,
-      statusText: response.statusText,
-      body: errorText
-    });
-    throw new Error(`Erro da API Anthropic: ${response.status} - ${errorText}`);
-  }
-  
-  const result = await response.json();
-  console.log('Anthropic API response received successfully');
-  return result;
-}
-
-async function callDeepSeek(agentConfig: any, userMessage: string) {
-  const deepseekApiKey = Deno.env.get('DEEPSEEK_API_KEY');
-  if (!deepseekApiKey) {
-    throw new Error('Chave da API DeepSeek não configurada');
-  }
-  
-  console.log('Making DeepSeek API call with model:', agentConfig.model);
-  
-  const requestBody = {
-    model: agentConfig.model,
-    messages: [
-      { role: 'system', content: agentConfig.prompt },
-      { role: 'user', content: userMessage }
-    ],
-    temperature: agentConfig.temperature || 0.7,
-    max_tokens: agentConfig.max_tokens || 1000,
-  };
-  
-  console.log('DeepSeek request body:', JSON.stringify(requestBody, null, 2));
-  
-  const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${deepseekApiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('DeepSeek API error response:', {
-      status: response.status,
-      statusText: response.statusText,
-      body: errorText
-    });
-    throw new Error(`Erro da API DeepSeek: ${response.status} - ${errorText}`);
-  }
-  
-  const result = await response.json();
-  console.log('DeepSeek API response received successfully');
-  return result;
-}
-
-async function callGemini(agentConfig: any, userMessage: string) {
-  const googleApiKey = Deno.env.get('GOOGLE_API_KEY');
-  if (!googleApiKey) {
-    throw new Error('Chave da API Google não configurada');
-  }
-  
-  console.log('Making Google API call with model:', agentConfig.model);
-  
-  // Map model names to available Gemini models
-  let modelName = agentConfig.model;
-  if (agentConfig.model === 'gemini-1.5-pro-002') {
-    modelName = 'gemini-1.5-pro-latest';
-  } else if (agentConfig.model === 'gemini-1.5-flash-002') {
-    modelName = 'gemini-1.5-flash-latest';
-  } else if (!agentConfig.model.startsWith('gemini-')) {
-    modelName = 'gemini-1.5-flash'; // Default fallback
-  }
-  
-  // Prepare the prompt with system instructions
-  const fullPrompt = `${agentConfig.prompt}\n\nUsuário: ${userMessage}`;
-  
-  const requestBody = {
-    contents: [{
-      parts: [{
-        text: fullPrompt
-      }]
-    }],
-    generationConfig: {
-      temperature: agentConfig.temperature || 0.7,
-      maxOutputTokens: agentConfig.max_tokens || 1000,
-      topP: 0.8,
-      topK: 10
-    },
-    safetySettings: [
-      {
-        category: "HARM_CATEGORY_HARASSMENT",
-        threshold: "BLOCK_MEDIUM_AND_ABOVE"
-      },
-      {
-        category: "HARM_CATEGORY_HATE_SPEECH",
-        threshold: "BLOCK_MEDIUM_AND_ABOVE"
-      },
-      {
-        category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-        threshold: "BLOCK_MEDIUM_AND_ABOVE"
-      },
-      {
-        category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-        threshold: "BLOCK_MEDIUM_AND_ABOVE"
-      }
-    ]
-  };
-  
-  console.log('Google request body:', JSON.stringify(requestBody, null, 2));
-  
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${googleApiKey}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('Google API error response:', {
-      status: response.status,
-      statusText: response.statusText,
-      body: errorText
-    });
-    throw new Error(`Erro da API Google: ${response.status} - ${errorText}`);
-  }
-  
-  const result = await response.json();
-  console.log('Google API response received successfully');
-  
-  // Check for blocked content
-  if (result.candidates?.[0]?.finishReason === 'SAFETY') {
-    console.warn('Content was blocked by safety filters');
-    return {
-      candidates: [{
-        content: {
-          parts: [{
-            text: "Desculpe, não posso responder a essa pergunta por questões de segurança. Tente reformular sua pergunta."
-          }]
-        }
-      }],
-      usageMetadata: {
-        totalTokenCount: 0
-      }
-    };
-  }
-  
-  return result;
-}
-
-function extractResponseText(aiResponse: any, model: string): string {
-  try {
-    if (model.includes('gpt') || model.includes('o1') || model.includes('o3') || model.includes('o4') || model.includes('deepseek')) {
-      return aiResponse.choices?.[0]?.message?.content || 'Erro ao processar resposta da OpenAI/DeepSeek';
-    } else if (model.includes('claude') || model.includes('anthropic')) {
-      return aiResponse.content?.[0]?.text || 'Erro ao processar resposta do Claude';
-    } else if (model.includes('gemini') || model.includes('google')) {
-      return aiResponse.candidates?.[0]?.content?.parts?.[0]?.text || 'Erro ao processar resposta do Gemini';
-    }
-  } catch (error) {
-    console.error('Error extracting response text:', error);
-  }
-  
-  return 'Erro ao processar resposta do modelo de IA';
-}
