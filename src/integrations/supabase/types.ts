@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -1393,6 +1393,134 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_agents: {
+        Row: {
+          agent_configuration_id: string | null
+          agent_type: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          provider_id: string
+          updated_at: string
+        }
+        Insert: {
+          agent_configuration_id?: string | null
+          agent_type: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          provider_id: string
+          updated_at?: string
+        }
+        Update: {
+          agent_configuration_id?: string | null
+          agent_type?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          provider_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_agents_agent_configuration_id_fkey"
+            columns: ["agent_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_agents_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_integrations: {
+        Row: {
+          created_at: string
+          credentials: Json
+          id: string
+          integration_type: string
+          is_active: boolean | null
+          last_test_at: string | null
+          last_test_result: Json | null
+          last_test_status: string | null
+          mode: string
+          polling_interval_secs: number | null
+          provider_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credentials?: Json
+          id?: string
+          integration_type: string
+          is_active?: boolean | null
+          last_test_at?: string | null
+          last_test_result?: Json | null
+          last_test_status?: string | null
+          mode: string
+          polling_interval_secs?: number | null
+          provider_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credentials?: Json
+          id?: string
+          integration_type?: string
+          is_active?: boolean | null
+          last_test_at?: string | null
+          last_test_result?: Json | null
+          last_test_status?: string | null
+          mode?: string
+          polling_interval_secs?: number | null
+          provider_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_integrations_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      providers: {
+        Row: {
+          cnpj_id: string
+          contact: string
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cnpj_id: string
+          contact: string
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cnpj_id?: string
+          contact?: string
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reports: {
         Row: {
           created_at: string
@@ -2112,9 +2240,9 @@ export type Database = {
       mark_invoice_as_paid: {
         Args: {
           p_invoice_id: string
-          p_payment_method: string
-          p_payment_id: string
           p_payment_data: Json
+          p_payment_id: string
+          p_payment_method: string
         }
         Returns: boolean
       }
