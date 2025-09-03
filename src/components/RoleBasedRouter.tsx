@@ -30,6 +30,7 @@ import ResetPassword from "@/pages/ResetPassword";
 import SlackConfig from "@/pages/SlackConfig";
 import Subscription from "@/pages/Subscription";
 import SubscriptionManagement from "@/pages/SubscriptionManagement";
+import TestePagamentos from "@/pages/TestePagamentos";
 import TestChat from "@/pages/TestChat";
 import WebhookTesting from "@/pages/WebhookTesting";
 import WebhooksManagement from "@/pages/WebhooksManagement";
@@ -97,6 +98,7 @@ const RoleBasedRouter = () => {
       <Route path="/slack-config" element={<SlackConfig />} />
       <Route path="/subscription" element={<Subscription />} />
       <Route path="/subscription-management" element={<SubscriptionManagement />} />
+      <Route path="/teste-pagamentos" element={<TestePagamentos />} />
       <Route path="/test-chat" element={<TestChat />} />
       <Route path="/webhook-testing" element={<WebhookTesting />} />
       <Route path="/webhooks-management" element={<WebhooksManagement />} />
