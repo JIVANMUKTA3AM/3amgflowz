@@ -24,6 +24,7 @@ import { useOltProtocolDetector } from '@/hooks/useOltProtocolDetector';
 import SNMPConsole from '@/components/snmp/SNMPConsole';
 import HTTPConsole from '@/components/snmp/HTTPConsole';
 import ONTMonitoringPanel from '@/components/snmp/ONTMonitoringPanel';
+import SNMPOperationsTable from '@/components/monitoring/SNMPOperationsTable';
 
 const MonitoramentoSNMP = () => {
   const { handleWorkflowTrigger, isLoading: workflowLoading } = useWorkflow();
@@ -64,18 +65,24 @@ const MonitoramentoSNMP = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
+    <div className="min-h-screen gradient-purple-orange-light">
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
       
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-7xl mx-auto">
           {/* Header da página */}
           <div className="text-center mb-8">
-            <Router className="h-16 w-16 mx-auto text-blue-600 mb-4" />
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-8 h-8 bg-white rounded transform rotate-45 opacity-20 mr-3"></div>
+              <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center mr-4">
+                <div className="w-6 h-6 rounded transform rotate-45" style={{background: 'linear-gradient(135deg, #8B5CF6, #F59E0B)'}}></div>
+              </div>
+              <Router className="h-16 w-16 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-4">
               Sistema de Monitoramento SNMP
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-white/80 max-w-2xl mx-auto">
               Monitore e gerencie suas OLTs e ONTs através de protocolos SNMP e HTTP. 
               Execute comandos, visualize métricas e monitore o status em tempo real.
             </p>
@@ -83,56 +90,56 @@ const MonitoramentoSNMP = () => {
 
           {/* Métricas Rápidas */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
               <CardContent className="flex items-center p-6">
-                <Server className="h-8 w-8 text-blue-600 mr-3" />
+                <Server className="h-8 w-8 text-white mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">OLTs Totais</p>
-                  <p className="text-2xl font-bold text-gray-900">{totalOlts}</p>
-                  <p className="text-xs text-green-600">{activeOlts} ativas</p>
+                  <p className="text-sm font-medium text-white/80">OLTs Totais</p>
+                  <p className="text-2xl font-bold text-white">{totalOlts}</p>
+                  <p className="text-xs text-green-300">{activeOlts} ativas</p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
               <CardContent className="flex items-center p-6">
-                <Wifi className="h-8 w-8 text-green-600 mr-3" />
+                <Wifi className="h-8 w-8 text-green-300 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">ONTs Online</p>
-                  <p className="text-2xl font-bold text-gray-900">{onlineOnts}</p>
-                  <p className="text-xs text-gray-500">de {totalOnts} total</p>
+                  <p className="text-sm font-medium text-white/80">ONTs Online</p>
+                  <p className="text-2xl font-bold text-white">{onlineOnts}</p>
+                  <p className="text-xs text-white/60">de {totalOnts} total</p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
               <CardContent className="flex items-center p-6">
-                <NetworkIcon className="h-8 w-8 text-orange-600 mr-3" />
+                <NetworkIcon className="h-8 w-8 text-orange-300 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">ONTs Offline</p>
-                  <p className="text-2xl font-bold text-gray-900">{offlineOnts}</p>
-                  <p className="text-xs text-red-600">Requer atenção</p>
+                  <p className="text-sm font-medium text-white/80">ONTs Offline</p>
+                  <p className="text-2xl font-bold text-white">{offlineOnts}</p>
+                  <p className="text-xs text-red-300">Requer atenção</p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
               <CardContent className="flex items-center p-6">
-                <Activity className="h-8 w-8 text-purple-600 mr-3" />
+                <Activity className="h-8 w-8 text-purple-300 mr-3" />
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Operações SNMP</p>
-                  <p className="text-2xl font-bold text-gray-900">{snmpLogs.length}</p>
-                  <p className="text-xs text-blue-600">Últimas 24h</p>
+                  <p className="text-sm font-medium text-white/80">Operações SNMP</p>
+                  <p className="text-2xl font-bold text-white">{snmpLogs.length}</p>
+                  <p className="text-xs text-blue-300">Últimas 24h</p>
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Operações Recentes */}
-          <Card className="mb-8">
+          <Card className="mb-8 bg-white/10 backdrop-blur-sm border-white/20">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-white">
                   <Activity className="h-5 w-5" />
                   Operações SNMP Recentes
                 </CardTitle>
@@ -141,6 +148,7 @@ const MonitoramentoSNMP = () => {
                   size="sm" 
                   onClick={() => refetch()}
                   disabled={isLoading}
+                  className="bg-white/20 border-white/30 text-white hover:bg-white/30"
                 >
                   <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                   Atualizar
@@ -149,25 +157,25 @@ const MonitoramentoSNMP = () => {
             </CardHeader>
             <CardContent>
               {recentOperations.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <Activity className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <div className="text-center py-8 text-white/60">
+                  <Activity className="h-12 w-12 mx-auto mb-4 text-white/40" />
                   <p>Nenhuma operação SNMP registrada ainda</p>
                   <p className="text-sm">Execute comandos nas abas abaixo para ver o histórico</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {recentOperations.map((log) => (
-                    <div key={log.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={log.id} className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
                       <div className="flex items-center gap-3">
                         <Badge variant={getStatusColor(log.status)}>
                           {log.status.toUpperCase()}
                         </Badge>
-                        <span className="font-medium">{log.operation_type}</span>
+                        <span className="font-medium text-white">{log.operation_type}</span>
                         {log.oid && (
-                          <span className="text-sm text-gray-600 font-mono">{log.oid}</span>
+                          <span className="text-sm text-white/70 font-mono">{log.oid}</span>
                         )}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-white/60">
                         {formatTime(log.created_at)}
                         {log.execution_time_ms && (
                           <span className="ml-2">({log.execution_time_ms}ms)</span>
@@ -182,16 +190,20 @@ const MonitoramentoSNMP = () => {
 
           {/* Tabs principais */}
           <Tabs defaultValue="console" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="console" className="flex items-center gap-2">
+            <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-sm border-white/20">
+              <TabsTrigger value="console" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
                 <Settings2 className="h-4 w-4" />
                 Console
               </TabsTrigger>
-              <TabsTrigger value="monitoring" className="flex items-center gap-2">
+              <TabsTrigger value="monitoring" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
                 <Monitor className="h-4 w-4" />
                 Monitoramento
               </TabsTrigger>
-              <TabsTrigger value="protocols" className="flex items-center gap-2">
+              <TabsTrigger value="logs" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
+                <Activity className="h-4 w-4" />
+                Logs Detalhados
+              </TabsTrigger>
+              <TabsTrigger value="protocols" className="flex items-center gap-2 data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">
                 <Globe className="h-4 w-4" />
                 Protocolos
               </TabsTrigger>
@@ -199,9 +211,9 @@ const MonitoramentoSNMP = () => {
 
             <TabsContent value="console" className="space-y-6">
               <Tabs defaultValue="snmp" className="space-y-4">
-                <TabsList>
-                  <TabsTrigger value="snmp">Console SNMP</TabsTrigger>
-                  <TabsTrigger value="http">Console HTTP</TabsTrigger>
+                <TabsList className="bg-white/10 backdrop-blur-sm border-white/20">
+                  <TabsTrigger value="snmp" className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">Console SNMP</TabsTrigger>
+                  <TabsTrigger value="http" className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/70">Console HTTP</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="snmp">
@@ -216,6 +228,10 @@ const MonitoramentoSNMP = () => {
 
             <TabsContent value="monitoring">
               <ONTMonitoringPanel />
+            </TabsContent>
+
+            <TabsContent value="logs">
+              <SNMPOperationsTable />
             </TabsContent>
 
             <TabsContent value="protocols">

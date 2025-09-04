@@ -59,13 +59,13 @@ const ONTMonitoringPanel = () => {
 
   return (
     <div className="space-y-6">
-      <Card>
+      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
         <CardHeader>
-          <CardTitle>Monitoramento de ONTs</CardTitle>
+          <CardTitle className="text-white">Monitoramento de ONTs</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="olt-select">Selecionar OLT</Label>
+            <Label htmlFor="olt-select" className="text-white">Selecionar OLT</Label>
             <Select value={selectedOlt} onValueChange={setSelectedOlt}>
               <SelectTrigger>
                 <SelectValue placeholder="Escolha uma OLT" />
@@ -82,7 +82,7 @@ const ONTMonitoringPanel = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="ont-serial">Serial da ONT</Label>
+              <Label htmlFor="ont-serial" className="text-white">Serial da ONT</Label>
               <Input
                 id="ont-serial"
                 value={newOnt.ont_serial}
@@ -91,7 +91,7 @@ const ONTMonitoringPanel = () => {
               />
             </div>
             <div>
-              <Label htmlFor="ont-id">ID da ONT</Label>
+              <Label htmlFor="ont-id" className="text-white">ID da ONT</Label>
               <Input
                 id="ont-id"
                 value={newOnt.ont_id}
@@ -100,7 +100,7 @@ const ONTMonitoringPanel = () => {
               />
             </div>
             <div>
-              <Label htmlFor="interface-id">Interface</Label>
+              <Label htmlFor="interface-id" className="text-white">Interface</Label>
               <Input
                 id="interface-id"
                 value={newOnt.interface_id}
@@ -113,7 +113,7 @@ const ONTMonitoringPanel = () => {
           <Button 
             onClick={handleCreateONT} 
             disabled={isCreating || !selectedOlt || !newOnt.ont_serial || !newOnt.ont_id}
-            className="w-full"
+            className="w-full bg-gradient-to-r from-purple-500 to-orange-500 hover:from-purple-600 hover:to-orange-600"
           >
             {isCreating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
             Adicionar ONT
@@ -121,17 +121,17 @@ const ONTMonitoringPanel = () => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
         <CardHeader>
-          <CardTitle>ONTs Monitoradas</CardTitle>
+          <CardTitle className="text-white">ONTs Monitoradas</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="flex items-center justify-center h-32">
-              <Loader2 className="h-8 w-8 animate-spin" />
+              <Loader2 className="h-8 w-8 animate-spin text-white" />
             </div>
           ) : ontData.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-white/60">
               Nenhuma ONT cadastrada para monitoramento
             </div>
           ) : (
