@@ -88,16 +88,15 @@ const OLTDashboard = () => {
       {/* Header com métricas gerais */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-lg gradient-header flex items-center justify-center">
-            <Router className="h-6 w-6 text-white" />
+          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+            <div className="w-6 h-6 rounded transform rotate-45" style={{background: 'linear-gradient(135deg, #8B5CF6, #F59E0B)'}}></div>
           </div>
           <div>
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              Dashboard de Monitoramento OLT
-              <div className="w-6 h-6 bg-3amg-purple rounded transform rotate-45 opacity-20"></div>
+            <h2 className="text-3xl font-bold text-white">
+              Painel Administrativo - Gestão de Provedores
             </h2>
-            <p className="text-muted-foreground">
-              Visão geral do status e performance das suas OLTs
+            <p className="text-white/80">
+              Monitore clientes provedores, suas assinaturas e desempenho da plataforma
             </p>
           </div>
         </div>
@@ -124,78 +123,116 @@ const OLTDashboard = () => {
       </div>
 
       {/* Cards de métricas principais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card className="border-primary/20 gradient-card card-dark hover:shadow-lg transition-all">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
           <CardContent className="flex items-center p-6">
-            <div className="p-3 rounded-lg bg-primary/10 icon-tech mr-3">
-              <Server className="h-8 w-8 text-primary" />
-            </div>
+            <Server className="h-8 w-8 text-orange-300 mr-3" />
             <div>
-              <p className="text-sm font-medium text-muted-foreground">OLTs Ativas</p>
-              <p className="text-2xl font-bold text-primary">{totalOLTs}</p>
-              <p className="text-xs text-muted-foreground">Equipamentos</p>
+              <p className="text-sm font-medium text-white/80">Atendimentos Hoje</p>
+              <p className="text-2xl font-bold text-white">{totalOLTs}</p>
+              <p className="text-xs text-green-300">+12% em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-success/20 gradient-card card-dark hover:shadow-lg transition-all">
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
           <CardContent className="flex items-center p-6">
-            <div className="p-3 rounded-lg bg-success/10 icon-tech mr-3">
-              <Wifi className="h-8 w-8 text-success" />
-            </div>
+            <Activity className="h-8 w-8 text-orange-300 mr-3" />
             <div>
-              <p className="text-sm font-medium text-muted-foreground">ONTs Online</p>
-              <p className="text-2xl font-bold text-success">{totalOntsOnline}</p>
-              <p className="text-xs text-muted-foreground">de {totalONTs} total</p>
+              <p className="text-sm font-medium text-white/80">Tempo Médio de Resposta</p>
+              <p className="text-2xl font-bold text-white">2.3min</p>
+              <p className="text-xs text-green-300">-18% em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-destructive/20 gradient-card card-dark hover:shadow-lg transition-all">
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
           <CardContent className="flex items-center p-6">
-            <div className="p-3 rounded-lg bg-destructive/10 icon-tech mr-3">
-              <WifiOff className="h-8 w-8 text-destructive" />
-            </div>
+            <CheckCircle className="h-8 w-8 text-orange-300 mr-3" />
             <div>
-              <p className="text-sm font-medium text-muted-foreground">ONTs Offline</p>
-              <p className="text-2xl font-bold text-destructive">{totalOntsOffline}</p>
-              <p className="text-xs text-muted-foreground">Requer atenção</p>
+              <p className="text-sm font-medium text-white/80">Taxa de Resolução</p>
+              <p className="text-2xl font-bold text-white">94.2%</p>
+              <p className="text-xs text-green-300">+3% em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-3amg-orange/20 gradient-card card-dark hover:shadow-lg transition-all">
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
           <CardContent className="flex items-center p-6">
-            <div className="p-3 rounded-lg bg-3amg-orange/10 icon-tech mr-3">
-              <Activity className="h-8 w-8 text-3amg-orange" />
-            </div>
+            <Wifi className="h-8 w-8 text-yellow-300 mr-3" />
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Uptime Médio</p>
-              <p className={`text-2xl font-bold ${getUptimeColor(avgUptime)}`}>
-                {avgUptime.toFixed(1)}%
-              </p>
-              <p className="text-xs text-muted-foreground">Performance</p>
+              <p className="text-sm font-medium text-white/80">Agentes Ativos</p>
+              <p className="text-2xl font-bold text-white">3</p>
+              <p className="text-xs text-white/60">100% em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className={`gradient-card card-dark hover:shadow-lg transition-all ${totalAlerts > 0 ? 'border-destructive/50 fiber-glow' : 'border-success/20'}`}>
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
           <CardContent className="flex items-center p-6">
-            <div className={`p-3 rounded-lg ${totalAlerts > 0 ? 'bg-destructive/10' : 'bg-success/10'} icon-tech mr-3`}>
-              {totalAlerts > 0 ? (
-                <Shield className="h-8 w-8 text-destructive" />
-              ) : (
-                <CheckCircle className="h-8 w-8 text-success" />
-              )}
-            </div>
+            <TrendingUp className="h-8 w-8 text-pink-300 mr-3" />
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Alertas Ativos</p>
-              <p className={`text-2xl font-bold ${totalAlerts > 0 ? 'text-destructive' : 'text-success'}`}>
-                {totalAlerts}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {criticalAlerts > 0 ? `${criticalAlerts} críticos` : 'Sistema OK'}
-              </p>
+              <p className="text-sm font-medium text-white/80">Satisfação do Cliente</p>
+              <p className="text-2xl font-bold text-white">4.8/5</p>
+              <p className="text-xs text-green-300">+0.3 em relação ao período anterior</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+          <CardContent className="flex items-center p-6">
+            <AlertTriangle className="h-8 w-8 text-yellow-300 mr-3" />
+            <div>
+              <p className="text-sm font-medium text-white/80">Alertas Pendentes</p>
+              <p className="text-2xl font-bold text-white">{totalAlerts}</p>
+              <p className="text-xs text-red-300">-3 em relação ao período anterior</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Segunda linha de cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+          <CardContent className="flex items-center p-6">
+            <Server className="h-8 w-8 text-white mr-3" />
+            <div>
+              <p className="text-sm font-medium text-white/80">Provedores Ativos</p>
+              <p className="text-2xl font-bold text-white">12</p>
+              <p className="text-xs text-green-300">+2 novos provedores esta semana</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+          <CardContent className="flex items-center p-6">
+            <Activity className="h-8 w-8 text-purple-300 mr-3" />
+            <div>
+              <p className="text-sm font-medium text-white/80">Agentes Online</p>
+              <p className="text-2xl font-bold text-white">34</p>
+              <p className="text-xs text-white/60">100% disponibilidade</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+          <CardContent className="flex items-center p-6">
+            <TrendingUp className="h-8 w-8 text-green-300 mr-3" />
+            <div>
+              <p className="text-sm font-medium text-white/80">Receita Mensal</p>
+              <p className="text-2xl font-bold text-white">R$ 2.847</p>
+              <p className="text-xs text-green-300">+15% em relação ao mês anterior</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+          <CardContent className="flex items-center p-6">
+            <CheckCircle className="h-8 w-8 text-green-300 mr-3" />
+            <div>
+              <p className="text-sm font-medium text-white/80">Status Sistema</p>
+              <p className="text-2xl font-bold text-white">Online</p>
+              <p className="text-xs text-green-300">Todos os serviços funcionando</p>
             </div>
           </CardContent>
         </Card>
