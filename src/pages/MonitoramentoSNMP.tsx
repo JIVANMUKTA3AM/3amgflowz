@@ -65,7 +65,7 @@ const MonitoramentoSNMP = () => {
   };
 
   return (
-    <div className="min-h-screen gradient-purple-orange-light">
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-500 to-orange-400">
       <Header handleWorkflowTrigger={handleWorkflowTrigger} isLoading={workflowLoading} />
       
       <main className="container mx-auto px-4 py-12">
