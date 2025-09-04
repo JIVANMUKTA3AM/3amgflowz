@@ -14,18 +14,21 @@ const ClientHeader = ({ handleWorkflowTrigger, isLoading }: ClientHeaderProps) =
   const { user } = useAuth();
 
   return (
-    <header className="bg-3amg-dark shadow-sm border-b border-3amg-orange/20">
+    <header className="gradient-header shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-3amg rounded-lg"></div>
-            <span className="font-bold text-xl text-white">3AMG</span>
+          <Link to="/" className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-white rounded transform rotate-45 opacity-20"></div>
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+              <div className="w-4 h-4 bg-3amg-purple rounded transform rotate-45"></div>
+            </div>
+            <span className="font-bold text-xl text-white">3AMG ISP</span>
           </Link>
 
           <div className="flex items-center space-x-4">
             {user && (
-              <div className="text-sm text-gray-300">
-                Logado como: <span className="font-medium text-3amg-orange">{user.email}</span>
+              <div className="text-sm text-white/80">
+                Logado como: <span className="font-medium text-white">{user.email}</span>
               </div>
             )}
             
@@ -33,7 +36,7 @@ const ClientHeader = ({ handleWorkflowTrigger, isLoading }: ClientHeaderProps) =
               <Button
                 onClick={handleWorkflowTrigger}
                 disabled={isLoading}
-                className="bg-gradient-3amg hover:opacity-90"
+                className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border border-white/30"
               >
                 {isLoading ? (
                   <>
@@ -53,7 +56,7 @@ const ClientHeader = ({ handleWorkflowTrigger, isLoading }: ClientHeaderProps) =
               <UserMenu />
             ) : (
               <Link to="/auth">
-                <Button className="bg-gradient-3amg hover:opacity-90">Entrar</Button>
+                <Button className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border border-white/30">Entrar</Button>
               </Link>
             )}
           </div>

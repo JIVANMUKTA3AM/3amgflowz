@@ -85,50 +85,50 @@ const ClientDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-3amg-dark">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <ClientHeader />
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 bg-gray-800/80 backdrop-blur-sm shadow-lg border border-gray-700">
+          <TabsList className="grid w-full grid-cols-6 gradient-header p-1 rounded-lg shadow-lg">
             <TabsTrigger 
               value="home" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
+              className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
             >
               <Home className="h-4 w-4" />
               Início
             </TabsTrigger>
             <TabsTrigger 
               value="attendance" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
+              className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
             >
               <Users className="h-4 w-4" />
               Atendimento
             </TabsTrigger>
             <TabsTrigger 
               value="chat" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
+              className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
             >
               <MessageCircle className="h-4 w-4" />
               Chat ao Vivo
             </TabsTrigger>
             <TabsTrigger 
               value="logs" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
+              className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
             >
               <BarChart3 className="h-4 w-4" />
               Conversas
             </TabsTrigger>
             <TabsTrigger 
               value="crm" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
+              className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
             >
               <Users2 className="h-4 w-4" />
               CRM
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
+              className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
             >
               <Settings className="h-4 w-4" />
               Configurações
@@ -159,16 +159,16 @@ const ClientDashboard = () => {
               <CRMMetrics className="mb-8" />
 
               <Tabs defaultValue="clients" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-8 bg-gray-800">
-                  <TabsTrigger value="clients" className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white text-gray-300">
+                <TabsList className="grid w-full grid-cols-3 mb-8 gradient-header rounded-lg p-1">
+                  <TabsTrigger value="clients" className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background">
                     <Users className="h-4 w-4" />
                     Clientes
                   </TabsTrigger>
-                  <TabsTrigger value="pipeline" className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white text-gray-300">
+                  <TabsTrigger value="pipeline" className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background">
                     <BarChart3 className="h-4 w-4" />
                     Pipeline
                   </TabsTrigger>
-                  <TabsTrigger value="interactions" className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg-orange data-[state=active]:text-white text-gray-300">
+                  <TabsTrigger value="interactions" className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background">
                     <MessageCircle className="h-4 w-4" />
                     Interações
                   </TabsTrigger>
