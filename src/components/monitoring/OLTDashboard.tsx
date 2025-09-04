@@ -124,7 +124,7 @@ const OLTDashboard = () => {
 
       {/* Cards de métricas principais */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
             <Server className="h-8 w-8 text-orange-300 mr-3" />
             <div>
@@ -135,57 +135,57 @@ const OLTDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
-            <Activity className="h-8 w-8 text-orange-300 mr-3" />
+            <Activity className="h-8 w-8 text-3amg-orange mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Tempo Médio de Resposta</p>
               <p className="text-2xl font-bold text-white">2.3min</p>
-              <p className="text-xs text-green-300">-18% em relação ao período anterior</p>
+              <p className="text-xs text-green-400">-18% em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
-            <CheckCircle className="h-8 w-8 text-orange-300 mr-3" />
+            <CheckCircle className="h-8 w-8 text-3amg-orange mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Taxa de Resolução</p>
               <p className="text-2xl font-bold text-white">94.2%</p>
-              <p className="text-xs text-green-300">+3% em relação ao período anterior</p>
+              <p className="text-xs text-green-400">+3% em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
-            <Wifi className="h-8 w-8 text-yellow-300 mr-3" />
+            <Wifi className="h-8 w-8 text-3amg-purple mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Agentes Ativos</p>
               <p className="text-2xl font-bold text-white">3</p>
-              <p className="text-xs text-white/60">100% em relação ao período anterior</p>
+              <p className="text-xs text-gray-400">100% em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
-            <TrendingUp className="h-8 w-8 text-pink-300 mr-3" />
+            <TrendingUp className="h-8 w-8 text-3amg-purple mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Satisfação do Cliente</p>
               <p className="text-2xl font-bold text-white">4.8/5</p>
-              <p className="text-xs text-green-300">+0.3 em relação ao período anterior</p>
+              <p className="text-xs text-green-400">+0.3 em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
-            <AlertTriangle className="h-8 w-8 text-yellow-300 mr-3" />
+            <AlertTriangle className="h-8 w-8 text-yellow-400 mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Alertas Pendentes</p>
               <p className="text-2xl font-bold text-white">{totalAlerts}</p>
-              <p className="text-xs text-red-300">-3 em relação ao período anterior</p>
+              <p className="text-xs text-red-400">-3 em relação ao período anterior</p>
             </div>
           </CardContent>
         </Card>
@@ -193,46 +193,46 @@ const OLTDashboard = () => {
 
       {/* Segunda linha de cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
             <Server className="h-8 w-8 text-white mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Provedores Ativos</p>
               <p className="text-2xl font-bold text-white">12</p>
-              <p className="text-xs text-green-300">+2 novos provedores esta semana</p>
+              <p className="text-xs text-green-400">+2 novos provedores esta semana</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
-            <Activity className="h-8 w-8 text-purple-300 mr-3" />
+            <Activity className="h-8 w-8 text-3amg-purple mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Agentes Online</p>
               <p className="text-2xl font-bold text-white">34</p>
-              <p className="text-xs text-white/60">100% disponibilidade</p>
+              <p className="text-xs text-gray-400">100% disponibilidade</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
-            <TrendingUp className="h-8 w-8 text-green-300 mr-3" />
+            <TrendingUp className="h-8 w-8 text-green-400 mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Receita Mensal</p>
               <p className="text-2xl font-bold text-white">R$ 2.847</p>
-              <p className="text-xs text-green-300">+15% em relação ao mês anterior</p>
+              <p className="text-xs text-green-400">+15% em relação ao mês anterior</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/15 transition-all duration-300">
+        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
           <CardContent className="flex items-center p-6">
-            <CheckCircle className="h-8 w-8 text-green-300 mr-3" />
+            <CheckCircle className="h-8 w-8 text-green-400 mr-3" />
             <div>
               <p className="text-sm font-medium text-white/80">Status Sistema</p>
               <p className="text-2xl font-bold text-white">Online</p>
-              <p className="text-xs text-green-300">Todos os serviços funcionando</p>
+              <p className="text-xs text-green-400">Todos os serviços funcionando</p>
             </div>
           </CardContent>
         </Card>
