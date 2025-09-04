@@ -5,6 +5,7 @@ import ClientHeader from "@/components/client/ClientHeader";
 import MetricsCards from "@/components/client/MetricsCards";
 import AgentsOverview from "@/components/client/AgentsOverview";
 import ChannelsOverview from "@/components/client/ChannelsOverview";
+import MonitoringOverview from "@/components/client/MonitoringOverview";
 import ChatTab from "@/components/client/ChatTab";
 import LogsTab from "@/components/client/LogsTab";
 import SettingsTab from "@/components/client/SettingsTab";
@@ -119,10 +120,12 @@ const ClientDashboard = () => {
           <TabsContent value="overview" className="mt-8">
             <MetricsCards metrics={clientMetrics} />
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <AgentsOverview />
               <ChannelsOverview />
             </div>
+
+            <MonitoringOverview />
           </TabsContent>
 
           <TabsContent value="chat" className="mt-8">
