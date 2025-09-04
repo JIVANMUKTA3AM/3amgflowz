@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Server, 
   Wifi, 
@@ -14,14 +15,17 @@ import {
   TrendingUp,
   Signal,
   Clock,
-  BarChart3
+  BarChart3,
+  Router,
+  Shield
 } from 'lucide-react';
 import { useOLTMetrics } from '@/hooks/useOLTMetrics';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 
 const OLTDashboard = () => {
   const { oltMetrics, alerts, isLoading, refetch } = useOLTMetrics();
   const [selectedOLT, setSelectedOLT] = useState<string | null>(null);
+  const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('24h');
 
   // Calcular estatísticas gerais
   const totalOLTs = oltMetrics.length;
@@ -83,37 +87,62 @@ const OLTDashboard = () => {
     <div className="space-y-6">
       {/* Header com métricas gerais */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Dashboard de Monitoramento OLT</h2>
-          <p className="text-muted-foreground">
-            Visão geral do status e performance das suas OLTs
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-lg gradient-header flex items-center justify-center">
+            <Router className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              Dashboard de Monitoramento OLT
+              <div className="w-6 h-6 bg-3amg-purple rounded transform rotate-45 opacity-20"></div>
+            </h2>
+            <p className="text-muted-foreground">
+              Visão geral do status e performance das suas OLTs
+            </p>
+          </div>
         </div>
-        <Button 
-          variant="outline" 
-          onClick={() => refetch()} 
-          disabled={isLoading}
-        >
-          <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-          Atualizar
-        </Button>
+        <div className="flex items-center gap-3">
+          <Select value={timeRange} onValueChange={(value: '24h' | '7d' | '30d') => setTimeRange(value)}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="24h">Últimas 24h</SelectItem>
+              <SelectItem value="7d">7 dias</SelectItem>
+              <SelectItem value="30d">30 dias</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button 
+            variant="outline" 
+            onClick={() => refetch()} 
+            disabled={isLoading}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            Atualizar
+          </Button>
+        </div>
       </div>
 
       {/* Cards de métricas principais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <Card className="border-primary/20 gradient-card card-dark hover:shadow-lg transition-all">
           <CardContent className="flex items-center p-6">
-            <Server className="h-8 w-8 text-primary mr-3" />
+            <div className="p-3 rounded-lg bg-primary/10 icon-tech mr-3">
+              <Server className="h-8 w-8 text-primary" />
+            </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">OLTs Ativas</p>
               <p className="text-2xl font-bold text-primary">{totalOLTs}</p>
+              <p className="text-xs text-muted-foreground">Equipamentos</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-success/20 bg-gradient-to-br from-success/5 to-transparent">
+        <Card className="border-success/20 gradient-card card-dark hover:shadow-lg transition-all">
           <CardContent className="flex items-center p-6">
-            <Wifi className="h-8 w-8 text-success mr-3" />
+            <div className="p-3 rounded-lg bg-success/10 icon-tech mr-3">
+              <Wifi className="h-8 w-8 text-success" />
+            </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">ONTs Online</p>
               <p className="text-2xl font-bold text-success">{totalOntsOnline}</p>
@@ -122,9 +151,11 @@ const OLTDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-destructive/20 bg-gradient-to-br from-destructive/5 to-transparent">
+        <Card className="border-destructive/20 gradient-card card-dark hover:shadow-lg transition-all">
           <CardContent className="flex items-center p-6">
-            <WifiOff className="h-8 w-8 text-destructive mr-3" />
+            <div className="p-3 rounded-lg bg-destructive/10 icon-tech mr-3">
+              <WifiOff className="h-8 w-8 text-destructive" />
+            </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">ONTs Offline</p>
               <p className="text-2xl font-bold text-destructive">{totalOntsOffline}</p>
@@ -133,13 +164,37 @@ const OLTDashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-3amg-purple/20 bg-gradient-to-br from-3amg-purple/5 to-transparent">
+        <Card className="border-3amg-orange/20 gradient-card card-dark hover:shadow-lg transition-all">
           <CardContent className="flex items-center p-6">
-            <Activity className="h-8 w-8 text-3amg-purple mr-3" />
+            <div className="p-3 rounded-lg bg-3amg-orange/10 icon-tech mr-3">
+              <Activity className="h-8 w-8 text-3amg-orange" />
+            </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Uptime Médio</p>
               <p className={`text-2xl font-bold ${getUptimeColor(avgUptime)}`}>
                 {avgUptime.toFixed(1)}%
+              </p>
+              <p className="text-xs text-muted-foreground">Performance</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className={`gradient-card card-dark hover:shadow-lg transition-all ${totalAlerts > 0 ? 'border-destructive/50 fiber-glow' : 'border-success/20'}`}>
+          <CardContent className="flex items-center p-6">
+            <div className={`p-3 rounded-lg ${totalAlerts > 0 ? 'bg-destructive/10' : 'bg-success/10'} icon-tech mr-3`}>
+              {totalAlerts > 0 ? (
+                <Shield className="h-8 w-8 text-destructive" />
+              ) : (
+                <CheckCircle className="h-8 w-8 text-success" />
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">Alertas Ativos</p>
+              <p className={`text-2xl font-bold ${totalAlerts > 0 ? 'text-destructive' : 'text-success'}`}>
+                {totalAlerts}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {criticalAlerts > 0 ? `${criticalAlerts} críticos` : 'Sistema OK'}
               </p>
             </div>
           </CardContent>
@@ -249,36 +304,82 @@ const OLTDashboard = () => {
 
         <TabsContent value="performance" className="space-y-4">
           <div className="space-y-6">
+            {/* Filtro de período */}
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Análise de Performance</h3>
+              <div className="text-sm text-muted-foreground">
+                Período: {timeRange === '24h' ? 'Últimas 24 horas' : timeRange === '7d' ? '7 dias' : '30 dias'}
+              </div>
+            </div>
+
             {/* Gráfico de uptime */}
-            <Card>
+            <Card className="card-dark">
               <CardHeader>
                 <CardTitle>Uptime e Uso de Bandwidth por OLT</CardTitle>
               </CardHeader>
               <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={uptimeData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="name" />
-                      <YAxis />
-                      <Tooltip />
-                      <Area 
-                        type="monotone" 
-                        dataKey="uptime" 
-                        stackId="1"
-                        stroke="hsl(var(--success))" 
-                        fill="hsl(var(--success))" 
-                        fillOpacity={0.6}
-                      />
-                      <Area 
-                        type="monotone" 
-                        dataKey="bandwidth" 
-                        stackId="2"
-                        stroke="hsl(var(--primary))" 
-                        fill="hsl(var(--primary))" 
-                        fillOpacity={0.6}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={uptimeData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
+                    <YAxis stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="uptime" 
+                      stackId="1"
+                      stroke="#10B981" 
+                      fill="#10B981" 
+                      fillOpacity={0.6}
+                      name="Uptime (%)"
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="bandwidth" 
+                      stackId="2"
+                      stroke="#8B5CF6" 
+                      fill="#8B5CF6" 
+                      fillOpacity={0.6}
+                      name="Bandwidth (%)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Gráfico de tendência de banda */}
+            <Card className="card-dark">
+              <CardHeader>
+                <CardTitle>Tendência de Uso de Banda</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={250}>
+                  <LineChart data={uptimeData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" />
+                    <YAxis stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="bandwidth" 
+                      stroke="#F59E0B" 
+                      strokeWidth={3}
+                      name="Uso de Banda (%)"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
@@ -352,38 +453,56 @@ const OLTDashboard = () => {
         </TabsContent>
 
         <TabsContent value="alerts" className="space-y-4">
-          <Card>
+          <Card className="card-dark">
             <CardHeader>
-              <CardTitle>Histórico de Alertas</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Alertas Recentes</CardTitle>
+                <Badge variant={totalAlerts > 0 ? "destructive" : "outline"}>
+                  {totalAlerts} ativo{totalAlerts !== 1 ? 's' : ''}
+                </Badge>
+              </div>
             </CardHeader>
             <CardContent>
               {alerts.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-success" />
-                  <p>Nenhum alerta ativo no momento</p>
-                  <p className="text-sm">Todas as OLTs estão funcionando normalmente</p>
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-success fiber-glow" />
+                  <p className="text-lg font-medium">Sistema Funcionando Perfeitamente</p>
+                  <p className="text-sm">Todas as OLTs estão operacionais</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-96 overflow-y-auto">
                   {alerts.map((alert) => (
-                    <div key={alert.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={alert.id} className={`flex items-center justify-between p-4 rounded-lg border transition-all hover:shadow-md ${alert.severity === 'critical' ? 'border-destructive/50 bg-destructive/5' : 'border-border bg-card'}`}>
                       <div className="flex items-center gap-3">
-                        <Badge variant={getSeverityColor(alert.severity)}>
+                        <div className={`p-2 rounded-full ${alert.severity === 'critical' ? 'bg-destructive/10' : 'bg-warning/10'}`}>
+                          <AlertTriangle className={`h-4 w-4 ${alert.severity === 'critical' ? 'text-destructive' : 'text-warning'}`} />
+                        </div>
+                        <Badge variant={getSeverityColor(alert.severity)} className="text-xs">
                           {alert.severity.toUpperCase()}
                         </Badge>
                         <div>
                           <p className="font-medium">{alert.message}</p>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-muted-foreground flex items-center gap-2">
+                            <Server className="h-3 w-3" />
                             {alert.olt_name} • {formatTime(alert.created_at)}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
                         {alert.resolved ? (
-                          <Badge variant="outline">Resolvido</Badge>
+                          <Badge variant="outline" className="text-success border-success">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Resolvido
+                          </Badge>
                         ) : (
-                          <Badge variant="secondary">Ativo</Badge>
+                          <Badge variant="secondary" className="text-destructive">
+                            <Clock className="h-3 w-3 mr-1" />
+                            Ativo
+                          </Badge>
                         )}
+                        <Button size="sm" variant="outline" className="text-xs">
+                          Investigar
+                        </Button>
                       </div>
                     </div>
                   ))}
