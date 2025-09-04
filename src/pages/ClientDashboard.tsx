@@ -1,7 +1,10 @@
-import { useState } from "react";
-import { BarChart3, MessageCircle, Users, Settings, Users2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { BarChart3, MessageCircle, Users, Settings, Users2, Home } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClientHeader from "@/components/client/ClientHeader";
+import ClientDashboardOptions from "@/components/client/ClientDashboardOptions";
+import AttendancePanel from "@/components/client/AttendancePanel";
 import MetricsCards from "@/components/client/MetricsCards";
 import AgentsOverview from "@/components/client/AgentsOverview";
 import ChannelsOverview from "@/components/client/ChannelsOverview";
@@ -16,9 +19,17 @@ import InteractionHistory from "@/components/crm/InteractionHistory";
 import ClientForm from "@/components/crm/ClientForm";
 
 const ClientDashboard = () => {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [searchParams] = useSearchParams();
+  const tabFromUrl = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(tabFromUrl || "home");
   const [isClientFormOpen, setIsClientFormOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (tabFromUrl) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [tabFromUrl]);
 
   const clientMetrics = {
     conversasHoje: 24,
@@ -79,13 +90,20 @@ const ClientDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 bg-gray-800/80 backdrop-blur-sm shadow-lg border border-gray-700">
+          <TabsList className="grid w-full grid-cols-6 bg-gray-800/80 backdrop-blur-sm shadow-lg border border-gray-700">
             <TabsTrigger 
-              value="overview" 
+              value="home" 
               className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
             >
-              <BarChart3 className="h-4 w-4" />
-              Visão Geral
+              <Home className="h-4 w-4" />
+              Início
+            </TabsTrigger>
+            <TabsTrigger 
+              value="attendance" 
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
+            >
+              <Users className="h-4 w-4" />
+              Atendimento
             </TabsTrigger>
             <TabsTrigger 
               value="chat" 
@@ -98,7 +116,7 @@ const ClientDashboard = () => {
               value="logs" 
               className="flex items-center gap-2 data-[state=active]:bg-gradient-3amg data-[state=active]:text-white transition-all duration-300 text-gray-300"
             >
-              <Users className="h-4 w-4" />
+              <BarChart3 className="h-4 w-4" />
               Conversas
             </TabsTrigger>
             <TabsTrigger 
@@ -117,15 +135,12 @@ const ClientDashboard = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="mt-8">
-            <MetricsCards metrics={clientMetrics} />
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <AgentsOverview />
-              <ChannelsOverview />
-            </div>
+          <TabsContent value="home" className="mt-8">
+            <ClientDashboardOptions />
+          </TabsContent>
 
-            <MonitoringOverview />
+          <TabsContent value="attendance" className="mt-8">
+            <AttendancePanel />
           </TabsContent>
 
           <TabsContent value="chat" className="mt-8">
