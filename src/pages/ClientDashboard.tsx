@@ -85,7 +85,7 @@ const ClientDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen gradient-purple-orange-light">
       <ClientHeader />
 
       <div className="container mx-auto px-4 py-8">

@@ -20,7 +20,7 @@ const ClientHeader = ({ handleWorkflowTrigger, isLoading }: ClientHeaderProps) =
           <Link to="/" className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-white rounded transform rotate-45 opacity-20"></div>
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-              <div className="w-4 h-4 bg-3amg-purple rounded transform rotate-45"></div>
+              <div className="w-4 h-4 rounded transform rotate-45" style={{background: '#8B5CF6'}}></div>
             </div>
             <span className="font-bold text-xl text-white">3AMG ISP</span>
           </Link>
