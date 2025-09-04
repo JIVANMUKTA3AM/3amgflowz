@@ -42,8 +42,8 @@ const OLTDashboard = () => {
   }));
 
   const ontsStatusData = [
-    { name: 'Online', value: totalOntsOnline, color: '#10b981' },
-    { name: 'Offline', value: totalOntsOffline, color: '#ef4444' }
+    { name: 'Online', value: totalOntsOnline, color: 'hsl(var(--success))' },
+    { name: 'Offline', value: totalOntsOffline, color: 'hsl(var(--destructive))' }
   ];
 
   const alertsData = oltMetrics.map(olt => ({
@@ -62,9 +62,9 @@ const OLTDashboard = () => {
   };
 
   const getUptimeColor = (uptime: number) => {
-    if (uptime >= 98) return 'text-green-600';
-    if (uptime >= 95) return 'text-yellow-600';
-    return 'text-red-600';
+    if (uptime >= 98) return 'text-success';
+    if (uptime >= 95) return 'text-warning';
+    return 'text-destructive';
   };
 
   const formatTime = (timestamp: string) => {
@@ -101,41 +101,41 @@ const OLTDashboard = () => {
 
       {/* Cards de métricas principais */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
           <CardContent className="flex items-center p-6">
-            <Server className="h-8 w-8 text-blue-600 mr-3" />
+            <Server className="h-8 w-8 text-primary mr-3" />
             <div>
               <p className="text-sm font-medium text-muted-foreground">OLTs Ativas</p>
-              <p className="text-2xl font-bold">{totalOLTs}</p>
+              <p className="text-2xl font-bold text-primary">{totalOLTs}</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-success/20 bg-gradient-to-br from-success/5 to-transparent">
           <CardContent className="flex items-center p-6">
-            <Wifi className="h-8 w-8 text-green-600 mr-3" />
+            <Wifi className="h-8 w-8 text-success mr-3" />
             <div>
               <p className="text-sm font-medium text-muted-foreground">ONTs Online</p>
-              <p className="text-2xl font-bold text-green-600">{totalOntsOnline}</p>
+              <p className="text-2xl font-bold text-success">{totalOntsOnline}</p>
               <p className="text-xs text-muted-foreground">de {totalONTs} total</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-destructive/20 bg-gradient-to-br from-destructive/5 to-transparent">
           <CardContent className="flex items-center p-6">
-            <WifiOff className="h-8 w-8 text-red-600 mr-3" />
+            <WifiOff className="h-8 w-8 text-destructive mr-3" />
             <div>
               <p className="text-sm font-medium text-muted-foreground">ONTs Offline</p>
-              <p className="text-2xl font-bold text-red-600">{totalOntsOffline}</p>
+              <p className="text-2xl font-bold text-destructive">{totalOntsOffline}</p>
               <p className="text-xs text-muted-foreground">Requer atenção</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-3amg-purple/20 bg-gradient-to-br from-3amg-purple/5 to-transparent">
           <CardContent className="flex items-center p-6">
-            <Activity className="h-8 w-8 text-purple-600 mr-3" />
+            <Activity className="h-8 w-8 text-3amg-purple mr-3" />
             <div>
               <p className="text-sm font-medium text-muted-foreground">Uptime Médio</p>
               <p className={`text-2xl font-bold ${getUptimeColor(avgUptime)}`}>
@@ -148,9 +148,9 @@ const OLTDashboard = () => {
 
       {/* Alertas críticos */}
       {totalAlerts > 0 && (
-        <Card className="border-orange-200 bg-orange-50">
+        <Card className="border-warning/20 bg-warning/5">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-orange-800">
+            <CardTitle className="flex items-center gap-2 text-warning-foreground">
               <AlertTriangle className="h-5 w-5" />
               Alertas Ativos ({totalAlerts})
               {criticalAlerts > 0 && (
@@ -161,7 +161,7 @@ const OLTDashboard = () => {
           <CardContent>
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {alerts.slice(0, 5).map((alert) => (
-                <div key={alert.id} className="flex items-center justify-between p-2 bg-white rounded border">
+                <div key={alert.id} className="flex items-center justify-between p-2 bg-background rounded border">
                   <div className="flex items-center gap-2">
                     <Badge variant={getSeverityColor(alert.severity)}>
                       {alert.severity.toUpperCase()}
@@ -239,7 +239,7 @@ const OLTDashboard = () => {
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="alerts" fill="#ef4444" />
+                    <Bar dataKey="alerts" fill="hsl(var(--destructive))" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -255,30 +255,30 @@ const OLTDashboard = () => {
                 <CardTitle>Uptime e Uso de Bandwidth por OLT</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={uptimeData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area 
-                      type="monotone" 
-                      dataKey="uptime" 
-                      stackId="1"
-                      stroke="#10b981" 
-                      fill="#10b981" 
-                      fillOpacity={0.6}
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="bandwidth" 
-                      stackId="2"
-                      stroke="#3b82f6" 
-                      fill="#3b82f6" 
-                      fillOpacity={0.6}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={uptimeData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Area 
+                        type="monotone" 
+                        dataKey="uptime" 
+                        stackId="1"
+                        stroke="hsl(var(--success))" 
+                        fill="hsl(var(--success))" 
+                        fillOpacity={0.6}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="bandwidth" 
+                        stackId="2"
+                        stroke="hsl(var(--primary))" 
+                        fill="hsl(var(--primary))" 
+                        fillOpacity={0.6}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
@@ -293,9 +293,9 @@ const OLTDashboard = () => {
                     <CardTitle className="text-lg">{olt.olt_name}</CardTitle>
                     <div className="flex items-center gap-2">
                       {olt.uptime_percentage >= 98 ? (
-                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <CheckCircle className="h-5 w-5 text-success" />
                       ) : (
-                        <AlertTriangle className="h-5 w-5 text-yellow-600" />
+                        <AlertTriangle className="h-5 w-5 text-warning" />
                       )}
                     </div>
                   </div>
@@ -308,11 +308,11 @@ const OLTDashboard = () => {
                     </div>
                     <div>
                       <p className="text-muted-foreground">Online</p>
-                      <p className="font-medium text-green-600">{olt.onts_online}</p>
+                      <p className="font-medium text-success">{olt.onts_online}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Offline</p>
-                      <p className="font-medium text-red-600">{olt.onts_offline}</p>
+                      <p className="font-medium text-destructive">{olt.onts_offline}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Uptime</p>
@@ -359,7 +359,7 @@ const OLTDashboard = () => {
             <CardContent>
               {alerts.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-600" />
+                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-success" />
                   <p>Nenhum alerta ativo no momento</p>
                   <p className="text-sm">Todas as OLTs estão funcionando normalmente</p>
                 </div>
