@@ -85,12 +85,12 @@ const ClientDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen gradient-purple-orange-light">
+    <div className="min-h-screen bg-3amg-dark">
       <ClientHeader />
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 gradient-header p-1 rounded-lg shadow-lg">
+          <TabsList className="grid w-full grid-cols-6 bg-gray-900/80 backdrop-blur-sm border border-gray-700 p-1 rounded-lg shadow-lg">
             <TabsTrigger 
               value="home" 
               className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
@@ -159,7 +159,7 @@ const ClientDashboard = () => {
               <CRMMetrics className="mb-8" />
 
               <Tabs defaultValue="clients" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-8 gradient-header rounded-lg p-1">
+                <TabsList className="grid w-full grid-cols-3 mb-8 bg-gray-900/80 backdrop-blur-sm border border-gray-700 rounded-lg p-1">
                   <TabsTrigger value="clients" className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background">
                     <Users className="h-4 w-4" />
                     Clientes

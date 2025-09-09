@@ -109,8 +109,8 @@ const ClientDashboardOptions = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-foreground">Visão do Cliente</h1>
-        <p className="text-muted-foreground">Acesse todas as ferramentas e dashboards da sua conta</p>
+        <h1 className="text-3xl font-bold text-white">Visão do Cliente</h1>
+        <p className="text-gray-300">Acesse todas as ferramentas e dashboards da sua conta</p>
       </div>
 
       {/* Dashboard Options Grid */}
@@ -121,18 +121,18 @@ const ClientDashboardOptions = () => {
           return (
             <Card 
               key={option.id}
-              className={`bg-gradient-to-br ${option.color} border-border hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer group`}
+              className="bg-gray-900/80 backdrop-blur-sm border-gray-700 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer group"
               onClick={option.action}
             >
               <CardHeader className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-lg bg-background/50 group-hover:bg-background/70 transition-colors">
-                    <IconComponent className="h-6 w-6 text-foreground" />
+                  <div className="p-3 rounded-lg bg-gray-800/50 group-hover:bg-gray-700/50 transition-colors">
+                    <IconComponent className="h-6 w-6 text-3amg-orange" />
                   </div>
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="bg-background/50 border-border hover:bg-background/70"
+                    className="bg-gray-800/50 border-gray-600 hover:bg-gray-700/50 text-white"
                     onClick={(e) => {
                       e.stopPropagation();
                       option.action();
@@ -141,10 +141,10 @@ const ClientDashboardOptions = () => {
                     Acessar
                   </Button>
                 </div>
-                <CardTitle className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                <CardTitle className="text-lg font-semibold text-white group-hover:text-3amg-purple transition-colors">
                   {option.title}
                 </CardTitle>
-                <CardDescription className="text-muted-foreground">
+                <CardDescription className="text-gray-300">
                   {option.description}
                 </CardDescription>
               </CardHeader>
@@ -153,14 +153,14 @@ const ClientDashboardOptions = () => {
                 <div className="grid grid-cols-3 gap-2 text-sm">
                   {Object.entries(option.metrics).map(([key, value]) => (
                     <div key={key} className="text-center">
-                      <div className="font-semibold text-foreground">{value}</div>
-                      <div className="text-xs text-muted-foreground capitalize">{key}</div>
+                      <div className="font-semibold text-white">{value}</div>
+                      <div className="text-xs text-gray-400 capitalize">{key}</div>
                     </div>
                   ))}
                 </div>
                 
                 <div className="flex items-center justify-center">
-                  <div className="flex items-center gap-1 text-xs text-success font-medium">
+                  <div className="flex items-center gap-1 text-xs text-green-400 font-medium">
                     <Activity className="h-3 w-3" />
                     Sistema funcionando
                   </div>
@@ -172,13 +172,13 @@ const ClientDashboardOptions = () => {
       </div>
 
       {/* Quick Actions */}
-      <Card className="bg-card border-border">
+      <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <Zap className="h-5 w-5 text-primary" />
+          <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <Zap className="h-5 w-5 text-3amg-orange" />
             Ações Rápidas
           </CardTitle>
-          <CardDescription className="text-muted-foreground">
+          <CardDescription className="text-gray-300">
             Acesso direto às funcionalidades mais utilizadas
           </CardDescription>
         </CardHeader>
