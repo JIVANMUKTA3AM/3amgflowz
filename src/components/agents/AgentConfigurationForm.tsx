@@ -188,9 +188,9 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
   };
 
   return (
-    <Card>
+    <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700 shadow-lg">
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="text-white">
           {configuration ? "Editar Agente" : "Novo Agente"}
         </CardTitle>
       </CardHeader>
@@ -198,20 +198,21 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="name">Nome do Agente *</Label>
+              <Label htmlFor="name" className="text-white">Nome do Agente *</Label>
               <Input
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 placeholder="Ex: Agente de Atendimento"
                 required
+                className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
 
             <div>
-              <Label htmlFor="agent_type">Tipo de Agente *</Label>
+              <Label htmlFor="agent_type" className="text-white">Tipo de Agente *</Label>
               <Select value={formData.agent_type} onValueChange={(value) => handleInputChange("agent_type", value)}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white">
                   <SelectValue placeholder="Selecione o tipo" />
                 </SelectTrigger>
                 <SelectContent>
@@ -226,7 +227,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
           </div>
 
           <div>
-            <Label htmlFor="prompt">Prompt do Sistema *</Label>
+            <Label htmlFor="prompt" className="text-white">Prompt do Sistema *</Label>
             <Textarea
               id="prompt"
               value={formData.prompt}
@@ -234,18 +235,20 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
               placeholder="Descreva como o agente deve se comportar..."
               rows={4}
               required
+              className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
             />
           </div>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor="webhook_url">URL do Webhook N8N</Label>
+              <Label htmlFor="webhook_url" className="text-white">URL do Webhook N8N</Label>
               <Button 
                 type="button" 
                 variant="outline" 
                 size="sm" 
                 onClick={testWebhook}
                 disabled={!formData.webhook_url.trim() || !!webhookError}
+                className="border-gray-600 text-white hover:bg-gray-700"
               >
                 Testar Webhook
               </Button>
@@ -256,7 +259,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
               value={formData.webhook_url}
               onChange={(e) => handleInputChange("webhook_url", e.target.value)}
               placeholder="https://seu-n8n.com/webhook/..."
-              className={webhookError ? "border-red-500" : ""}
+              className={`bg-gray-800/50 border-gray-600 text-white placeholder-gray-400 ${webhookError ? "border-red-500" : ""}`}
             />
             {webhookError && (
               <p className="text-sm text-red-500">{webhookError}</p>
@@ -297,7 +300,7 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label>Temperatura: {formData.temperature}</Label>
+              <Label className="text-white">Temperatura: {formData.temperature}</Label>
               <Slider
                 value={[formData.temperature]}
                 onValueChange={([value]) => handleInputChange("temperature", value)}
@@ -306,13 +309,13 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
                 step={0.1}
                 className="w-full"
               />
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-400">
                 0 = Mais preciso, 2 = Mais criativo
               </p>
             </div>
 
             <div>
-              <Label htmlFor="max_tokens">Max Tokens</Label>
+              <Label htmlFor="max_tokens" className="text-white">Max Tokens</Label>
               <Input
                 id="max_tokens"
                 type="number"
@@ -320,8 +323,9 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
                 max="8000"
                 value={formData.max_tokens}
                 onChange={(e) => handleInputChange("max_tokens", parseInt(e.target.value))}
+                className="bg-gray-800/50 border-gray-600 text-white placeholder-gray-400"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-400 mt-1">
                 Limite de resposta (100-8000)
               </p>
             </div>
@@ -333,18 +337,18 @@ const AgentConfigurationForm = ({ configuration, onSave, onCancel, isLoading }: 
               checked={formData.is_active}
               onCheckedChange={(checked) => handleInputChange("is_active", checked)}
             />
-            <Label htmlFor="is_active">Agente ativo</Label>
+            <Label htmlFor="is_active" className="text-white">Agente ativo</Label>
           </div>
 
           <div className="flex gap-2 pt-4">
             <Button 
               type="submit" 
               disabled={isLoading || !!webhookError} 
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-3amg-orange hover:bg-3amg-orange/90"
             >
               {isLoading ? "Salvando..." : (configuration ? "Atualizar Agente" : "Criar Agente")}
             </Button>
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel} className="border-gray-600 text-white hover:bg-gray-700">
               Cancelar
             </Button>
           </div>

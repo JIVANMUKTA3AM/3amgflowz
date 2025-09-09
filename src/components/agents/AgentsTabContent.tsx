@@ -83,10 +83,10 @@ const AgentsTabContent = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-lg font-semibold text-white">
               {editingAgent ? "Editar Agente" : "Novo Agente"}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-300">
               Configure as preferências e comportamento do seu agente IA
             </p>
           </div>
@@ -96,6 +96,7 @@ const AgentsTabContent = () => {
               setShowForm(false);
               setEditingAgent(null);
             }}
+            className="border-gray-600 text-white hover:bg-gray-700"
           >
             Voltar
           </Button>
@@ -119,14 +120,15 @@ const AgentsTabContent = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold">Chat ao Vivo</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="text-lg font-semibold text-white">Chat ao Vivo</h3>
+            <p className="text-sm text-gray-300">
               Converse com {selectedChatAgent.name} em tempo real
             </p>
           </div>
           <Button 
             variant="outline" 
             onClick={() => setSelectedAgentForChat(null)}
+            className="border-gray-600 text-white hover:bg-gray-700"
           >
             Voltar
           </Button>
@@ -142,14 +144,15 @@ const AgentsTabContent = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold">Métricas do Agente</h3>
-            <p className="text-sm text-muted-foreground">
+            <h3 className="text-lg font-semibold text-white">Métricas do Agente</h3>
+            <p className="text-sm text-gray-300">
               Análise de performance do {selectedMetricsAgent.name}
             </p>
           </div>
           <Button 
             variant="outline" 
             onClick={() => setSelectedAgentForMetrics(null)}
+            className="border-gray-600 text-white hover:bg-gray-700"
           >
             Voltar
           </Button>
@@ -168,8 +171,8 @@ const AgentsTabContent = () => {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Carregando agentes...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-3amg-orange mx-auto mb-4"></div>
+          <p className="text-gray-300">Carregando agentes...</p>
         </div>
       </div>
     );
@@ -179,28 +182,28 @@ const AgentsTabContent = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Agentes IA</h3>
-          <p className="text-sm text-muted-foreground">
+          <h3 className="text-lg font-semibold text-white">Agentes IA</h3>
+          <p className="text-sm text-gray-300">
             Gerencie seus agentes inteligentes para diferentes tipos de atendimento
           </p>
         </div>
-        <Button onClick={handleCreateNew} className="bg-blue-600 hover:bg-blue-700">
+        <Button onClick={handleCreateNew} className="bg-3amg-orange hover:bg-3amg-orange/90">
           <Plus className="h-4 w-4 mr-2" />
           Novo Agente
         </Button>
       </div>
 
       {configurations.length === 0 ? (
-        <Card>
+        <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700 shadow-lg">
           <CardContent className="text-center py-12">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Settings className="h-8 w-8 text-gray-400" />
+            <div className="w-16 h-16 bg-3amg-orange/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Settings className="h-8 w-8 text-3amg-orange" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Nenhum agente configurado</h3>
-            <p className="text-muted-foreground mb-4">
+            <h3 className="text-lg font-semibold mb-2 text-white">Nenhum agente configurado</h3>
+            <p className="text-gray-300 mb-4">
               Crie seu primeiro agente IA para começar a automatizar atendimentos
             </p>
-            <Button onClick={handleCreateNew} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleCreateNew} className="bg-3amg-orange hover:bg-3amg-orange/90">
               <Plus className="h-4 w-4 mr-2" />
               Criar Primeiro Agente
             </Button>
@@ -209,41 +212,41 @@ const AgentsTabContent = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {configurations.map((config) => (
-            <Card key={config.id} className="group hover:shadow-lg transition-shadow">
+            <Card key={config.id} className="group hover:shadow-lg transition-shadow bg-gray-900/80 backdrop-blur-sm border-gray-700 shadow-lg">
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <CardTitle className="text-lg">{config.name}</CardTitle>
-                    <CardDescription className="capitalize">
+                    <CardTitle className="text-lg text-white">{config.name}</CardTitle>
+                    <CardDescription className="capitalize text-gray-300">
                       {config.agent_type.replace('_', ' ')}
                     </CardDescription>
                   </div>
-                  <Badge variant={config.is_active ? "default" : "secondary"}>
+                  <Badge variant={config.is_active ? "default" : "secondary"} className={config.is_active ? "bg-green-500" : "bg-gray-500"}>
                     {config.is_active ? "Ativo" : "Inativo"}
                   </Badge>
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-4">
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-gray-300">
                   <p className="line-clamp-2">{config.prompt}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
-                    <span className="font-medium">Modelo:</span>
-                    <p className="text-muted-foreground">{config.model}</p>
+                    <span className="font-medium text-white">Modelo:</span>
+                    <p className="text-gray-300">{config.model}</p>
                   </div>
                   <div>
-                    <span className="font-medium">Temp:</span>
-                    <p className="text-muted-foreground">{config.temperature}</p>
+                    <span className="font-medium text-white">Temp:</span>
+                    <p className="text-gray-300">{config.temperature}</p>
                   </div>
                 </div>
 
                 {config.webhook_url && (
                   <div className="text-sm">
-                    <span className="font-medium">Webhook:</span>
-                    <p className="text-muted-foreground text-xs truncate">
+                    <span className="font-medium text-white">Webhook:</span>
+                    <p className="text-gray-300 text-xs truncate">
                       {config.webhook_url}
                     </p>
                   </div>
@@ -253,7 +256,7 @@ const AgentsTabContent = () => {
                   <Button 
                     size="sm" 
                     onClick={() => handleStartChat(config.id)}
-                    className="flex-1"
+                    className="flex-1 bg-3amg-orange hover:bg-3amg-orange/90"
                     disabled={!config.is_active}
                   >
                     <MessageSquare className="h-3 w-3 mr-1" />
@@ -264,6 +267,7 @@ const AgentsTabContent = () => {
                     size="sm" 
                     variant="outline"
                     onClick={() => handleViewMetrics(config.id)}
+                    className="border-gray-600 text-white hover:bg-gray-700"
                   >
                     <BarChart3 className="h-3 w-3" />
                   </Button>
@@ -272,6 +276,7 @@ const AgentsTabContent = () => {
                     size="sm" 
                     variant="outline"
                     onClick={() => handleEdit(config.id)}
+                    className="border-gray-600 text-white hover:bg-gray-700"
                   >
                     <Edit className="h-3 w-3" />
                   </Button>
@@ -281,6 +286,7 @@ const AgentsTabContent = () => {
                     variant="outline"
                     onClick={() => handleDelete(config.id, config.name)}
                     disabled={isDeleting}
+                    className="border-gray-600 text-white hover:bg-gray-700"
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
@@ -294,46 +300,46 @@ const AgentsTabContent = () => {
       {configurations.length > 0 && (
         <div className="mt-8">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList>
-              <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-              <TabsTrigger value="metrics">Métricas</TabsTrigger>
+            <TabsList className="bg-gray-900/80 backdrop-blur-sm border-gray-700">
+              <TabsTrigger value="overview" className="text-white data-[state=active]:bg-3amg-orange data-[state=active]:text-white">Visão Geral</TabsTrigger>
+              <TabsTrigger value="metrics" className="text-white data-[state=active]:bg-3amg-orange data-[state=active]:text-white">Métricas</TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="mt-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card>
+                <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700 shadow-lg">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-2">
-                      <Settings className="h-5 w-5 text-blue-600" />
+                      <Settings className="h-5 w-5 text-3amg-orange" />
                       <div>
-                        <p className="text-2xl font-bold">{configurations.length}</p>
-                        <p className="text-sm text-muted-foreground">Agentes Configurados</p>
+                        <p className="text-2xl font-bold text-white">{configurations.length}</p>
+                        <p className="text-sm text-gray-300">Agentes Configurados</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700 shadow-lg">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-2">
-                      <Play className="h-5 w-5 text-green-600" />
+                      <Play className="h-5 w-5 text-green-400" />
                       <div>
-                        <p className="text-2xl font-bold">
+                        <p className="text-2xl font-bold text-white">
                           {configurations.filter(c => c.is_active).length}
                         </p>
-                        <p className="text-sm text-muted-foreground">Agentes Ativos</p>
+                        <p className="text-sm text-gray-300">Agentes Ativos</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700 shadow-lg">
                   <CardContent className="p-6">
                     <div className="flex items-center space-x-2">
-                      <MessageSquare className="h-5 w-5 text-orange-600" />
+                      <MessageSquare className="h-5 w-5 text-3amg-purple" />
                       <div>
-                        <p className="text-2xl font-bold">{conversations.length}</p>
-                        <p className="text-sm text-muted-foreground">Conversas Hoje</p>
+                        <p className="text-2xl font-bold text-white">{conversations.length}</p>
+                        <p className="text-sm text-gray-300">Conversas Hoje</p>
                       </div>
                     </div>
                   </CardContent>
