@@ -110,7 +110,7 @@ const HeroSection = () => {
           <Link to="/auth">
             <Button size="lg" className="group bg-gradient-3amg-orange hover:opacity-90 text-white font-semibold px-10 py-6 text-xl rounded-full shadow-2xl hover:shadow-3amg-orange/50 transition-all duration-300">
               <Rocket className="mr-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-              Assine Já - Comece Hoje
+              Começar Agora - Login
               <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>

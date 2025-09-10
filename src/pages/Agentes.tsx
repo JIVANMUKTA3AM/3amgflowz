@@ -1,15 +1,79 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Bot, Settings, BarChart3, Zap, MessageSquare } from "lucide-react";
+import { Bot, Settings, BarChart3, Zap, MessageSquare, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 import AgentsTabContent from "@/components/agents/AgentsTabContent";
 import { useAgentConfigurations } from "@/hooks/useAgentConfigurations";
 
 const Agentes = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("agents");
   const { configurations, conversations, isLoading } = useAgentConfigurations();
+
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/auth', { 
+        state: { 
+          from: { pathname: '/agentes' },
+          message: 'Você precisa estar logado para acessar os agentes.' 
+        } 
+      });
+    }
+  }, [user, loading, navigate]);
+
+  // Show loading while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-3amg-dark flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-3amg-orange mx-auto mb-4"></div>
+          <p className="text-gray-300">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login prompt if not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-3amg-dark flex items-center justify-center px-4">
+        <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700 shadow-lg max-w-md">
+          <CardHeader className="text-center">
+            <div className="p-3 bg-3amg-orange/20 rounded-full w-fit mx-auto mb-4">
+              <Bot className="h-8 w-8 text-3amg-orange" />
+            </div>
+            <CardTitle className="text-white">Acesso Restrito</CardTitle>
+            <CardDescription className="text-gray-300">
+              Você precisa estar autenticado para acessar a gestão de agentes IA.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button 
+              onClick={() => navigate('/auth')} 
+              className="w-full bg-3amg-orange hover:bg-3amg-orange/90"
+            >
+              Fazer Login
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Button 
+              onClick={() => navigate('/')} 
+              variant="outline"
+              className="w-full border-gray-600 text-white hover:bg-gray-700"
+            >
+              Voltar ao Início
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
 
   return (
