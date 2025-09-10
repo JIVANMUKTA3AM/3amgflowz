@@ -68,20 +68,30 @@ serve(async (req) => {
 
     logStep("Agent config found", { name: agentConfig.name, model: agentConfig.model });
 
-    // Preparar chamada para OpenAI
+    // Preparar chamada para OpenAI baseado no modelo
     const startTime = Date.now();
     
-    const requestBody = {
+    // Verificar se é um modelo mais novo que não suporta temperature
+    const isNewerModel = ['gpt-5-2025-08-07', 'gpt-5-mini-2025-08-07', 'gpt-5-nano-2025-08-07', 'gpt-4.1-2025-04-14', 'o3-2025-04-16', 'o4-mini-2025-04-16'].includes(agentConfig.model);
+    
+    const requestBody: any = {
       model: agentConfig.model,
       messages: [
         { role: 'system', content: agentConfig.prompt },
         { role: 'user', content: message }
       ],
-      temperature: agentConfig.temperature || 0.7,
-      max_tokens: agentConfig.max_tokens || 1000,
     };
 
-    logStep("Calling OpenAI", { model: agentConfig.model });
+    // Adicionar parâmetros baseado nas capacidades do modelo
+    if (isNewerModel) {
+      requestBody.max_completion_tokens = agentConfig.max_tokens || 1000;
+      // Modelos mais novos não suportam temperature
+    } else {
+      requestBody.max_tokens = agentConfig.max_tokens || 1000;
+      requestBody.temperature = agentConfig.temperature || 0.7;
+    }
+
+    logStep("Calling OpenAI", { model: agentConfig.model, isNewerModel });
 
     // Chamar OpenAI
     const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -105,6 +115,53 @@ serve(async (req) => {
 
     if (!agentResponse) {
       throw new Error('No response from OpenAI');
+    }
+
+    logStep("OpenAI response received", { responseTime, tokensUsed, responseLength: agentResponse.length });
+
+    // Salvar conversa na base de dados
+    const { error: saveError } = await supabaseServiceClient
+      .from('agent_conversations')
+      .insert({
+        agent_configuration_id: agentConfigId,
+        user_id: user.id,
+        message: message,
+        response: agentResponse,
+        response_time_ms: responseTime,
+        tokens_used: tokensUsed,
+        model: agentConfig.model,
+        session_id: sessionId || `session_${Date.now()}`,
+        channel_type: channelType || 'chat'
+      });
+
+    if (saveError) {
+      console.error('Error saving conversation:', saveError);
+    }
+
+    // Enviar webhook se configurado
+    if (agentConfig.webhook_url) {
+      try {
+        await fetch(agentConfig.webhook_url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            agent_name: agentConfig.name,
+            agent_type: agentConfig.agent_type,
+            user_message: message,
+            ai_response: agentResponse,
+            response_time_ms: responseTime,
+            tokens_used: tokensUsed,
+            timestamp: new Date().toISOString(),
+            session_id: sessionId,
+            channel_type: channelType
+          }),
+        });
+        logStep("Webhook sent successfully");
+      } catch (webhookError) {
+        logStep("Webhook error", { error: webhookError.message });
+      }
     }
 
     logStep("OpenAI response received", { responseTime, tokensUsed, responseLength: agentResponse.length });
