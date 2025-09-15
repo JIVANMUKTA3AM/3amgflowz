@@ -17,6 +17,7 @@ import {
   Users2,
   Phone
 } from "lucide-react";
+import TechnicalMonitoringDashboard from "./TechnicalMonitoringDashboard";
 
 const ClientDashboardOptions = () => {
   const navigate = useNavigate();
@@ -170,6 +171,22 @@ const ClientDashboardOptions = () => {
           );
         })}
       </div>
+
+      {/* Technical Monitoring Dashboard */}
+      <Card className="bg-gray-800/80 border-gray-700 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-white flex items-center gap-2">
+            <Activity className="h-5 w-5 text-3amg-orange" />
+            Monitoramento Técnico Interativo
+          </CardTitle>
+          <CardDescription className="text-gray-400">
+            Dashboard completo para monitoramento de agentes, OLTs, ONTs e infraestrutura técnica
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <TechnicalMonitoringDashboard />
+        </CardContent>
+      </Card>
 
       {/* Quick Actions */}
       <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700">
