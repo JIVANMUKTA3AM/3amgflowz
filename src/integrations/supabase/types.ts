@@ -2327,6 +2327,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      decrypt_credential: {
+        Args: { encrypted_text: string }
+        Returns: string
+      }
+      decrypt_jsonb_credentials: {
+        Args: { encrypted_credentials: Json }
+        Returns: Json
+      }
+      encrypt_credential: {
+        Args: { credential_text: string }
+        Returns: string
+      }
+      encrypt_jsonb_credentials: {
+        Args: { credentials: Json }
+        Returns: Json
+      }
       is_member_of: {
         Args: { org_id: string }
         Returns: boolean
