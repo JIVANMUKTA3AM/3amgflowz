@@ -28,3 +28,6 @@ verify_jwt = false
 
 [functions.webhook-receiver]
 verify_jwt = false
+
+[functions.comercial-plans]
+verify_jwt = false

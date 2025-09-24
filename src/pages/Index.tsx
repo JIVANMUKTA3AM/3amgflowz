@@ -6,7 +6,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Activity, TrendingUp, Shield, Bot, MessageSquare, BarChart3, CreditCard, Database, Webhook, Zap } from "lucide-react";
+import { Users, Activity, TrendingUp, Shield, Bot, MessageSquare, BarChart3, CreditCard, Database, Webhook, Zap, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import UserMenu from "@/components/UserMenu";
@@ -309,6 +309,19 @@ const Index = () => {
                 </div>
                 <p className="text-sm text-gray-300">
                   Gerenciar planos e cobranças
+                </p>
+              </Link>
+
+              <Link
+                to="/gestao-comercial"
+                className="p-4 text-left border border-gray-700 rounded-lg hover:shadow-md transition-shadow bg-gray-800/50 hover:bg-gray-800/70"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <DollarSign className="h-5 w-5 text-green-400" />
+                  <h3 className="font-semibold text-white">Gestão Comercial</h3>
+                </div>
+                <p className="text-sm text-gray-300">
+                  Gerencie planos de internet para provedores B2B
                 </p>
               </Link>
             </div>

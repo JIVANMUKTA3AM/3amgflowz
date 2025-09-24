@@ -1406,6 +1406,50 @@ export type Database = {
           },
         ]
       }
+      planos_provedores: {
+        Row: {
+          ativo: boolean
+          condicoes: string | null
+          created_at: string
+          id: string
+          nome_plano: string
+          preco: number
+          promocao: string | null
+          provedor_id: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          condicoes?: string | null
+          created_at?: string
+          id?: string
+          nome_plano: string
+          preco: number
+          promocao?: string | null
+          provedor_id: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          condicoes?: string | null
+          created_at?: string
+          id?: string
+          nome_plano?: string
+          preco?: number
+          promocao?: string | null
+          provedor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planos_provedores_provedor_id_fkey"
+            columns: ["provedor_id"]
+            isOneToOne: false
+            referencedRelation: "providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           agent_settings: Json | null

@@ -21,6 +21,7 @@ import Integracoes from "@/pages/Integracoes";
 import IntegrationsManagement from "@/pages/IntegrationsManagement";
 import ModeloDados from "@/pages/ModeloDados";
 import N8nManagement from "@/pages/N8nManagement";
+import GestaoComercial from "@/pages/GestaoComercial";
 import OltConfig from "@/pages/OltConfig";
 import PagamentoMetodo from "@/pages/PagamentoMetodo";
 import Pagamentos from "@/pages/Pagamentos";
@@ -92,6 +93,7 @@ const RoleBasedRouter = () => {
       <Route path="/integrations-management" element={<IntegrationsManagement />} />
       <Route path="/modelo-dados" element={<ModeloDados />} />
       <Route path="/n8n-management" element={<N8nManagement />} />
+      <Route path="/gestao-comercial" element={<GestaoComercial />} />
       <Route path="/olt-config" element={<OltConfig />} />
       <Route path="/pagamento-metodo" element={<PagamentoMetodo />} />
       <Route path="/pagamentos" element={<Pagamentos />} />
