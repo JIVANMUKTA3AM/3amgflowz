@@ -2199,6 +2199,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       webhook_events: {
         Row: {
           agent_id: string | null
@@ -2387,6 +2411,13 @@ export type Database = {
         Args: { credentials: Json }
         Returns: Json
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_member_of: {
         Args: { org_id: string }
         Returns: boolean
@@ -2403,6 +2434,7 @@ export type Database = {
     }
     Enums: {
       agent_type: "atendimento" | "comercial" | "suporte_tecnico"
+      app_role: "admin" | "moderator" | "user"
       atividade_status:
         | "pendente"
         | "em_andamento"
@@ -2556,6 +2588,7 @@ export const Constants = {
   public: {
     Enums: {
       agent_type: ["atendimento", "comercial", "suporte_tecnico"],
+      app_role: ["admin", "moderator", "user"],
       atividade_status: [
         "pendente",
         "em_andamento",

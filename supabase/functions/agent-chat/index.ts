@@ -160,7 +160,7 @@ serve(async (req) => {
         });
         logStep("Webhook sent successfully");
       } catch (webhookError) {
-        logStep("Webhook error", { error: webhookError.message });
+        logStep("Webhook error", { error: webhookError instanceof Error ? webhookError.message : String(webhookError) });
       }
     }
 

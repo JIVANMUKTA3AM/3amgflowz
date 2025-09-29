@@ -30,7 +30,7 @@ serve(async (req) => {
     try {
       requestData = JSON.parse(body);
     } catch (parseError) {
-      logStep("Erro ao fazer parse do JSON", { error: parseError.message, body: body.substring(0, 200) });
+      logStep("Erro ao fazer parse do JSON", { error: parseError instanceof Error ? parseError.message : String(parseError), body: body.substring(0, 200) });
       return new Response(JSON.stringify({ error: "JSON inválido" }), { 
         status: 400, 
         headers: { ...corsHeaders, "Content-Type": "application/json" } 
@@ -87,8 +87,8 @@ serve(async (req) => {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
       logStep("Evento verificado com sucesso", { type: event.type });
     } catch (err) {
-      logStep("Erro na verificação do evento", { error: err.message });
-      return new Response(`Webhook Error: ${err.message}`, { status: 400, headers: corsHeaders });
+      logStep("Erro na verificação do evento", { error: err instanceof Error ? err.message : String(err) });
+      return new Response(`Webhook Error: ${err instanceof Error ? err.message : String(err)}`, { status: 400, headers: corsHeaders });
     }
 
     // Inicializar o cliente Supabase com a chave de serviço para poder escrever no banco
@@ -220,8 +220,8 @@ serve(async (req) => {
     });
     
   } catch (error) {
-    logStep("Erro no processamento do webhook", { error: error.message });
-    return new Response(JSON.stringify({ error: error.message }), {
+    logStep("Erro no processamento do webhook", { error: error instanceof Error ? error.message : String(error) });
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

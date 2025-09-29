@@ -47,7 +47,7 @@ serve(async (req) => {
       }
     }
 
-    webhookUrl = webhookUrls[targetAgent as keyof typeof webhookUrls]
+    webhookUrl = webhookUrls[targetAgent as keyof typeof webhookUrls] || ''
 
     if (!webhookUrl) {
       console.log(`No webhook URL configured for agent: ${targetAgent}, using default response`)
@@ -127,7 +127,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         details: 'Failed to trigger n8n webhook'
       }),
       { 

@@ -91,7 +91,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: false, 
         message: 'Erro interno no teste de integração',
-        error: error.message 
+        error: error instanceof Error ? error.message : String(error)
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
@@ -136,7 +136,7 @@ async function testWhatsAppIntegration(integration: any) {
     return { 
       success: false, 
       message: 'Erro ao testar WhatsApp',
-      details: { error: error.message }
+      details: { error: error instanceof Error ? error.message : String(error) }
     };
   }
 }
@@ -180,7 +180,7 @@ async function testSlackIntegration(integration: any) {
     return { 
       success: false, 
       message: 'Erro ao testar Slack',
-      details: { error: error.message }
+      details: { error: error instanceof Error ? error.message : String(error) }
     };
   }
 }
@@ -207,7 +207,7 @@ async function testEmailIntegration(integration: any) {
     return { 
       success: false, 
       message: 'Erro ao testar email',
-      details: { error: error.message }
+      details: { error: error instanceof Error ? error.message : String(error) }
     };
   }
 }
@@ -254,7 +254,7 @@ async function testWebhookIntegration(integration: any) {
     return { 
       success: false, 
       message: 'Erro ao testar webhook',
-      details: { error: error.message }
+      details: { error: error instanceof Error ? error.message : String(error) }
     };
   }
 }
@@ -296,7 +296,7 @@ async function testCRMIntegration(integration: any) {
     return { 
       success: false, 
       message: 'Erro ao testar CRM',
-      details: { error: error.message }
+      details: { error: error instanceof Error ? error.message : String(error) }
     };
   }
 }

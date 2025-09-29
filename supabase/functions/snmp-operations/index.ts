@@ -40,7 +40,7 @@ async function executeSNMPCommand(
     // Simular delay de rede
     await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 1000));
     
-    let mockData = [];
+    let mockData: any[] = [];
     
     switch (operation) {
       case 'get':
@@ -83,7 +83,7 @@ async function executeSNMPCommand(
   } catch (error) {
     return {
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : String(error),
       executionTime: Date.now() - startTime
     };
   }
@@ -196,7 +196,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: error.message
+        error: error instanceof Error ? error.message : String(error)
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

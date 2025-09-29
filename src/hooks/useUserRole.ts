@@ -1,36 +1,44 @@
 
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useProfile } from './useProfile';
 
-// Lista de emails de admin - você pode adicionar mais emails aqui
-const adminEmails = [
-  'gustavo.steve@hotmail.com',
-  'admin@agentflow.com'
-];
-
 export const useUserRole = () => {
-  const { profile, isLoading } = useProfile();
+  const { user } = useAuth();
+  const { profile, isLoading: profileLoading } = useProfile();
   
-  // Verificar se é admin baseado no email
-  const user = profile; // O perfil já vem com os dados do usuário
-  const userEmail = user?.id ? getUserEmailFromId(user.id) : null;
+  // Query user roles from database
+  const { data: userRoles, isLoading: rolesLoading } = useQuery({
+    queryKey: ['user-roles', user?.id],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id);
+      
+      if (error) {
+        console.error('Error fetching user roles:', error);
+        return [];
+      }
+      
+      return data?.map(r => r.role) || [];
+    },
+    enabled: !!user?.id,
+  });
+
+  const isLoading = profileLoading || rolesLoading;
   
-  // Determinar role baseado no email primeiro (para admins)
-  const isAdminByEmail = userEmail && adminEmails.includes(userEmail);
+  // Determine primary role (admin takes precedence)
+  const roles = userRoles || [];
+  const isAdmin = roles.includes('admin');
+  const role = isAdmin ? 'admin' : (profile?.user_role_type || 'client');
   
-  const role = isAdminByEmail ? 'admin' : (profile?.user_role_type || 'client');
-  const isAdmin = isAdminByEmail || profile?.role === 'admin';
   const isTecnico = profile?.user_role_type === 'tecnico';
   const isComercial = profile?.user_role_type === 'comercial';
   const isGeral = profile?.user_role_type === 'geral';
-
-  // Helper para obter email do ID (temporário - o ideal seria ter no perfil)
-  function getUserEmailFromId(userId: string): string | null {
-    // Como você é gustavo.steve@hotmail.com, vou mapear seu ID
-    if (userId === '2b69092d-e637-4b82-ab5a-10d4c318c27a') {
-      return 'gustavo.steve@hotmail.com';
-    }
-    return null;
-  }
 
   return {
     role,
@@ -40,6 +48,7 @@ export const useUserRole = () => {
     isGeral,
     isLoading,
     loading: isLoading, // Alias para compatibilidade
-    profile
+    profile,
+    roles
   };
 };
