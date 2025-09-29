@@ -118,6 +118,43 @@ export const useWebhooks = () => {
     },
   });
 
+  const testWebhookMutation = useMutation({
+    mutationFn: async ({ webhookId, webhookUrl, customPayload }: { 
+      webhookId: string; 
+      webhookUrl: string; 
+      customPayload?: any 
+    }) => {
+      const { data, error } = await supabase.functions.invoke('webhook-tester', {
+        body: {
+          webhook_url: webhookUrl,
+          webhook_id: webhookId,
+          test_payload: customPayload,
+          timeout_ms: 15000
+        }
+      });
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['webhook-logs', user?.id] });
+      toast({
+        title: data.test_result.success ? "Teste bem-sucedido!" : "Teste falhou",
+        description: data.test_result.success 
+          ? `Webhook respondeu em ${data.test_result.response_time_ms}ms`
+          : data.test_result.error_message || "Erro desconhecido",
+        variant: data.test_result.success ? "default" : "destructive",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erro no teste",
+        description: "Falha ao executar teste do webhook. Verifique a URL e tente novamente.",
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     webhooks,
     webhookLogs,
@@ -126,8 +163,10 @@ export const useWebhooks = () => {
     createWebhook: createWebhookMutation.mutate,
     updateWebhook: updateWebhookMutation.mutate,
     deleteWebhook: deleteWebhookMutation.mutate,
+    testWebhook: testWebhookMutation.mutate,
     isCreating: createWebhookMutation.isPending,
     isUpdating: updateWebhookMutation.isPending,
     isDeleting: deleteWebhookMutation.isPending,
+    isTesting: testWebhookMutation.isPending,
   };
 };
