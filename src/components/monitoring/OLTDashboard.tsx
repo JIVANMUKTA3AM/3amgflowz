@@ -15,15 +15,18 @@ import {
   TrendingUp,
   Signal,
   Clock,
-  BarChart3,
-  Router,
-  Shield
+  Radio,
+  Zap,
+  Thermometer,
+  Battery
 } from 'lucide-react';
 import { useOLTMetrics } from '@/hooks/useOLTMetrics';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { useONTMonitoring } from '@/hooks/useONTMonitoring';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line, ComposedChart, Legend } from 'recharts';
 
 const OLTDashboard = () => {
   const { oltMetrics, alerts, isLoading, refetch } = useOLTMetrics();
+  const { ontData } = useONTMonitoring();
   const [selectedOLT, setSelectedOLT] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<'24h' | '7d' | '30d'>('24h');
 
@@ -46,14 +49,45 @@ const OLTDashboard = () => {
   }));
 
   const ontsStatusData = [
-    { name: 'Online', value: totalOntsOnline, color: 'hsl(var(--success))' },
-    { name: 'Offline', value: totalOntsOffline, color: 'hsl(var(--destructive))' }
+    { name: 'Online', value: totalOntsOnline, color: '#10B981' },
+    { name: 'Offline', value: totalOntsOffline, color: '#EF4444' }
   ];
 
   const alertsData = oltMetrics.map(olt => ({
     name: olt.olt_name,
     alerts: olt.alerts_count
   }));
+
+  // Dados de sinal óptico das ONTs
+  const signalData = ontData
+    .filter(ont => ont.optical_power_rx !== null && ont.optical_power_tx !== null)
+    .map(ont => ({
+      serial: ont.ont_serial.slice(-8),
+      rx: ont.optical_power_rx || 0,
+      tx: ont.optical_power_tx || 0,
+      status: ont.status
+    }));
+
+  // Dados de temperatura e voltagem
+  const healthData = ontData
+    .filter(ont => ont.temperature !== null || ont.voltage !== null)
+    .map(ont => ({
+      serial: ont.ont_serial.slice(-8),
+      temp: ont.temperature || 0,
+      voltage: ont.voltage || 0,
+      status: ont.status
+    }));
+
+  // Estatísticas de sinal
+  const avgSignalRx = signalData.length > 0 
+    ? signalData.reduce((sum, ont) => sum + ont.rx, 0) / signalData.length 
+    : 0;
+  const avgSignalTx = signalData.length > 0 
+    ? signalData.reduce((sum, ont) => sum + ont.tx, 0) / signalData.length 
+    : 0;
+  const avgTemp = healthData.length > 0 
+    ? healthData.reduce((sum, ont) => sum + ont.temp, 0) / healthData.length 
+    : 0;
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -89,14 +123,14 @@ const OLTDashboard = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-            <div className="w-6 h-6 rounded transform rotate-45" style={{background: 'linear-gradient(135deg, #8B5CF6, #F59E0B)'}}></div>
+            <Radio className="w-6 h-6 text-purple-600" />
           </div>
           <div>
             <h2 className="text-3xl font-bold text-white">
-              Painel Administrativo - Gestão de Provedores
+              Monitoramento de OLTs
             </h2>
             <p className="text-white/80">
-              Monitore clientes provedores, suas assinaturas e desempenho da plataforma
+              Monitoramento em tempo real de sinais ópticos, status e performance das OLTs
             </p>
           </div>
         </div>
@@ -123,69 +157,47 @@ const OLTDashboard = () => {
       </div>
 
       {/* Cards de métricas principais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-900/40 to-blue-800/20 backdrop-blur-sm border-blue-500/20">
           <CardContent className="flex items-center p-6">
-            <Server className="h-8 w-8 text-orange-300 mr-3" />
+            <Server className="h-8 w-8 text-blue-400 mr-3" />
             <div>
-              <p className="text-sm font-medium text-white/80">Atendimentos Hoje</p>
+              <p className="text-sm font-medium text-white/80">OLTs Ativas</p>
               <p className="text-2xl font-bold text-white">{totalOLTs}</p>
-              <p className="text-xs text-green-300">+12% em relação ao período anterior</p>
+              <p className="text-xs text-blue-300">Total de equipamentos</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-900/40 to-green-800/20 backdrop-blur-sm border-green-500/20">
           <CardContent className="flex items-center p-6">
-            <Activity className="h-8 w-8 text-3amg-orange mr-3" />
+            <Wifi className="h-8 w-8 text-green-400 mr-3" />
             <div>
-              <p className="text-sm font-medium text-white/80">Tempo Médio de Resposta</p>
-              <p className="text-2xl font-bold text-white">2.3min</p>
-              <p className="text-xs text-green-400">-18% em relação ao período anterior</p>
+              <p className="text-sm font-medium text-white/80">ONTs Online</p>
+              <p className="text-2xl font-bold text-white">{totalOntsOnline}</p>
+              <p className="text-xs text-green-300">De {totalONTs} totais</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-900/40 to-purple-800/20 backdrop-blur-sm border-purple-500/20">
           <CardContent className="flex items-center p-6">
-            <CheckCircle className="h-8 w-8 text-3amg-orange mr-3" />
+            <Signal className="h-8 w-8 text-purple-400 mr-3" />
             <div>
-              <p className="text-sm font-medium text-white/80">Taxa de Resolução</p>
-              <p className="text-2xl font-bold text-white">94.2%</p>
-              <p className="text-xs text-green-400">+3% em relação ao período anterior</p>
+              <p className="text-sm font-medium text-white/80">Sinal Médio RX</p>
+              <p className="text-2xl font-bold text-white">{avgSignalRx.toFixed(2)} dBm</p>
+              <p className="text-xs text-purple-300">Potência recebida</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-900/40 to-orange-800/20 backdrop-blur-sm border-orange-500/20">
           <CardContent className="flex items-center p-6">
-            <Wifi className="h-8 w-8 text-3amg-purple mr-3" />
+            <Zap className="h-8 w-8 text-orange-400 mr-3" />
             <div>
-              <p className="text-sm font-medium text-white/80">Agentes Ativos</p>
-              <p className="text-2xl font-bold text-white">3</p>
-              <p className="text-xs text-gray-400">100% em relação ao período anterior</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
-          <CardContent className="flex items-center p-6">
-            <TrendingUp className="h-8 w-8 text-3amg-purple mr-3" />
-            <div>
-              <p className="text-sm font-medium text-white/80">Satisfação do Cliente</p>
-              <p className="text-2xl font-bold text-white">4.8/5</p>
-              <p className="text-xs text-green-400">+0.3 em relação ao período anterior</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
-          <CardContent className="flex items-center p-6">
-            <AlertTriangle className="h-8 w-8 text-yellow-400 mr-3" />
-            <div>
-              <p className="text-sm font-medium text-white/80">Alertas Pendentes</p>
-              <p className="text-2xl font-bold text-white">{totalAlerts}</p>
-              <p className="text-xs text-red-400">-3 em relação ao período anterior</p>
+              <p className="text-sm font-medium text-white/80">Sinal Médio TX</p>
+              <p className="text-2xl font-bold text-white">{avgSignalTx.toFixed(2)} dBm</p>
+              <p className="text-xs text-orange-300">Potência transmitida</p>
             </div>
           </CardContent>
         </Card>
@@ -193,46 +205,46 @@ const OLTDashboard = () => {
 
       {/* Segunda linha de cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-cyan-900/40 to-cyan-800/20 backdrop-blur-sm border-cyan-500/20">
           <CardContent className="flex items-center p-6">
-            <Server className="h-8 w-8 text-white mr-3" />
+            <Activity className="h-8 w-8 text-cyan-400 mr-3" />
             <div>
-              <p className="text-sm font-medium text-white/80">Provedores Ativos</p>
-              <p className="text-2xl font-bold text-white">12</p>
-              <p className="text-xs text-green-400">+2 novos provedores esta semana</p>
+              <p className="text-sm font-medium text-white/80">Uptime Médio</p>
+              <p className="text-2xl font-bold text-white">{avgUptime.toFixed(1)}%</p>
+              <p className="text-xs text-cyan-300">Disponibilidade</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-yellow-900/40 to-yellow-800/20 backdrop-blur-sm border-yellow-500/20">
           <CardContent className="flex items-center p-6">
-            <Activity className="h-8 w-8 text-3amg-purple mr-3" />
+            <AlertTriangle className="h-8 w-8 text-yellow-400 mr-3" />
             <div>
-              <p className="text-sm font-medium text-white/80">Agentes Online</p>
-              <p className="text-2xl font-bold text-white">34</p>
-              <p className="text-xs text-gray-400">100% disponibilidade</p>
+              <p className="text-sm font-medium text-white/80">Alertas Ativos</p>
+              <p className="text-2xl font-bold text-white">{totalAlerts}</p>
+              <p className="text-xs text-yellow-300">{criticalAlerts} críticos</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-pink-900/40 to-pink-800/20 backdrop-blur-sm border-pink-500/20">
           <CardContent className="flex items-center p-6">
-            <TrendingUp className="h-8 w-8 text-green-400 mr-3" />
+            <Thermometer className="h-8 w-8 text-pink-400 mr-3" />
             <div>
-              <p className="text-sm font-medium text-white/80">Receita Mensal</p>
-              <p className="text-2xl font-bold text-white">R$ 2.847</p>
-              <p className="text-xs text-green-400">+15% em relação ao mês anterior</p>
+              <p className="text-sm font-medium text-white/80">Temperatura Média</p>
+              <p className="text-2xl font-bold text-white">{avgTemp.toFixed(1)}°C</p>
+              <p className="text-xs text-pink-300">ONTs monitoradas</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gray-900/80 backdrop-blur-sm border-gray-700">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-red-900/40 to-red-800/20 backdrop-blur-sm border-red-500/20">
           <CardContent className="flex items-center p-6">
-            <CheckCircle className="h-8 w-8 text-green-400 mr-3" />
+            <WifiOff className="h-8 w-8 text-red-400 mr-3" />
             <div>
-              <p className="text-sm font-medium text-white/80">Status Sistema</p>
-              <p className="text-2xl font-bold text-white">Online</p>
-              <p className="text-xs text-green-400">Todos os serviços funcionando</p>
+              <p className="text-sm font-medium text-white/80">ONTs Offline</p>
+              <p className="text-2xl font-bold text-white">{totalOntsOffline}</p>
+              <p className="text-xs text-red-300">Requerem atenção</p>
             </div>
           </CardContent>
         </Card>
@@ -271,30 +283,204 @@ const OLTDashboard = () => {
       )}
 
       {/* Tabs principais */}
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="signals" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="signals">Sinais Ópticos</TabsTrigger>
           <TabsTrigger value="overview">Visão Geral</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="olts">Detalhes OLTs</TabsTrigger>
           <TabsTrigger value="alerts">Alertas</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="signals" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Gráfico de Potência Óptica RX/TX */}
+            <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Signal className="h-5 w-5 text-purple-400" />
+                  Níveis de Sinal Óptico (RX/TX)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {signalData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <ComposedChart data={signalData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                      <XAxis 
+                        dataKey="serial" 
+                        stroke="rgba(255,255,255,0.6)"
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                      />
+                      <YAxis stroke="rgba(255,255,255,0.6)" label={{ value: 'dBm', angle: -90, position: 'insideLeft' }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                          border: '1px solid rgba(139, 92, 246, 0.3)',
+                          borderRadius: '8px',
+                          color: 'white'
+                        }}
+                      />
+                      <Legend />
+                      <Bar dataKey="rx" fill="#8B5CF6" name="RX (Recebido)" />
+                      <Bar dataKey="tx" fill="#F59E0B" name="TX (Transmitido)" />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[300px] text-gray-400">
+                    <p>Nenhum dado de sinal disponível</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Gráfico de Temperatura e Voltagem */}
+            <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Thermometer className="h-5 w-5 text-pink-400" />
+                  Saúde dos Equipamentos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {healthData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <ComposedChart data={healthData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                      <XAxis 
+                        dataKey="serial" 
+                        stroke="rgba(255,255,255,0.6)"
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                      />
+                      <YAxis 
+                        yAxisId="temp"
+                        stroke="rgba(255,255,255,0.6)"
+                        label={{ value: '°C', angle: -90, position: 'insideLeft' }}
+                      />
+                      <YAxis 
+                        yAxisId="voltage"
+                        orientation="right"
+                        stroke="rgba(255,255,255,0.6)"
+                        label={{ value: 'V', angle: 90, position: 'insideRight' }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                          border: '1px solid rgba(236, 72, 153, 0.3)',
+                          borderRadius: '8px',
+                          color: 'white'
+                        }}
+                      />
+                      <Legend />
+                      <Line 
+                        yAxisId="temp"
+                        type="monotone" 
+                        dataKey="temp" 
+                        stroke="#EC4899" 
+                        strokeWidth={2}
+                        name="Temperatura (°C)"
+                        dot={{ fill: '#EC4899', r: 4 }}
+                      />
+                      <Line 
+                        yAxisId="voltage"
+                        type="monotone" 
+                        dataKey="voltage" 
+                        stroke="#10B981" 
+                        strokeWidth={2}
+                        name="Voltagem (V)"
+                        dot={{ fill: '#10B981', r: 4 }}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[300px] text-gray-400">
+                    <p>Nenhum dado de saúde disponível</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Tabela detalhada de ONTs */}
+          <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Radio className="h-5 w-5 text-cyan-400" />
+                Monitoramento Detalhado de ONTs
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-700">
+                      <th className="text-left p-3 text-gray-300">Serial</th>
+                      <th className="text-left p-3 text-gray-300">Status</th>
+                      <th className="text-right p-3 text-gray-300">RX (dBm)</th>
+                      <th className="text-right p-3 text-gray-300">TX (dBm)</th>
+                      <th className="text-right p-3 text-gray-300">Temp (°C)</th>
+                      <th className="text-right p-3 text-gray-300">Voltagem (V)</th>
+                      <th className="text-left p-3 text-gray-300">Última Atualização</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ontData.slice(0, 10).map((ont) => (
+                      <tr key={ont.id} className="border-b border-gray-800 hover:bg-gray-800/50">
+                        <td className="p-3 text-white font-mono text-sm">{ont.ont_serial}</td>
+                        <td className="p-3">
+                          <Badge variant={ont.status === 'online' ? 'default' : 'destructive'}>
+                            {ont.status}
+                          </Badge>
+                        </td>
+                        <td className="p-3 text-right text-purple-400 font-semibold">
+                          {ont.optical_power_rx?.toFixed(2) || 'N/A'}
+                        </td>
+                        <td className="p-3 text-right text-orange-400 font-semibold">
+                          {ont.optical_power_tx?.toFixed(2) || 'N/A'}
+                        </td>
+                        <td className="p-3 text-right text-pink-400">
+                          {ont.temperature?.toFixed(1) || 'N/A'}
+                        </td>
+                        <td className="p-3 text-right text-green-400">
+                          {ont.voltage?.toFixed(2) || 'N/A'}
+                        </td>
+                        <td className="p-3 text-gray-400 text-sm">
+                          {ont.last_seen ? formatTime(ont.last_seen) : 'N/A'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {ontData.length === 0 && (
+                  <div className="text-center py-8 text-gray-400">
+                    Nenhuma ONT monitorada no momento
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Gráfico de status das ONTs */}
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700">
               <CardHeader>
-                <CardTitle>Status das ONTs</CardTitle>
+                <CardTitle className="text-white">Status das ONTs</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
                       data={ontsStatusData}
                       cx="50%"
                       cy="50%"
                       innerRadius={60}
-                      outerRadius={80}
+                      outerRadius={90}
                       paddingAngle={5}
                       dataKey="value"
                     >
@@ -302,7 +488,13 @@ const OLTDashboard = () => {
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                        border: '1px solid rgba(75, 85, 99, 0.3)',
+                        borderRadius: '8px'
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="flex justify-center gap-4 mt-4">
@@ -312,7 +504,7 @@ const OLTDashboard = () => {
                         className="w-3 h-3 rounded-full" 
                         style={{ backgroundColor: entry.color }}
                       />
-                      <span className="text-sm">{entry.name}: {entry.value}</span>
+                      <span className="text-sm text-white">{entry.name}: {entry.value}</span>
                     </div>
                   ))}
                 </div>
@@ -320,18 +512,24 @@ const OLTDashboard = () => {
             </Card>
 
             {/* Alertas por OLT */}
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700">
               <CardHeader>
-                <CardTitle>Alertas por OLT</CardTitle>
+                <CardTitle className="text-white">Alertas por OLT</CardTitle>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={alertsData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="alerts" fill="hsl(var(--destructive))" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="name" stroke="rgba(255,255,255,0.6)" />
+                    <YAxis stroke="rgba(255,255,255,0.6)" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Bar dataKey="alerts" fill="#EF4444" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
