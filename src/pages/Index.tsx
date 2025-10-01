@@ -6,7 +6,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import Footer from "@/components/Footer";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Activity, TrendingUp, Shield, Bot, MessageSquare, BarChart3, CreditCard, Database, Webhook, Zap, DollarSign } from "lucide-react";
+import { Users, Activity, TrendingUp, Shield, Bot, MessageSquare, BarChart3, CreditCard, Database, Webhook, Zap, DollarSign, Radio, Network, TestTube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import UserMenu from "@/components/UserMenu";
@@ -322,6 +322,45 @@ const Index = () => {
                 </div>
                 <p className="text-sm text-gray-300">
                   Gerencie planos de internet para provedores B2B
+                </p>
+              </Link>
+
+              <Link
+                to="/dashboard-olt"
+                className="p-4 text-left border border-gray-700 rounded-lg hover:shadow-md transition-shadow bg-gradient-to-r from-blue-900/10 to-blue-900/5 hover:from-blue-900/20 hover:to-blue-900/10"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Radio className="h-5 w-5 text-blue-400" />
+                  <h3 className="font-semibold text-blue-400">Monitoramento OLT</h3>
+                </div>
+                <p className="text-sm text-gray-300">
+                  Dashboard de monitoramento de OLTs e ONTs
+                </p>
+              </Link>
+
+              <Link
+                to="/monitoramento-snmp"
+                className="p-4 text-left border border-gray-700 rounded-lg hover:shadow-md transition-shadow bg-gradient-to-r from-cyan-900/10 to-cyan-900/5 hover:from-cyan-900/20 hover:to-cyan-900/10"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <Network className="h-5 w-5 text-cyan-400" />
+                  <h3 className="font-semibold text-cyan-400">Console SNMP</h3>
+                </div>
+                <p className="text-sm text-gray-300">
+                  Operações e monitoramento SNMP em tempo real
+                </p>
+              </Link>
+
+              <Link
+                to="/webhook-testing"
+                className="p-4 text-left border border-gray-700 rounded-lg hover:shadow-md transition-shadow bg-gradient-to-r from-purple-900/10 to-purple-900/5 hover:from-purple-900/20 hover:to-purple-900/10"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <TestTube className="h-5 w-5 text-purple-400" />
+                  <h3 className="font-semibold text-purple-400">Testes de Webhooks</h3>
+                </div>
+                <p className="text-sm text-gray-300">
+                  Teste e valide webhooks com payloads personalizados
                 </p>
               </Link>
             </div>
