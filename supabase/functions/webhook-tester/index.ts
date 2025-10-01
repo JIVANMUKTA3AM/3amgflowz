@@ -40,6 +40,17 @@ serve(async (req) => {
       );
     }
 
+    // Validar se não é localhost
+    if (webhook_url.includes('localhost') || webhook_url.includes('127.0.0.1')) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'URLs localhost não são acessíveis do ambiente Supabase',
+          message: 'Use uma URL publicamente acessível (ngrok, domínio público, etc)'
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     console.log('Testing webhook URL:', webhook_url);
     
     // Initialize Supabase client

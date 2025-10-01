@@ -41,6 +41,16 @@ export const WebhookTester = ({ webhookId, initialUrl = "" }: WebhookTesterProps
       return;
     }
 
+    // Validar se não é localhost
+    if (webhookUrl.includes('localhost') || webhookUrl.includes('127.0.0.1')) {
+      toast({
+        title: "URL inválida para ambiente live",
+        description: "URLs localhost não são acessíveis do ambiente Supabase. Use uma URL pública (ex: ngrok, seu domínio n8n, etc).",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     setTestResult(null);
 
@@ -236,8 +246,9 @@ export const WebhookTester = ({ webhookId, initialUrl = "" }: WebhookTesterProps
         <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            <strong>Dica:</strong> Este teste envia uma requisição POST real para o seu webhook. 
-            Certifique-se de que a URL está correta e que o endpoint pode receber requisições de teste.
+            <strong>Importante:</strong> Este teste envia uma requisição POST real do ambiente Supabase. 
+            A URL deve ser <strong>publicamente acessível</strong>. URLs localhost não funcionarão - 
+            use ngrok, seu domínio n8n público, ou outro serviço de túnel para testes.
           </AlertDescription>
         </Alert>
       </CardContent>
