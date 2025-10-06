@@ -19,9 +19,9 @@ serve(async (req) => {
   try {
     logStep("Function started");
     
-    const openAIKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIKey) {
-      throw new Error('OPENAI_API_KEY is not configured');
+    const geminiKey = Deno.env.get('GEMINI_API_KEY');
+    if (!geminiKey) {
+      throw new Error('GEMINI_API_KEY is not configured');
     }
 
     // Criar client do Supabase com chave de serviço
@@ -68,56 +68,55 @@ serve(async (req) => {
 
     logStep("Agent config found", { name: agentConfig.name, model: agentConfig.model });
 
-    // Preparar chamada para OpenAI baseado no modelo
+    // Preparar chamada para Google Gemini
     const startTime = Date.now();
     
-    // Verificar se é um modelo mais novo que não suporta temperature
-    const isNewerModel = ['gpt-5-2025-08-07', 'gpt-5-mini-2025-08-07', 'gpt-5-nano-2025-08-07', 'gpt-4.1-2025-04-14', 'o3-2025-04-16', 'o4-mini-2025-04-16'].includes(agentConfig.model);
+    // Mapear modelo para o formato do Gemini (usar gemini-2.0-flash-exp como padrão)
+    const geminiModel = agentConfig.model?.includes('gemini') 
+      ? agentConfig.model 
+      : 'gemini-2.0-flash-exp';
     
-    const requestBody: any = {
-      model: agentConfig.model,
-      messages: [
-        { role: 'system', content: agentConfig.prompt },
-        { role: 'user', content: message }
-      ],
+    const requestBody = {
+      contents: [{
+        parts: [{
+          text: `${agentConfig.prompt}\n\nUsuário: ${message}`
+        }]
+      }],
+      generationConfig: {
+        temperature: agentConfig.temperature || 0.7,
+        maxOutputTokens: agentConfig.max_tokens || 1000,
+      }
     };
 
-    // Adicionar parâmetros baseado nas capacidades do modelo
-    if (isNewerModel) {
-      requestBody.max_completion_tokens = agentConfig.max_tokens || 1000;
-      // Modelos mais novos não suportam temperature
-    } else {
-      requestBody.max_tokens = agentConfig.max_tokens || 1000;
-      requestBody.temperature = agentConfig.temperature || 0.7;
+    logStep("Calling Gemini", { model: geminiModel });
+
+    // Chamar Google Gemini API
+    const geminiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      }
+    );
+
+    if (!geminiResponse.ok) {
+      const errorData = await geminiResponse.text();
+      throw new Error(`Gemini API error: ${geminiResponse.status} - ${errorData}`);
     }
 
-    logStep("Calling OpenAI", { model: agentConfig.model, isNewerModel });
-
-    // Chamar OpenAI
-    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!openAIResponse.ok) {
-      const errorData = await openAIResponse.text();
-      throw new Error(`OpenAI API error: ${openAIResponse.status} - ${errorData}`);
-    }
-
-    const openAIData = await openAIResponse.json();
+    const geminiData = await geminiResponse.json();
     const responseTime = Date.now() - startTime;
-    const agentResponse = openAIData.choices[0]?.message?.content;
-    const tokensUsed = openAIData.usage?.total_tokens || 0;
+    const agentResponse = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+    const tokensUsed = geminiData.usageMetadata?.totalTokenCount || 0;
 
     if (!agentResponse) {
-      throw new Error('No response from OpenAI');
+      throw new Error('No response from Gemini');
     }
 
-    logStep("OpenAI response received", { responseTime, tokensUsed, responseLength: agentResponse.length });
+    logStep("Gemini response received", { responseTime, tokensUsed, responseLength: agentResponse.length });
 
     // Salvar conversa na base de dados
     const { error: saveError } = await supabaseServiceClient
@@ -163,8 +162,6 @@ serve(async (req) => {
         logStep("Webhook error", { error: webhookError instanceof Error ? webhookError.message : String(webhookError) });
       }
     }
-
-    logStep("OpenAI response received", { responseTime, tokensUsed, responseLength: agentResponse.length });
 
     logStep("Function completed successfully");
 

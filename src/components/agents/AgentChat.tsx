@@ -53,9 +53,10 @@ const AgentChat = ({ configurations }: AgentChatProps) => {
     try {
       const { data, error } = await supabase.functions.invoke('agent-chat', {
         body: {
-          agent_configuration_id: selectedAgent,
-          user_message: userMessage.content,
-          session_id: sessionId,
+          message: userMessage.content,
+          agentConfigId: selectedAgent,
+          sessionId: sessionId,
+          channelType: 'chat'
         },
       });
 
@@ -64,10 +65,10 @@ const AgentChat = ({ configurations }: AgentChatProps) => {
       const agentMessage: Message = {
         id: `agent_${Date.now()}`,
         type: 'agent',
-        content: data.agent_response,
+        content: data.response,
         timestamp: new Date(),
-        response_time: data.response_time_ms,
-        tokens_used: data.tokens_used,
+        response_time: data.responseTime,
+        tokens_used: data.tokensUsed,
       };
 
       setMessages(prev => [...prev, agentMessage]);

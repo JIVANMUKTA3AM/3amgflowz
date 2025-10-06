@@ -13,6 +13,19 @@ export interface AIProvider {
 
 export const AI_PROVIDERS: AIProvider[] = [
   {
+    id: "google",
+    name: "Google (Gemini)",
+    models: [
+      "gemini-2.0-flash-exp",
+      "gemini-1.5-pro",
+      "gemini-1.5-flash",
+      "gemini-1.5-flash-8b"
+    ],
+    supportsVision: true,
+    maxTokens: 8192,
+    category: "flagship"
+  },
+  {
     id: "openai",
     name: "OpenAI",
     models: [
@@ -44,21 +57,6 @@ export const AI_PROVIDERS: AIProvider[] = [
     ],
     supportsVision: true,
     maxTokens: 200000,
-    category: "flagship"
-  },
-  {
-    id: "google",
-    name: "Google (Gemini)",
-    models: [
-      "gemini-2.0-flash-exp",
-      "gemini-1.5-pro-002",
-      "gemini-1.5-flash-002",
-      "gemini-1.5-pro",
-      "gemini-1.5-flash", 
-      "gemini-1.0-pro"
-    ],
-    supportsVision: true,
-    maxTokens: 32768,
     category: "flagship"
   },
   {
@@ -109,12 +107,10 @@ export const getModelInfo = (model: string) => {
     "claude-3-opus-20240229": { description: "Poderoso mas mais antigo que Claude 4", category: "legacy" },
     
     // Google Gemini
-    "gemini-2.0-flash-exp": { description: "Versão experimental mais recente", recommended: true, category: "experimental" },
-    "gemini-1.5-pro-002": { description: "Versão mais recente Pro", recommended: true, category: "flagship" },
-    "gemini-1.5-flash-002": { description: "Versão mais recente Flash", recommended: true, category: "speed" },
-    "gemini-1.5-pro": { description: "Modelo Pro anterior", category: "legacy" },
-    "gemini-1.5-flash": { description: "Modelo Flash anterior", category: "legacy" },
-    "gemini-1.0-pro": { description: "Versão 1.0 básica", category: "legacy" },
+    "gemini-2.0-flash-exp": { description: "Modelo experimental mais rápido e eficiente", recommended: true, category: "experimental" },
+    "gemini-1.5-pro": { description: "Melhor para raciocínio complexo e análises", recommended: true, category: "flagship" },
+    "gemini-1.5-flash": { description: "Rápido e eficiente para uso geral", recommended: true, category: "speed" },
+    "gemini-1.5-flash-8b": { description: "Ultra rápido para tarefas simples", category: "speed" },
 
     // DeepSeek Models
     "deepseek-r1": { description: "Modelo de raciocínio da DeepSeek", recommended: true, category: "reasoning" },
