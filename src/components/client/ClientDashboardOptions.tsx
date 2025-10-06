@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
   Users, 
   MessageCircle, 
@@ -15,12 +16,18 @@ import {
   Workflow,
   TrendingUp,
   Users2,
-  Phone
+  Phone,
+  Server,
+  Cable,
+  Wifi,
+  Plus
 } from "lucide-react";
 import TechnicalMonitoringDashboard from "./TechnicalMonitoringDashboard";
+import { useOltConfigurations } from "@/hooks/useOltConfigurations";
 
 const ClientDashboardOptions = () => {
   const navigate = useNavigate();
+  const { configurations: oltConfigs, isLoading: loadingOlts } = useOltConfigurations();
 
   const dashboardOptions = [
     {
@@ -107,69 +114,185 @@ const ClientDashboardOptions = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-white">Visão do Cliente</h1>
-        <p className="text-gray-300">Acesse todas as ferramentas e dashboards da sua conta</p>
+        <h1 className="text-4xl font-bold bg-gradient-3amg bg-clip-text text-transparent">
+          Dashboard do Cliente
+        </h1>
+        <p className="text-muted-foreground text-lg">Gerencie tudo em um só lugar</p>
       </div>
 
-      {/* Dashboard Options Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dashboardOptions.map((option) => {
-          const IconComponent = option.icon;
-          
-          return (
-            <Card 
-              key={option.id}
-              className="bg-gray-900/80 backdrop-blur-sm border-gray-700 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer group"
-              onClick={option.action}
+      {/* OLT Quick Access - Dynamic based on configurations */}
+      {!loadingOlts && oltConfigs && oltConfigs.length > 0 && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-bold bg-gradient-3amg bg-clip-text text-transparent flex items-center gap-3">
+                <Server className="h-8 w-8 text-primary" />
+                Suas OLTs
+              </h2>
+              <p className="text-muted-foreground mt-1">
+                Acesso rápido às OLTs configuradas no onboarding
+              </p>
+            </div>
+            <Button
+              onClick={() => navigate("/olt-config")}
+              className="bg-gradient-3amg-orange text-white hover:opacity-90 transition-opacity shadow-lg"
             >
-              <CardHeader className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <div className="p-3 rounded-lg bg-gray-800/50 group-hover:bg-gray-700/50 transition-colors">
-                    <IconComponent className="h-6 w-6 text-3amg-orange" />
-                  </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="bg-gray-800/50 border-gray-600 hover:bg-gray-700/50 text-white"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      option.action();
-                    }}
-                  >
-                    Acessar
-                  </Button>
-                </div>
-                <CardTitle className="text-lg font-semibold text-white group-hover:text-3amg-purple transition-colors">
-                  {option.title}
-                </CardTitle>
-                <CardDescription className="text-gray-300">
-                  {option.description}
-                </CardDescription>
-              </CardHeader>
+              <Plus className="h-4 w-4 mr-2" />
+              Nova OLT
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {oltConfigs.map((olt, index) => {
+              const gradients = [
+                'bg-gradient-3amg-orange',
+                'bg-gradient-3amg-purple',
+                'bg-gradient-3amg'
+              ];
+              const borderColors = [
+                'border-3amg-orange',
+                'border-3amg-purple',
+                'border-primary'
+              ];
+              const gradient = gradients[index % gradients.length];
+              const borderColor = borderColors[index % borderColors.length];
               
-              <CardContent className="space-y-3">
-                <div className="grid grid-cols-3 gap-2 text-sm">
-                  {Object.entries(option.metrics).map(([key, value]) => (
-                    <div key={key} className="text-center">
-                      <div className="font-semibold text-white">{value}</div>
-                      <div className="text-xs text-gray-400 capitalize">{key}</div>
+              return (
+                <Card 
+                  key={olt.id}
+                  className={`relative overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer group border-2 ${borderColor} hover:scale-105 bg-card/50 backdrop-blur-sm`}
+                  onClick={() => navigate(`/dashboard-olt?oltId=${olt.id}`)}
+                >
+                  {/* Gradient Background Overlay */}
+                  <div className={`absolute inset-0 ${gradient} opacity-5 group-hover:opacity-10 transition-opacity`} />
+                  
+                  <CardHeader className="relative pb-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className={`p-3 rounded-xl ${gradient} shadow-lg animate-pulse-slow`}>
+                        <Server className="h-6 w-6 text-white" />
+                      </div>
+                      <Badge 
+                        variant={olt.is_active ? "default" : "secondary"}
+                        className={olt.is_active ? "bg-success text-success-foreground animate-pulse" : ""}
+                      >
+                        {olt.is_active ? "● Ativa" : "○ Inativa"}
+                      </Badge>
                     </div>
-                  ))}
-                </div>
-                
-                <div className="flex items-center justify-center">
-                  <div className="flex items-center gap-1 text-xs text-green-400 font-medium">
-                    <Activity className="h-3 w-3" />
-                    Sistema funcionando
+                    
+                    <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">
+                      {olt.name}
+                    </CardTitle>
+                    <CardDescription className="space-y-1 mt-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Network className="h-3 w-3 text-primary" />
+                        <span className="font-medium">{olt.brand}</span> - {olt.model}
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Wifi className="h-3 w-3 text-success" />
+                        {olt.ip_address}
+                      </div>
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="relative space-y-4">
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="text-center p-3 rounded-lg bg-background/80 backdrop-blur-sm border border-border hover:border-primary transition-colors">
+                        <Cable className="h-4 w-4 mx-auto mb-1 text-primary" />
+                        <div className="text-xs text-muted-foreground">Porta</div>
+                        <div className="text-sm font-bold">{olt.port || '161'}</div>
+                      </div>
+                      <div className="text-center p-3 rounded-lg bg-background/80 backdrop-blur-sm border border-border hover:border-success transition-colors">
+                        <Activity className="h-4 w-4 mx-auto mb-1 text-success" />
+                        <div className="text-xs text-muted-foreground">Status</div>
+                        <div className="text-sm font-bold text-success">Online</div>
+                      </div>
+                      <div className="text-center p-3 rounded-lg bg-background/80 backdrop-blur-sm border border-border hover:border-warning transition-colors">
+                        <Zap className="h-4 w-4 mx-auto mb-1 text-warning" />
+                        <div className="text-xs text-muted-foreground">ONTs</div>
+                        <div className="text-sm font-bold">--</div>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      className={`w-full ${gradient} text-white hover:opacity-90 transition-all shadow-lg group-hover:shadow-xl`}
+                    >
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      Ver Dashboard Completo
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Dashboard Options Grid */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold flex items-center gap-3">
+          <TrendingUp className="h-6 w-6 text-primary" />
+          Outras Funcionalidades
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {dashboardOptions.map((option) => {
+            const IconComponent = option.icon;
+            
+            return (
+              <Card 
+                key={option.id}
+                className="bg-card/80 backdrop-blur-sm border-border hover:border-primary/50 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer group"
+                onClick={option.action}
+              >
+                <CardHeader className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                      <IconComponent className="h-6 w-6 text-primary" />
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        option.action();
+                      }}
+                    >
+                      Acessar
+                    </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+                  <CardTitle className="text-lg font-semibold group-hover:text-primary transition-colors">
+                    {option.title}
+                  </CardTitle>
+                  <CardDescription>
+                    {option.description}
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="space-y-3">
+                  <div className="grid grid-cols-3 gap-2 text-sm">
+                    {Object.entries(option.metrics).map(([key, value]) => (
+                      <div key={key} className="text-center p-2 rounded bg-muted/50">
+                        <div className="font-semibold text-foreground">{value}</div>
+                        <div className="text-xs text-muted-foreground capitalize">{key}</div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="flex items-center justify-center">
+                    <div className="flex items-center gap-1 text-xs text-success font-medium">
+                      <Activity className="h-3 w-3 animate-pulse" />
+                      Sistema Ativo
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       </div>
 
       {/* Technical Monitoring Dashboard */}
