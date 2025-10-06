@@ -78,7 +78,8 @@ const RoleBasedRouter = () => {
       <Route path="/dashboard" element={<Dashboard />} />
       
       {/* Dashboard baseado em role para usuários */}
-      <Route path="/client-dashboard" element={<RoleBasedDashboard />} />
+      <Route path="/client-dashboard" element={<ClientDashboard />} />
+      <Route path="/role-dashboard" element={<RoleBasedDashboard />} />
       
       {/* Páginas administrativas */}
       <Route path="/admin-webhooks" element={<AdminWebhooks />} />
