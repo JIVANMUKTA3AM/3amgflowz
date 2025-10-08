@@ -46,26 +46,48 @@ const Auth = () => {
     setLoading(true);
     try {
       if (isLogin) {
-        await signIn(email, password);
+        const { error } = await signIn(email, password);
+        if (error) {
+          console.error('Login error:', error);
+          toast({
+            title: "Erro no login",
+            description: error.message || "Verifique suas credenciais e tente novamente.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
         toast({
           title: "Login realizado com sucesso!",
           description: "Bem-vindo de volta.",
         });
       } else {
-        await signUp(email, password);
+        const { error } = await signUp(email, password);
+        if (error) {
+          console.error('Signup error:', error);
+          toast({
+            title: "Erro ao criar conta",
+            description: error.message || "Não foi possível criar a conta. Tente novamente.",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
         toast({
           title: "Conta criada com sucesso!",
           description: "Você será redirecionado para completar seu perfil.",
         });
       }
     } catch (error: any) {
+      console.error('Auth error:', error);
       toast({
         title: "Erro na autenticação",
         description: error.message || "Tente novamente.",
         variant: "destructive",
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
