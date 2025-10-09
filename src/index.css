@@ -48,50 +48,60 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    --neon-purple: 263 85% 65%;
+    --neon-orange: 16 100% 60%;
+    --tech-dark: 240 10% 8%;
+    --tech-darker: 240 10% 4%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 240 10% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 10% 10%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 10% 10%;
+    --popover-foreground: 0 0% 98%;
 
     --primary: 263 85% 65%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 240 8% 15%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 240 8% 15%;
+    --muted-foreground: 240 5% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 240 8% 18%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 240 8% 18%;
+    --input: 240 8% 18%;
+    --ring: 263 85% 65%;
     
     --success: 142 71% 45%;
-    --success-foreground: 210 40% 98%;
+    --success-foreground: 0 0% 98%;
     --warning: 38 92% 50%;
-    --warning-foreground: 210 40% 98%;
+    --warning-foreground: 0 0% 98%;
     
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 240 10% 8%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 263 85% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 240 8% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 240 8% 18%;
+    --sidebar-ring: 263 85% 65%;
+    
+    --neon-purple: 263 85% 65%;
+    --neon-orange: 16 100% 60%;
+    --tech-dark: 240 10% 8%;
+    --tech-darker: 240 10% 4%;
   }
 }
 
@@ -105,21 +115,34 @@
   }
 }
 
-/* Custom gradient backgrounds for SaaS ISP */
+/* Modern Tech Design System */
+.neon-glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4), 0 0 40px rgba(139, 92, 246, 0.2);
+}
+
+.neon-glow-orange {
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.4), 0 0 40px rgba(255, 107, 53, 0.2);
+}
+
+.tech-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(255, 107, 53, 0.05) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
+}
+
 .gradient-purple-orange {
   background: linear-gradient(135deg, #FF6B35 0%, #8B5CF6 50%, #7C3AED 100%);
 }
 
-.gradient-purple-orange-light {
-  background: linear-gradient(135deg, #FF8A5C 0%, #A78BFA 50%, #8B5CF6 100%);
-}
-
-.gradient-header {
-  background: linear-gradient(135deg, #FF6B35 0%, #8B5CF6 50%, #7C3AED 100%);
-}
-
-.gradient-card {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 50%, rgba(245, 158, 11, 0.1) 100%);
+.text-glow {
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.5), 0 0 40px rgba(139, 92, 246, 0.3);
 }
 
 /* 3AMG Brand Colors */

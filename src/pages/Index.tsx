@@ -17,6 +17,7 @@ import ServicesSection from "@/components/3amg/ServicesSection";
 import AboutSection from "@/components/3amg/AboutSection";
 import TechSection from "@/components/3amg/TechSection";
 import CTASection from "@/components/3amg/CTASection";
+import LoginButton from "@/components/3amg/LoginButton";
 
 const Index = () => {
   const { user } = useAuth();
@@ -55,33 +56,10 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-3amg-dark">
-        <header className="bg-gray-900/95 backdrop-blur-sm shadow-lg border-b border-3amg-orange/20 fixed w-full z-50">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <Link to="/" className="flex items-center space-x-3">
-                <div className="w-10 h-10 relative">
-                  <img 
-                    src="/lovable-uploads/71a5762a-fd4e-406c-bf7c-1e3df758cc53.png" 
-                    alt="3AMG Logo" 
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <span className="font-bold text-xl bg-gradient-3amg bg-clip-text text-transparent">3AMG</span>
-              </Link>
-
-              <div className="flex items-center space-x-4">
-                <Link to="/auth">
-                  <Button className="bg-gradient-3amg-orange hover:opacity-90 text-white">
-                    Entrar no Sistema
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </header>
+      <div className="min-h-screen bg-[#0a0a0f]">
+        <LoginButton />
         
-        <main className="pt-16">
+        <main>
           <HeroSection />
           <ServicesSection />
           <AboutSection />

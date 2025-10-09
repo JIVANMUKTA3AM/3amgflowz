@@ -132,6 +132,24 @@ export default {
 				'grid-move': {
 					'0%': { transform: 'translate(0, 0)' },
 					'100%': { transform: 'translate(50px, 50px)' }
+				},
+				'glow-pulse': {
+					'0%, 100%': { 
+						boxShadow: '0 0 20px rgba(139, 92, 246, 0.4), 0 0 40px rgba(139, 92, 246, 0.2)',
+						transform: 'scale(1)'
+					},
+					'50%': { 
+						boxShadow: '0 0 30px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.3)',
+						transform: 'scale(1.05)'
+					}
+				},
+				'text-glow': {
+					'0%, 100%': { 
+						textShadow: '0 0 20px rgba(139, 92, 246, 0.5), 0 0 40px rgba(139, 92, 246, 0.3)'
+					},
+					'50%': { 
+						textShadow: '0 0 30px rgba(139, 92, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.5)'
+					}
 				}
 			},
 			animation: {
@@ -142,7 +160,9 @@ export default {
 				'float-tech': 'float-tech 4s ease-in-out infinite',
 				'pulse-orange': 'pulse-orange 2s ease-in-out infinite',
 				'pulse-slow': 'pulse-slow 4s ease-in-out infinite',
-				'grid-move': 'grid-move 20s linear infinite'
+				'grid-move': 'grid-move 20s linear infinite',
+				'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+				'text-glow': 'text-glow 2s ease-in-out infinite'
 			},
 			backgroundImage: {
 				'gradient-3amg': 'linear-gradient(135deg, #FF6B35 0%, #8B5CF6 50%, #7C3AED 100%)',
