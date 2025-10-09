@@ -4,7 +4,7 @@ import { LogIn } from "lucide-react";
 
 const LoginButton = () => {
   return (
-    <div className="fixed right-8 top-1/2 -translate-y-1/2 z-[9999]">
+    <div className="fixed right-8 top-6 z-[9999]">
       <Link to="/auth">
         <Button 
           variant="neon" 
