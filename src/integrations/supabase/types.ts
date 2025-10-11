@@ -221,6 +221,97 @@ export type Database = {
           },
         ]
       }
+      agent_profiles: {
+        Row: {
+          ativo: boolean
+          configuracoes: Json
+          created_at: string
+          id: string
+          nome: string
+          prompt_ref: string
+          setor: Database["public"]["Enums"]["agent_sector"]
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["agent_type"]
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          configuracoes?: Json
+          created_at?: string
+          id?: string
+          nome: string
+          prompt_ref: string
+          setor: Database["public"]["Enums"]["agent_sector"]
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["agent_type"]
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          configuracoes?: Json
+          created_at?: string
+          id?: string
+          nome?: string
+          prompt_ref?: string
+          setor?: Database["public"]["Enums"]["agent_sector"]
+          tenant_id?: string
+          tipo?: Database["public"]["Enums"]["agent_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agent_routes: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          de_setor: Database["public"]["Enums"]["agent_sector"]
+          id: string
+          para_setor: Database["public"]["Enums"]["agent_sector"]
+          prioridade: number
+          regra: Json
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          de_setor: Database["public"]["Enums"]["agent_sector"]
+          id?: string
+          para_setor: Database["public"]["Enums"]["agent_sector"]
+          prioridade?: number
+          regra?: Json
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          de_setor?: Database["public"]["Enums"]["agent_sector"]
+          id?: string
+          para_setor?: Database["public"]["Enums"]["agent_sector"]
+          prioridade?: number
+          regra?: Json
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_routes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_workflows: {
         Row: {
           agent_configuration_id: string
@@ -348,6 +439,47 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      audit_logs: {
+        Row: {
+          acao: string
+          actor: string | null
+          created_at: string
+          id: string
+          ip_address: string | null
+          payload: Json
+          tenant_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          acao: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          payload?: Json
+          tenant_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          acao?: string
+          actor?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          payload?: Json
+          tenant_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       automation_data: {
         Row: {
@@ -481,6 +613,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      billing_adapters: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          credenciais: Json
+          id: string
+          last_sync_at: string | null
+          provedor: Database["public"]["Enums"]["adapter_provider"]
+          status_map: Json
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          credenciais?: Json
+          id?: string
+          last_sync_at?: string | null
+          provedor: Database["public"]["Enums"]["adapter_provider"]
+          status_map?: Json
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          credenciais?: Json
+          id?: string
+          last_sync_at?: string | null
+          provedor?: Database["public"]["Enums"]["adapter_provider"]
+          status_map?: Json
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_adapters_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       chat_messages: {
         Row: {
@@ -959,6 +1135,50 @@ export type Database = {
           valor_mensal?: number
         }
         Relationships: []
+      }
+      monitoring_adapters: {
+        Row: {
+          ativo: boolean
+          configuracoes: Json
+          created_at: string
+          credenciais: Json
+          id: string
+          last_sync_at: string | null
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["monitoring_type"]
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          configuracoes?: Json
+          created_at?: string
+          credenciais?: Json
+          id?: string
+          last_sync_at?: string | null
+          tenant_id: string
+          tipo: Database["public"]["Enums"]["monitoring_type"]
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          configuracoes?: Json
+          created_at?: string
+          credenciais?: Json
+          id?: string
+          last_sync_at?: string | null
+          tenant_id?: string
+          tipo?: Database["public"]["Enums"]["monitoring_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monitoring_adapters_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       n8n_execution_logs: {
         Row: {
@@ -2121,6 +2341,171 @@ export type Database = {
         }
         Relationships: []
       }
+      tenant_memberships: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: string
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_memberships_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_plans: {
+        Row: {
+          ativo: boolean
+          condicoes: string | null
+          created_at: string
+          features: Json
+          id: string
+          nome_plano: string
+          preco: number
+          promocao: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          condicoes?: string | null
+          created_at?: string
+          features?: Json
+          id?: string
+          nome_plano: string
+          preco: number
+          promocao?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          condicoes?: string | null
+          created_at?: string
+          features?: Json
+          id?: string
+          nome_plano?: string
+          preco?: number
+          promocao?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_plans_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_tickets: {
+        Row: {
+          assigned_to: string | null
+          contato_cliente: Json
+          created_at: string
+          descricao: string | null
+          id: string
+          metadata: Json
+          setor: Database["public"]["Enums"]["agent_sector"]
+          status: Database["public"]["Enums"]["ticket_status"]
+          tenant_id: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          contato_cliente?: Json
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          metadata?: Json
+          setor: Database["public"]["Enums"]["agent_sector"]
+          status?: Database["public"]["Enums"]["ticket_status"]
+          tenant_id: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          contato_cliente?: Json
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          metadata?: Json
+          setor?: Database["public"]["Enums"]["agent_sector"]
+          status?: Database["public"]["Enums"]["ticket_status"]
+          tenant_id?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_tickets_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          ativo: boolean
+          cnpj: string
+          configuracoes: Json
+          contato: Json
+          created_at: string
+          id: string
+          nome: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          ativo?: boolean
+          cnpj: string
+          configuracoes?: Json
+          contato?: Json
+          created_at?: string
+          id?: string
+          nome: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          ativo?: boolean
+          cnpj?: string
+          configuracoes?: Json
+          contato?: Json
+          created_at?: string
+          id?: string
+          nome?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tickets_tecnicos: {
         Row: {
           agent_id: string
@@ -2411,6 +2796,10 @@ export type Database = {
         Args: { credentials: Json }
         Returns: Json
       }
+      get_user_tenant_id: {
+        Args: { _user_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2420,6 +2809,14 @@ export type Database = {
       }
       is_member_of: {
         Args: { org_id: string }
+        Returns: boolean
+      }
+      is_tenant_member: {
+        Args: { _tenant_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_tenant_owner: {
+        Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
       }
       mark_invoice_as_paid: {
@@ -2433,6 +2830,8 @@ export type Database = {
       }
     }
     Enums: {
+      adapter_provider: "asaas" | "gerencianet" | "omie" | "outro"
+      agent_sector: "triagem" | "tecnico" | "comercial" | "financeiro"
       agent_type: "atendimento" | "comercial" | "suporte_tecnico"
       app_role: "admin" | "moderator" | "user"
       atividade_status:
@@ -2449,6 +2848,7 @@ export type Database = {
         | "pagamento_recebido"
         | "cliente_cadastrado"
       membership_role: "owner" | "admin" | "member" | "viewer"
+      monitoring_type: "snmp" | "vendor_api"
       prioridade_level: "baixa" | "media" | "alta" | "urgente"
       subscription_plan: "free" | "pro" | "enterprise"
       subscription_plan_type: "free" | "basic" | "premium" | "enterprise"
@@ -2458,6 +2858,7 @@ export type Database = {
         | "past_due"
         | "unpaid"
         | "incomplete"
+      ticket_status: "aberto" | "em_andamento" | "resolvido" | "fechado"
       user_role: "admin" | "user" | "viewer"
       user_role_type: "tecnico" | "comercial" | "geral" | "admin"
     }
@@ -2587,6 +2988,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      adapter_provider: ["asaas", "gerencianet", "omie", "outro"],
+      agent_sector: ["triagem", "tecnico", "comercial", "financeiro"],
       agent_type: ["atendimento", "comercial", "suporte_tecnico"],
       app_role: ["admin", "moderator", "user"],
       atividade_status: [
@@ -2605,6 +3008,7 @@ export const Constants = {
         "cliente_cadastrado",
       ],
       membership_role: ["owner", "admin", "member", "viewer"],
+      monitoring_type: ["snmp", "vendor_api"],
       prioridade_level: ["baixa", "media", "alta", "urgente"],
       subscription_plan: ["free", "pro", "enterprise"],
       subscription_plan_type: ["free", "basic", "premium", "enterprise"],
@@ -2615,6 +3019,7 @@ export const Constants = {
         "unpaid",
         "incomplete",
       ],
+      ticket_status: ["aberto", "em_andamento", "resolvido", "fechado"],
       user_role: ["admin", "user", "viewer"],
       user_role_type: ["tecnico", "comercial", "geral", "admin"],
     },
