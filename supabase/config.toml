@@ -31,3 +31,9 @@ verify_jwt = false
 
 [functions.comercial-plans]
 verify_jwt = false
+
+[functions.agents-route]
+verify_jwt = false
+
+[functions.agents-execute]
+verify_jwt = false
