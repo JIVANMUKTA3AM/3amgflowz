@@ -39,6 +39,8 @@ import WhatsAppConfig from "@/pages/WhatsAppConfig";
 import MonitoramentoSNMP from "@/pages/MonitoramentoSNMP";
 import DashboardOLT from "@/pages/DashboardOLT";
 import NotFound from "@/pages/NotFound";
+import TenantDashboard from "@/pages/TenantDashboard";
+import WidgetDemo from "@/pages/WidgetDemo";
 import { Loader2 } from "lucide-react";
 
 const RoleBasedRouter = () => {
@@ -80,6 +82,10 @@ const RoleBasedRouter = () => {
       {/* Dashboard baseado em role para usuários */}
       <Route path="/client-dashboard" element={<ClientDashboard />} />
       <Route path="/role-dashboard" element={<RoleBasedDashboard />} />
+      
+      {/* Painel Multi-Tenant */}
+      <Route path="/tenant-dashboard" element={<TenantDashboard />} />
+      <Route path="/widget-demo" element={<WidgetDemo />} />
       
       {/* Páginas administrativas */}
       <Route path="/admin-webhooks" element={<AdminWebhooks />} />
