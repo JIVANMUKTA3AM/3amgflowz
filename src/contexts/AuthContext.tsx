@@ -57,8 +57,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) {
         console.error('Erro ao obter sessão:', error);
+        setLoading(false);
+        return;
       }
-      console.log('Sessão inicial:', session?.user?.email);
+      console.log('Sessão inicial:', session?.user?.email || 'Nenhuma sessão ativa');
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
