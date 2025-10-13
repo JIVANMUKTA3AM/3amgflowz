@@ -1,5 +1,5 @@
 
-
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Code, Cpu, Zap, Terminal, Database, Workflow, Rocket } from "lucide-react";
@@ -55,10 +55,29 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Hero Title with Glow */}
-        <h1 className="text-7xl md:text-9xl font-bold mb-8 bg-gradient-to-r from-purple-400 via-purple-300 to-orange-400 bg-clip-text text-transparent leading-tight animate-text-glow">
+        {/* Hero Title with Animated Glow */}
+        <motion.h1 
+          className="text-7xl md:text-9xl font-bold mb-8 bg-gradient-to-r from-purple-400 via-purple-300 to-orange-400 bg-clip-text text-transparent leading-tight"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ 
+            opacity: 1, 
+            scale: 1,
+            textShadow: [
+              "0 0 20px rgba(139, 92, 246, 0.5)",
+              "0 0 40px rgba(139, 92, 246, 0.8)",
+              "0 0 20px rgba(139, 92, 246, 0.5)",
+            ]
+          }}
+          transition={{ 
+            duration: 1.2,
+            textShadow: {
+              repeat: Infinity,
+              duration: 2,
+            }
+          }}
+        >
           3AMG
-        </h1>
+        </motion.h1>
         
         <div className="relative mb-8">
           <h2 className="text-3xl md:text-5xl font-semibold text-white mb-6 leading-tight">
@@ -103,22 +122,60 @@ const HeroSection = () => {
           </div>
         </div>
 
-        {/* Modern CTAs with Glow Effect */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+        {/* Modern CTAs with Pulsating Energy Effect */}
+        <motion.div 
+          className="flex flex-col sm:flex-row gap-6 justify-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+        >
           <Link to="/auth">
-            <Button size="lg" className="group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold px-12 py-7 text-lg rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-orange-500/50">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center">
-                <Rocket className="mr-3 h-5 w-5 group-hover:rotate-12 transition-transform" />
-                Começar Agora - Login
-                <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Button>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button size="lg" className="group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold px-12 py-7 text-lg rounded-2xl overflow-hidden transition-all duration-300 shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/60">
+                {/* Pulsating Energy Effect */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
+                  animate={{
+                    opacity: [0.3, 0.6, 0.3],
+                    scale: [1, 1.05, 1],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                  }}
+                ></motion.div>
+                <div className="relative flex items-center">
+                  <Rocket className="mr-3 h-5 w-5 group-hover:rotate-12 transition-transform" />
+                  Começar Agora - Login
+                  <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Button>
+            </motion.div>
           </Link>
-          <Button size="lg" className="group relative border-2 border-purple-500/50 bg-purple-950/30 backdrop-blur-md text-purple-300 hover:text-white hover:border-purple-400 px-12 py-7 text-lg rounded-2xl hover:bg-purple-900/40 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/30">
-            Agendar Demo Técnica
-          </Button>
-        </div>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Button size="lg" className="group relative border-2 border-purple-500/50 bg-purple-950/30 backdrop-blur-md text-purple-300 hover:text-white hover:border-purple-400 px-12 py-7 text-lg rounded-2xl hover:bg-purple-900/40 transition-all duration-300 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/60 overflow-hidden">
+              {/* Pulsating Border Effect */}
+              <motion.div 
+                className="absolute inset-0 border-2 border-purple-400 rounded-2xl"
+                animate={{
+                  opacity: [0, 0.5, 0],
+                  scale: [0.95, 1.05, 0.95],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+              ></motion.div>
+              <span className="relative">Agendar Demo Técnica</span>
+            </Button>
+          </motion.div>
+        </motion.div>
 
         {/* Enhanced Tech Stack Display */}
         <div className="flex justify-center space-x-12">

@@ -13,6 +13,7 @@ import UserMenu from "@/components/UserMenu";
 
 // 3AMG Components
 import HeroSection from "@/components/3amg/HeroSection";
+import LayersSection from "@/components/3amg/LayersSection";
 import ServicesSection from "@/components/3amg/ServicesSection";
 import AboutSection from "@/components/3amg/AboutSection";
 import TechSection from "@/components/3amg/TechSection";
@@ -61,6 +62,7 @@ const Index = () => {
         
         <main>
           <HeroSection />
+          <LayersSection />
           <ServicesSection />
           <AboutSection />
           <TechSection />
