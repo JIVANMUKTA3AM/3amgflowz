@@ -18,7 +18,7 @@ import ServicesSection from "@/components/3amg/ServicesSection";
 import AboutSection from "@/components/3amg/AboutSection";
 import TechSection from "@/components/3amg/TechSection";
 import CTASection from "@/components/3amg/CTASection";
-import LoginButton from "@/components/3amg/LoginButton";
+import ModernHeader from "@/components/3amg/ModernHeader";
 
 const Index = () => {
   const { user } = useAuth();
@@ -57,10 +57,10 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#0D1B3E] via-[#1A1F3A] to-[#0D1B3E]">
-        <LoginButton />
+      <div className="min-h-screen bg-gradient-to-b from-modern-blue-deep via-modern-blue-dark to-modern-blue-deep">
+        <ModernHeader />
         
-        <main>
+        <main className="pt-16">
           <HeroSection />
           <LayersSection />
           <ServicesSection />
