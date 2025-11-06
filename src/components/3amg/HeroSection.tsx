@@ -1,130 +1,85 @@
-
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Code, Cpu, Zap, Terminal, Database, Workflow, Rocket } from "lucide-react";
+import { ArrowRight, Sparkles, Bot, Workflow, Clock } from "lucide-react";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0a0a0f] via-[#12121a] to-[#0a0a0f]">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0D1B3E] via-[#1A1F3A] to-[#0D1B3E]">
       {/* Subtle Grid Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 opacity-20" style={{
+      <div className="absolute inset-0 z-0 opacity-20">
+        <div className="absolute inset-0" style={{
           backgroundImage: `
-            linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
+            linear-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59, 130, 246, 0.15) 1px, transparent 1px)
           `,
-          backgroundSize: '60px 60px'
+          backgroundSize: '80px 80px'
         }}></div>
       </div>
 
-      {/* Neon Glow Effects */}
-      <div className="absolute inset-0 z-10">
-        {/* Purple Neon Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600 rounded-full opacity-20 blur-3xl animate-pulse-slow"></div>
-        <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-orange-500 rounded-full opacity-15 blur-3xl animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-purple-500 rounded-full opacity-10 blur-3xl animate-pulse-slow" style={{ animationDelay: '3s' }}></div>
-        
-        {/* Floating Tech Icons */}
-        {Array.from({ length: 12 }).map((_, i) => {
-          const icons = [Code, Cpu, Terminal, Database, Workflow, Zap];
-          const Icon = icons[i % icons.length];
-          return (
-            <div
-              key={i}
-              className="absolute text-purple-400 opacity-10 animate-float-tech"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                fontSize: `${Math.random() * 8 + 16}px`,
-              }}
-            >
-              <Icon />
-            </div>
-          );
-        })}
+      {/* Floating Particles - Subtle */}
+      <div className="absolute inset-0 z-10 pointer-events-none">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-blue-400 rounded-full animate-float-particle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 8}s`,
+              animationDuration: `${8 + Math.random() * 4}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Central Glow Effect */}
+      <div className="absolute inset-0 z-5">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[150px]"></div>
       </div>
 
       <div className="container mx-auto px-4 z-20 text-center">
-        {/* Dynamic Header Badge */}
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-3 bg-purple-950/30 backdrop-blur-md border border-purple-500/20 rounded-full px-6 py-3 mb-6 hover:border-purple-500/40 transition-all">
-            <div className="w-2 h-2 bg-orange-500 rounded-full animate-ping"></div>
-            <span className="text-purple-300 text-sm font-medium tracking-wide">API-First • Enterprise Ready • 99.9% Uptime</span>
-          </div>
-        </div>
-
-        {/* Hero Title with Animated Glow */}
-        <motion.h1 
-          className="text-7xl md:text-9xl font-bold mb-8 bg-gradient-to-r from-purple-400 via-purple-300 to-orange-400 bg-clip-text text-transparent leading-tight"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1,
-            textShadow: [
-              "0 0 20px rgba(139, 92, 246, 0.5)",
-              "0 0 40px rgba(139, 92, 246, 0.8)",
-              "0 0 20px rgba(139, 92, 246, 0.5)",
-            ]
-          }}
-          transition={{ 
-            duration: 1.2,
-            textShadow: {
-              repeat: Infinity,
-              duration: 2,
-            }
-          }}
-        >
-          3AMG
-        </motion.h1>
-        
-        <div className="relative mb-8">
-          <h2 className="text-3xl md:text-5xl font-semibold text-white mb-6 leading-tight">
-            Plataforma de Agentes IA para
-            <span className="block mt-2">
-              <span className="bg-gradient-to-r from-purple-400 to-orange-400 bg-clip-text text-transparent font-bold">Provedores e Empresas Tech</span>
-            </span>
-          </h2>
-        </div>
-
-        <p className="text-lg md:text-xl text-gray-400 max-w-4xl mx-auto mb-12 leading-relaxed">
-          Reduza custos operacionais em até <span className="text-orange-400 font-bold">70%</span> e escale seu atendimento sem aumentar equipe. 
-          Nossa plataforma integra <span className="text-purple-400 font-semibold">n8n e APIs REST</span> para automatizar processos, 
-          garantir <span className="text-orange-400 font-bold">99,9% de disponibilidade</span> e atender clientes 
-          <span className="text-orange-400 font-bold"> 24/7</span>.
-        </p>
-
-        {/* Key Benefits Cards with 3D Effect */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
-          <div className="group relative bg-gradient-to-br from-purple-950/40 to-purple-900/20 backdrop-blur-md border border-purple-500/20 rounded-2xl p-6 hover:border-purple-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300"></div>
-            <div className="relative">
-              <div className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-orange-300 bg-clip-text text-transparent mb-2">-70%</div>
-              <div className="text-sm text-gray-300 font-medium">Redução de Custos Operacionais</div>
-            </div>
-          </div>
-          
-          <div className="group relative bg-gradient-to-br from-purple-950/40 to-purple-900/20 backdrop-blur-md border border-purple-500/20 rounded-2xl p-6 hover:border-purple-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300"></div>
-            <div className="relative">
-              <div className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-purple-300 bg-clip-text text-transparent mb-2">24/7</div>
-              <div className="text-sm text-gray-300 font-medium">Atendimento Automatizado</div>
-            </div>
-          </div>
-          
-          <div className="group relative bg-gradient-to-br from-purple-950/40 to-purple-900/20 backdrop-blur-md border border-purple-500/20 rounded-2xl p-6 hover:border-purple-500/40 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300"></div>
-            <div className="relative">
-              <div className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-orange-300 bg-clip-text text-transparent mb-2">99.9%</div>
-              <div className="text-sm text-gray-300 font-medium">SLA de Disponibilidade</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Modern CTAs with Pulsating Energy Effect */}
+        {/* Status Badge */}
         <motion.div 
-          className="flex flex-col sm:flex-row gap-6 justify-center mb-16"
+          className="mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-flex items-center gap-3 bg-blue-950/40 backdrop-blur-lg border border-blue-500/20 rounded-full px-6 py-3">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-blue-200 text-sm font-medium tracking-wide">API-First • Enterprise Ready • 99.9% Uptime</span>
+          </div>
+        </motion.div>
+
+        {/* Hero Title */}
+        <motion.h1 
+          className="text-6xl md:text-8xl font-bold mb-6 text-white leading-tight"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          Plataforma de Agentes IA
+          <br />
+          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            para ISPs e Empresas Tech
+          </span>
+        </motion.h1>
+
+        {/* Subtitle */}
+        <motion.p 
+          className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          Automação completa para atendimento, operações e gestão técnica. 
+          Agentes IA que atuam nas camadas B2B e B2C integradas ao seu ecossistema.
+        </motion.p>
+
+        {/* Modern CTAs */}
+        <motion.div 
+          className="flex flex-col sm:flex-row gap-5 justify-center mb-20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.8 }}
@@ -134,68 +89,86 @@ const HeroSection = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Button size="lg" className="group relative bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold px-12 py-7 text-lg rounded-2xl overflow-hidden transition-all duration-300 shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/60">
-                {/* Pulsating Energy Effect */}
+              <Button size="lg" className="group relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-10 py-6 text-base rounded-2xl overflow-hidden transition-all duration-300 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50">
                 <motion.div 
-                  className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"
+                  className="absolute inset-0 bg-white/20"
                   animate={{
-                    opacity: [0.3, 0.6, 0.3],
-                    scale: [1, 1.05, 1],
+                    opacity: [0.2, 0.4, 0.2],
                   }}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
                   }}
                 ></motion.div>
-                <div className="relative flex items-center">
-                  <Rocket className="mr-3 h-5 w-5 group-hover:rotate-12 transition-transform" />
+                <div className="relative flex items-center gap-2">
+                  <Sparkles className="h-5 w-5" />
                   Começar Agora - Login
-                  <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Button>
             </motion.div>
           </Link>
+          
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Button size="lg" className="group relative border-2 border-purple-500/50 bg-purple-950/30 backdrop-blur-md text-purple-300 hover:text-white hover:border-purple-400 px-12 py-7 text-lg rounded-2xl hover:bg-purple-900/40 transition-all duration-300 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/60 overflow-hidden">
-              {/* Pulsating Border Effect */}
-              <motion.div 
-                className="absolute inset-0 border-2 border-purple-400 rounded-2xl"
-                animate={{
-                  opacity: [0, 0.5, 0],
-                  scale: [0.95, 1.05, 0.95],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                }}
-              ></motion.div>
+            <Button size="lg" className="group relative border-2 border-blue-400/50 bg-blue-950/30 backdrop-blur-md text-blue-200 hover:text-white hover:border-blue-400 px-10 py-6 text-base rounded-2xl hover:bg-blue-900/40 transition-all duration-300 shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40">
               <span className="relative">Agendar Demo Técnica</span>
             </Button>
           </motion.div>
         </motion.div>
 
-        {/* Enhanced Tech Stack Display */}
-        <div className="flex justify-center space-x-12">
+        {/* Quick Benefits Cards */}
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+        >
           {[
-            { icon: Code, label: "APIs REST/GraphQL", gradient: "from-3amg-orange to-3amg-red" },
-            { icon: Cpu, label: "LLMs Enterprise", gradient: "from-3amg-purple to-3amg-purple-dark" },
-            { icon: Database, label: "Integrações N8N", gradient: "from-3amg-orange-light to-3amg-purple" }
-          ].map((item, index) => (
-            <div key={index} className="flex flex-col items-center group cursor-pointer">
-              <div className={`w-16 h-16 bg-gradient-to-r ${item.gradient} rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                <item.icon className="h-8 w-8 text-white" />
+            {
+              icon: Bot,
+              title: "Atendimento Automatizado",
+              description: "Agentes IA disponíveis 24/7 para seus clientes",
+              gradient: "from-blue-500 to-blue-600",
+              iconBg: "icon-box-blue"
+            },
+            {
+              icon: Workflow,
+              title: "Automação n8n + APIs REST",
+              description: "Integração completa com seus sistemas",
+              gradient: "from-purple-500 to-purple-600",
+              iconBg: "icon-box-purple"
+            },
+            {
+              icon: Clock,
+              title: "Alta Disponibilidade 24/7",
+              description: "99.9% de uptime garantido por SLA",
+              gradient: "from-pink-500 to-pink-600",
+              iconBg: "icon-box-pink"
+            }
+          ].map((benefit, index) => (
+            <motion.div
+              key={index}
+              className="modern-card rounded-3xl p-8 text-left"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 + index * 0.1, duration: 0.6 }}
+              whileHover={{ y: -8 }}
+            >
+              <div className={`${benefit.iconBg} w-14 h-14 rounded-xl flex items-center justify-center mb-5`}>
+                <benefit.icon className="h-7 w-7 text-white" />
               </div>
-              <span className="text-gray-400 text-sm font-medium group-hover:text-white transition-colors">{item.label}</span>
-            </div>
+              <h3 className="text-xl font-bold text-white mb-3">{benefit.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{benefit.description}</p>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
-      {/* Enhanced Bottom Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent z-10"></div>
+      {/* Bottom Gradient Fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0D1B3E] to-transparent z-10"></div>
     </section>
   );
 };

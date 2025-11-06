@@ -53,6 +53,17 @@
     --neon-orange: 16 100% 60%;
     --tech-dark: 240 10% 8%;
     --tech-darker: 240 10% 4%;
+    
+    /* Modern Blue-Purple Palette */
+    --blue-deep: 222 84% 12%;
+    --blue-dark: 222 70% 20%;
+    --blue-primary: 217 91% 60%;
+    --purple-vibrant: 270 80% 65%;
+    --pink-bright: 330 85% 65%;
+    --turquoise: 180 85% 55%;
+    --gradient-blue-purple: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(270 80% 65%) 100%);
+    --gradient-purple-pink: linear-gradient(135deg, hsl(270 80% 65%) 0%, hsl(330 85% 65%) 100%);
+    --gradient-blue-turquoise: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(180 85% 55%) 100%);
   }
 
   .dark {
@@ -102,6 +113,17 @@
     --neon-orange: 16 100% 60%;
     --tech-dark: 240 10% 8%;
     --tech-darker: 240 10% 4%;
+    
+    /* Modern Blue-Purple Palette */
+    --blue-deep: 222 84% 12%;
+    --blue-dark: 222 70% 20%;
+    --blue-primary: 217 91% 60%;
+    --purple-vibrant: 270 80% 65%;
+    --pink-bright: 330 85% 65%;
+    --turquoise: 180 85% 55%;
+    --gradient-blue-purple: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(270 80% 65%) 100%);
+    --gradient-purple-pink: linear-gradient(135deg, hsl(270 80% 65%) 0%, hsl(330 85% 65%) 100%);
+    --gradient-blue-turquoise: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(180 85% 55%) 100%);
   }
 }
 
@@ -231,4 +253,59 @@
 
 .sla-critical {
   background: linear-gradient(45deg, #EF4444, #DC2626);
+}
+
+/* Modern Minimalist Cards */
+.modern-card {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-card:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+}
+
+.icon-box-blue {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+}
+
+.icon-box-purple {
+  background: linear-gradient(135deg, #A855F7, #7C3AED);
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+}
+
+.icon-box-pink {
+  background: linear-gradient(135deg, #EC4899, #DB2777);
+  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.4);
+}
+
+.icon-box-turquoise {
+  background: linear-gradient(135deg, #14B8A6, #0D9488);
+  box-shadow: 0 4px 20px rgba(20, 184, 166, 0.4);
+}
+
+.icon-box-green {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+}
+
+/* Floating Particles */
+@keyframes float-particle {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(30px, -30px) scale(1.2);
+    opacity: 0.3;
+  }
+}
+
+.animate-float-particle {
+  animation: float-particle 8s ease-in-out infinite;
 }

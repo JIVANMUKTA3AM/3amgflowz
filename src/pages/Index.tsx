@@ -57,7 +57,7 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f]">
+      <div className="min-h-screen bg-gradient-to-b from-[#0D1B3E] via-[#1A1F3A] to-[#0D1B3E]">
         <LoginButton />
         
         <main>

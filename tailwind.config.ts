@@ -73,16 +73,25 @@ export default {
 				},
 				// 3AMG Brand Colors from logo
 				'3amg': {
-					orange: '#FF6B35', // Laranja principal do logo
+					orange: '#FF6B35',
 					'orange-dark': '#E55A2B',
 					'orange-light': '#FF8A5C',
-					red: '#FF4500', // Vermelho vibrante
-					purple: '#8B5CF6', // Roxo do gradiente
+					red: '#FF4500',
+					purple: '#8B5CF6',
 					'purple-dark': '#7C3AED',
 					'purple-light': '#A78BFA',
-					dark: '#1A1A1A', // Fundo escuro do logo
+					dark: '#1A1A1A',
 					'dark-light': '#2D2D2D',
-					binary: '#FF6B35' // Cor dos elementos binários
+					binary: '#FF6B35'
+				},
+				// Modern Blue-Purple Palette
+				'modern': {
+					'blue-deep': '#1E3A8A',
+					'blue-dark': '#1E40AF',
+					'blue-primary': '#3B82F6',
+					'purple-vibrant': '#A855F7',
+					'pink-bright': '#EC4899',
+					'turquoise': '#14B8A6'
 				}
 			},
 			borderRadius: {
