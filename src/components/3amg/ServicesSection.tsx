@@ -1,74 +1,106 @@
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, Workflow, Smartphone, Database, Code, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 
 const ServicesSection = () => {
   const services = [
     {
-      icon: <Bot className="h-8 w-8" />,
+      icon: <Bot className="h-6 w-6" />,
       title: "Agentes de IA Especializados",
       description: "Agentes inteligentes para atendimento, suporte técnico e vendas, personalizados para seu negócio.",
-      color: "from-3amg-orange to-3amg-red"
+      color: "pink"
     },
     {
-      icon: <Workflow className="h-8 w-8" />,
+      icon: <Workflow className="h-6 w-6" />,
       title: "Automação de Processos",
       description: "Fluxos automatizados que eliminam tarefas repetitivas e aumentam a eficiência operacional.",
-      color: "from-3amg-purple to-3amg-purple-dark"
+      color: "purple"
     },
     {
-      icon: <Smartphone className="h-8 w-8" />,
+      icon: <Smartphone className="h-6 w-6" />,
       title: "Integrações Multi-Canal",
       description: "WhatsApp, Telegram, sites e CRMs integrados em uma única plataforma unificada.",
-      color: "from-3amg-orange-light to-3amg-orange"
+      color: "blue"
     },
     {
-      icon: <Database className="h-8 w-8" />,
+      icon: <Database className="h-6 w-6" />,
       title: "Gestão de Dados",
       description: "Centralização e análise inteligente de dados para tomada de decisões estratégicas.",
-      color: "from-3amg-purple-light to-3amg-purple"
+      color: "turquoise"
     },
     {
-      icon: <Code className="h-8 w-8" />,
+      icon: <Code className="h-6 w-6" />,
       title: "Desenvolvimento Custom",
       description: "Soluções personalizadas desenvolvidas especificamente para suas necessidades únicas.",
-      color: "from-3amg-red to-3amg-orange-dark"
+      color: "pink"
     },
     {
-      icon: <Zap className="h-8 w-8" />,
+      icon: <Zap className="h-6 w-6" />,
       title: "N8N & Webhooks",
       description: "Integrações avançadas usando N8N e webhooks para conectar qualquer sistema.",
-      color: "from-3amg-purple-dark to-3amg-purple-light"
+      color: "purple"
     }
   ];
 
   return (
-    <section className="py-20 bg-gray-900">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Nossas <span className="bg-gradient-3amg bg-clip-text text-transparent">Soluções</span>
+    <section id="solucoes" className="py-24 bg-modern-blue-deep relative overflow-hidden">
+      {/* Animated background particles */}
+      <div className="absolute inset-0 opacity-20">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-modern-purple-vibrant rounded-full animate-float-particle"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${i * 0.3}s`,
+              animationDuration: `${4 + Math.random() * 3}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-5xl font-bold text-white mb-4">
+            Nossas <span className="text-modern-purple-vibrant">Soluções</span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Tecnologias de ponta para automatizar, integrar e revolucionar seu negócio
           </p>
+        </motion.div>
+
+        {/* Neon divider */}
+        <div className="flex items-center justify-center mb-16">
+          <div className="h-px w-32 bg-gradient-to-r from-transparent via-modern-purple-vibrant to-transparent shadow-[0_0_10px_rgba(155,92,255,0.6)]"></div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card key={index} className="bg-gray-800/50 border-gray-700 hover:border-3amg-orange/50 transition-all duration-300 hover:shadow-xl hover:shadow-3amg-orange/20">
-              <CardHeader>
-                <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${service.color} flex items-center justify-center text-white mb-4`}>
-                  {service.icon}
-                </div>
-                <CardTitle className="text-white text-xl">{service.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-300 text-base leading-relaxed">
-                  {service.description}
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.05, y: -5 }}
+              className="modern-card group cursor-pointer"
+            >
+              <div className={`icon-box-${service.color} mb-6`}>
+                {service.icon}
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-modern-purple-vibrant transition-colors">
+                {service.title}
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                {service.description}
+              </p>
+            </motion.div>
           ))}
         </div>
       </div>

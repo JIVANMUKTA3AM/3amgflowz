@@ -1,50 +1,96 @@
-
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { ArrowRight, MessageSquare, Zap } from "lucide-react";
+import { ArrowRight, MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
 
 const CTASection = () => {
   return (
-    <section className="py-20 bg-gradient-to-r from-3amg-dark via-3amg-purple-dark to-3amg-dark">
-      <div className="container mx-auto px-4">
-        <Card className="bg-gray-800/50 border-3amg-orange/30 backdrop-blur-sm">
-          <CardContent className="p-12 text-center">
-            <div className="mb-8">
-              <Zap className="h-16 w-16 text-3amg-orange mx-auto mb-4" />
-              <h2 className="text-4xl font-bold text-white mb-4">
-                Pronto para <span className="bg-gradient-3amg bg-clip-text text-transparent">Automatizar</span>?
-              </h2>
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                Transforme seu atendimento e processos com nossas soluções de IA. 
-                Comece hoje mesmo e veja a diferença em poucos dias.
-              </p>
-            </div>
+    <section id="contato" className="py-24 bg-gradient-to-b from-modern-blue-deep to-modern-blue-dark relative overflow-hidden">
+      {/* Animated background effect */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(circle at 50% 50%, rgba(155,92,255,0.4), transparent 70%)'
+        }}>
+          <div className="w-full h-full animate-pulse"></div>
+        </div>
+      </div>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Link to="/auth">
-                <Button size="lg" className="bg-gradient-3amg-orange hover:opacity-90 text-white font-semibold px-8 py-4 text-lg">
-                  Iniciar Projeto
+      <div className="container mx-auto px-6 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="modern-card max-w-4xl mx-auto text-center"
+        >
+          <div className="mb-8">
+            <motion.div
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-modern-purple-vibrant to-modern-pink rounded-2xl mb-6 shadow-[0_0_30px_rgba(155,92,255,0.6)]"
+            >
+              <ArrowRight className="h-10 w-10 text-white" />
+            </motion.div>
+            
+            <h2 className="text-5xl font-bold text-white mb-4">
+              Pronto para <span className="text-modern-purple-vibrant">Começar</span>?
+            </h2>
+            
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              Transforme seu atendimento e processos com IA. 
+              Configure seu primeiro agente em minutos.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-8">
+            <Link to="/auth">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-modern-purple-vibrant to-modern-pink hover:opacity-90 text-white font-semibold px-8 py-6 text-lg rounded-full shadow-[0_0_20px_rgba(155,92,255,0.6)] hover:shadow-[0_0_30px_rgba(155,92,255,0.8)] transition-all"
+                >
+                  Começar Grátis
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </Link>
-              
+              </motion.div>
+            </Link>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-3amg-orange text-3amg-orange hover:bg-3amg-orange hover:text-white px-8 py-4 text-lg"
+                className="border-2 border-modern-turquoise text-modern-turquoise hover:bg-modern-turquoise hover:text-white px-8 py-6 text-lg rounded-full transition-all"
                 onClick={() => window.open('https://wa.me/5511999999999', '_blank')}
               >
                 <MessageSquare className="mr-2 h-5 w-5" />
                 Falar com Especialista
               </Button>
-            </div>
+            </motion.div>
+          </div>
 
-            <div className="mt-8 text-gray-400">
-              <p className="text-sm">✓ Implementação rápida ✓ Suporte especializado ✓ Resultados garantidos</p>
+          <div className="flex items-center justify-center gap-8 text-gray-400 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-modern-turquoise rounded-full shadow-[0_0_8px_rgba(64,224,208,0.8)]"></div>
+              <span>Implementação Rápida</span>
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-modern-purple-vibrant rounded-full shadow-[0_0_8px_rgba(155,92,255,0.8)]"></div>
+              <span>Suporte Especializado</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-modern-pink rounded-full shadow-[0_0_8px_rgba(255,71,179,0.8)]"></div>
+              <span>Resultados Garantidos</span>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

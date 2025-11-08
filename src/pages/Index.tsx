@@ -17,6 +17,9 @@ import LayersSection from "@/components/3amg/LayersSection";
 import ServicesSection from "@/components/3amg/ServicesSection";
 import AboutSection from "@/components/3amg/AboutSection";
 import TechSection from "@/components/3amg/TechSection";
+import ArchitectureSection from "@/components/3amg/ArchitectureSection";
+import LayersFlowSection from "@/components/3amg/LayersFlowSection";
+import TechMotionSection from "@/components/3amg/TechMotionSection";
 import CTASection from "@/components/3amg/CTASection";
 import ModernHeader from "@/components/3amg/ModernHeader";
 
@@ -62,10 +65,12 @@ const Index = () => {
         
         <main className="pt-16">
           <HeroSection />
-          <LayersSection />
           <ServicesSection />
           <AboutSection />
           <TechSection />
+          <ArchitectureSection />
+          <LayersFlowSection />
+          <TechMotionSection />
           <CTASection />
         </main>
 

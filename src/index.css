@@ -260,6 +260,8 @@
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  padding: 2rem;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -267,6 +269,21 @@
   border-color: rgba(139, 92, 246, 0.3);
   transform: translateY(-8px);
   box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+}
+
+.icon-box-blue,
+.icon-box-purple,
+.icon-box-pink,
+.icon-box-turquoise,
+.icon-box-green {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.3s ease;
 }
 
 .icon-box-blue {
@@ -309,3 +326,13 @@
 .animate-float-particle {
   animation: float-particle 8s ease-in-out infinite;
 }
+
+@keyframes slideRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100vw + 200px));
+  }
+}
+
