@@ -883,6 +883,125 @@ export type Database = {
         }
         Relationships: []
       }
+      fiscal_api_configs: {
+        Row: {
+          api_token: string
+          api_url: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          organization_id: string | null
+          provider: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          api_token: string
+          api_url?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          organization_id?: string | null
+          provider: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          api_token?: string
+          api_url?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          organization_id?: string | null
+          provider?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_api_configs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fiscal_notes: {
+        Row: {
+          cancelled_at: string | null
+          created_at: string | null
+          error_message: string | null
+          external_id: string | null
+          id: string
+          invoice_id: string | null
+          issued_at: string | null
+          metadata: Json | null
+          note_key: string | null
+          note_number: string | null
+          organization_id: string | null
+          pdf_url: string | null
+          provider: string
+          status: string
+          updated_at: string | null
+          user_id: string
+          xml_url: string | null
+        }
+        Insert: {
+          cancelled_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          invoice_id?: string | null
+          issued_at?: string | null
+          metadata?: Json | null
+          note_key?: string | null
+          note_number?: string | null
+          organization_id?: string | null
+          pdf_url?: string | null
+          provider: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+          xml_url?: string | null
+        }
+        Update: {
+          cancelled_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          invoice_id?: string | null
+          issued_at?: string | null
+          metadata?: Json | null
+          note_key?: string | null
+          note_number?: string | null
+          organization_id?: string | null
+          pdf_url?: string | null
+          provider?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+          xml_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_notes_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_notes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       historico_financeiro: {
         Row: {
           agent_id: string | null

@@ -41,6 +41,7 @@ import DashboardOLT from "@/pages/DashboardOLT";
 import NotFound from "@/pages/NotFound";
 import TenantDashboard from "@/pages/TenantDashboard";
 import WidgetDemo from "@/pages/WidgetDemo";
+import NotasFiscais from "@/pages/NotasFiscais";
 import { Loader2 } from "lucide-react";
 
 const RoleBasedRouter = () => {
@@ -116,6 +117,7 @@ const RoleBasedRouter = () => {
       <Route path="/whatsapp-config" element={<WhatsAppConfig />} />
       <Route path="/monitoramento-snmp" element={<MonitoramentoSNMP />} />
       <Route path="/dashboard-olt" element={<DashboardOLT />} />
+      <Route path="/notas-fiscais" element={<NotasFiscais />} />
       
       {/* Cliente específico */}
       <Route path="/client-webhook" element={<ClientWebhook />} />
