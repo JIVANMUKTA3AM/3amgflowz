@@ -1136,6 +1136,42 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          channel: string | null
+          confidence: number | null
+          context: string | null
+          created_at: string | null
+          id: number
+          intent: string | null
+          message_text: string | null
+          sender_id: string | null
+          tenant_id: string | null
+        }
+        Insert: {
+          channel?: string | null
+          confidence?: number | null
+          context?: string | null
+          created_at?: string | null
+          id?: number
+          intent?: string | null
+          message_text?: string | null
+          sender_id?: string | null
+          tenant_id?: string | null
+        }
+        Update: {
+          channel?: string | null
+          confidence?: number | null
+          context?: string | null
+          created_at?: string | null
+          id?: number
+          intent?: string | null
+          message_text?: string | null
+          sender_id?: string | null
+          tenant_id?: string | null
+        }
+        Relationships: []
+      }
       monitoring_adapters: {
         Row: {
           ativo: boolean
@@ -2780,26 +2816,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      decrypt_credential: {
-        Args: { encrypted_text: string }
-        Returns: string
-      }
+      decrypt_credential: { Args: { encrypted_text: string }; Returns: string }
       decrypt_jsonb_credentials: {
         Args: { encrypted_credentials: Json }
         Returns: Json
       }
-      encrypt_credential: {
-        Args: { credential_text: string }
-        Returns: string
-      }
-      encrypt_jsonb_credentials: {
-        Args: { credentials: Json }
-        Returns: Json
-      }
-      get_user_tenant_id: {
-        Args: { _user_id: string }
-        Returns: string
-      }
+      encrypt_credential: { Args: { credential_text: string }; Returns: string }
+      encrypt_jsonb_credentials: { Args: { credentials: Json }; Returns: Json }
+      get_user_tenant_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2807,10 +2831,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_member_of: {
-        Args: { org_id: string }
-        Returns: boolean
-      }
+      is_member_of: { Args: { org_id: string }; Returns: boolean }
       is_tenant_member: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
