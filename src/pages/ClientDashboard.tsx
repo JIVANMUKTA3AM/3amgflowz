@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { BarChart3, MessageCircle, Users, Settings, Users2, Home } from "lucide-react";
+import { BarChart3, MessageCircle, Users, Settings, Users2, Home, FileText } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ClientHeader from "@/components/client/ClientHeader";
 import ClientDashboardOptions from "@/components/client/ClientDashboardOptions";
@@ -17,6 +17,8 @@ import ClientsList from "@/components/crm/ClientsList";
 import SalesPipeline from "@/components/crm/SalesPipeline";
 import InteractionHistory from "@/components/crm/InteractionHistory";
 import ClientForm from "@/components/crm/ClientForm";
+import FiscalApiConfig from "@/components/payment/FiscalApiConfig";
+import FiscalNotesList from "@/components/payment/FiscalNotesList";
 
 const ClientDashboard = () => {
   const [searchParams] = useSearchParams();
@@ -90,7 +92,7 @@ const ClientDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 bg-gray-900/80 backdrop-blur-sm border border-gray-700 p-1 rounded-lg shadow-lg">
+          <TabsList className="grid w-full grid-cols-7 bg-gray-900/80 backdrop-blur-sm border border-gray-700 p-1 rounded-lg shadow-lg">
             <TabsTrigger 
               value="home" 
               className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
@@ -125,6 +127,13 @@ const ClientDashboard = () => {
             >
               <Users2 className="h-4 w-4" />
               CRM
+            </TabsTrigger>
+            <TabsTrigger 
+              value="notas-fiscais" 
+              className="flex items-center gap-2 text-white data-[state=active]:text-foreground data-[state=active]:bg-background transition-all duration-300"
+            >
+              <FileText className="h-4 w-4" />
+              Notas Fiscais
             </TabsTrigger>
             <TabsTrigger 
               value="settings" 
@@ -189,6 +198,50 @@ const ClientDashboard = () => {
                 
                 <TabsContent value="interactions" className="space-y-6">
                   <InteractionHistory />
+                </TabsContent>
+              </Tabs>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="notas-fiscais" className="mt-8">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-3xl font-bold text-white mb-2">
+                  Notas Fiscais Eletrônicas
+                </h2>
+                <p className="text-gray-400">
+                  Gerencie a emissão de NF-e/NFS-e integrado com NFE.io ou eNotas
+                </p>
+              </div>
+
+              <Tabs defaultValue="notas" className="space-y-6">
+                <TabsList className="bg-gray-900/50 border border-gray-700/50">
+                  <TabsTrigger value="notas" className="data-[state=active]:bg-purple-600">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Notas Emitidas
+                  </TabsTrigger>
+                  <TabsTrigger value="config" className="data-[state=active]:bg-purple-600">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Configurações
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="notas" className="space-y-6">
+                  <FiscalNotesList />
+                </TabsContent>
+
+                <TabsContent value="config" className="space-y-6">
+                  <FiscalApiConfig />
+                  
+                  <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
+                    <h3 className="text-blue-400 font-semibold mb-2">📌 Como configurar:</h3>
+                    <ol className="text-sm text-gray-300 space-y-1 list-decimal list-inside">
+                      <li>Escolha seu provedor fiscal (NFE.io, eNotas ou outro)</li>
+                      <li>Cole o token de API fornecido pelo provedor</li>
+                      <li>Configure a URL da API (opcional, usa padrão se vazio)</li>
+                      <li>Após salvar, você poderá emitir notas nas faturas pagas</li>
+                    </ol>
+                  </div>
                 </TabsContent>
               </Tabs>
             </div>
