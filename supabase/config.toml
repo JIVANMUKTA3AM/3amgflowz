@@ -37,3 +37,6 @@ verify_jwt = false
 
 [functions.agents-execute]
 verify_jwt = false
+
+[functions.issue-fiscal-note]
+# Requer autenticação JWT (padrão é true)
