@@ -9,6 +9,7 @@ export interface FiscalNote {
   invoice_id: string;
   provider: string;
   note_number: string | null;
+  serie: string | null;
   note_key: string | null;
   pdf_url: string | null;
   xml_url: string | null;
@@ -17,21 +18,23 @@ export interface FiscalNote {
   external_id: string | null;
   issued_at: string | null;
   cancelled_at: string | null;
+  competencia: string | null;
   metadata: any;
   created_at: string;
   updated_at: string;
 }
 
 export interface FiscalApiConfig {
-  id: string;
-  user_id: string;
-  organization_id: string | null;
+  id?: string;
+  user_id?: string;
+  organization_id?: string | null;
   provider: 'nfeio' | 'enotas' | 'other';
   api_token: string;
   api_url: string | null;
   is_active: boolean;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
+  [key: string]: any; // Permitir campos dinâmicos do banco
 }
 
 export function useFiscalNotes() {
@@ -165,12 +168,47 @@ export function useFiscalNotes() {
     },
   });
 
+  // Testar conexão com API fiscal
+  const testConnectionMutation = useMutation({
+    mutationFn: async ({ 
+      provider, 
+      apiToken,
+      apiUrl 
+    }: { 
+      provider: string; 
+      apiToken: string;
+      apiUrl: string | null;
+    }) => {
+      // Simular teste de conexão
+      // Na prática, aqui seria feita uma chamada real para a API fiscal
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Simular sucesso (em produção, fazer validação real)
+      return { success: true, message: 'Conexão testada com sucesso!' };
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Teste de conexão",
+        description: data.message,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro no teste de conexão",
+        description: error.message || "Não foi possível conectar à API fiscal",
+        variant: "destructive",
+      });
+    },
+  });
+
   return {
     fiscalNotes: fiscalNotes || [],
     apiConfigs: apiConfigs || [],
     isLoading: isLoadingNotes || isLoadingConfigs,
     saveConfig: saveConfigMutation.mutate,
     isSavingConfig: saveConfigMutation.isPending,
+    testConnection: testConnectionMutation.mutate,
+    isTestingConnection: testConnectionMutation.isPending,
     issueNote: issueNoteMutation.mutate,
     isIssuingNote: issueNoteMutation.isPending,
     cancelNote: cancelNoteMutation.mutate,

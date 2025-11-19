@@ -887,33 +887,87 @@ export type Database = {
         Row: {
           api_token: string
           api_url: string | null
+          cnae: string | null
+          cnpj: string | null
+          codigo_servico: string | null
           created_at: string | null
+          endereco_bairro: string | null
+          endereco_cep: string | null
+          endereco_cidade: string | null
+          endereco_complemento: string | null
+          endereco_estado: string | null
+          endereco_numero: string | null
+          endereco_rua: string | null
           id: string
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
           is_active: boolean | null
+          natureza_operacao: string | null
+          nome_fantasia: string | null
           organization_id: string | null
           provider: string
+          razao_social: string | null
+          regime_tributario: string | null
+          serie_nota: string | null
+          tipo_nota: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           api_token: string
           api_url?: string | null
+          cnae?: string | null
+          cnpj?: string | null
+          codigo_servico?: string | null
           created_at?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_cidade?: string | null
+          endereco_complemento?: string | null
+          endereco_estado?: string | null
+          endereco_numero?: string | null
+          endereco_rua?: string | null
           id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
           is_active?: boolean | null
+          natureza_operacao?: string | null
+          nome_fantasia?: string | null
           organization_id?: string | null
           provider: string
+          razao_social?: string | null
+          regime_tributario?: string | null
+          serie_nota?: string | null
+          tipo_nota?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           api_token?: string
           api_url?: string | null
+          cnae?: string | null
+          cnpj?: string | null
+          codigo_servico?: string | null
           created_at?: string | null
+          endereco_bairro?: string | null
+          endereco_cep?: string | null
+          endereco_cidade?: string | null
+          endereco_complemento?: string | null
+          endereco_estado?: string | null
+          endereco_numero?: string | null
+          endereco_rua?: string | null
           id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
           is_active?: boolean | null
+          natureza_operacao?: string | null
+          nome_fantasia?: string | null
           organization_id?: string | null
           provider?: string
+          razao_social?: string | null
+          regime_tributario?: string | null
+          serie_nota?: string | null
+          tipo_nota?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -930,6 +984,7 @@ export type Database = {
       fiscal_notes: {
         Row: {
           cancelled_at: string | null
+          competencia: string | null
           created_at: string | null
           error_message: string | null
           external_id: string | null
@@ -942,6 +997,7 @@ export type Database = {
           organization_id: string | null
           pdf_url: string | null
           provider: string
+          serie: string | null
           status: string
           updated_at: string | null
           user_id: string
@@ -949,6 +1005,7 @@ export type Database = {
         }
         Insert: {
           cancelled_at?: string | null
+          competencia?: string | null
           created_at?: string | null
           error_message?: string | null
           external_id?: string | null
@@ -961,6 +1018,7 @@ export type Database = {
           organization_id?: string | null
           pdf_url?: string | null
           provider: string
+          serie?: string | null
           status?: string
           updated_at?: string | null
           user_id: string
@@ -968,6 +1026,7 @@ export type Database = {
         }
         Update: {
           cancelled_at?: string | null
+          competencia?: string | null
           created_at?: string | null
           error_message?: string | null
           external_id?: string | null
@@ -980,6 +1039,7 @@ export type Database = {
           organization_id?: string | null
           pdf_url?: string | null
           provider?: string
+          serie?: string | null
           status?: string
           updated_at?: string | null
           user_id?: string
