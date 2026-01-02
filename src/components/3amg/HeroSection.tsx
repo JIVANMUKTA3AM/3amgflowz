@@ -109,18 +109,19 @@ const HeroSection = () => {
             </motion.div>
           </Link>
           
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Button 
-              size="lg" 
-              className="group relative border-2 border-blue-400/50 bg-blue-950/30 backdrop-blur-md text-blue-200 hover:text-white hover:border-blue-400 px-10 py-6 text-base rounded-2xl hover:bg-blue-900/40 transition-all duration-300 shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40"
-              onClick={() => window.open('https://wa.me/5515997668073?text=Fala%20mano,%20quero%20agendar%20uma%20demo%20técnica%20da%203AMG%20Flowz!', '_blank')}
+          <Link to="/pricing">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <span className="relative">Agendar Demo Técnica</span>
-            </Button>
-          </motion.div>
+              <Button 
+                size="lg" 
+                className="group relative border-2 border-blue-400/50 bg-blue-950/30 backdrop-blur-md text-blue-200 hover:text-white hover:border-blue-400 px-10 py-6 text-base rounded-2xl hover:bg-blue-900/40 transition-all duration-300 shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40"
+              >
+                <span className="relative">Ver Planos e Preços</span>
+              </Button>
+            </motion.div>
+          </Link>
         </motion.div>
 
         {/* Quick Benefits Cards */}

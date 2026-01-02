@@ -6,7 +6,7 @@ const ModernHeader = () => {
   const menuItems = [
     { label: "Soluções", href: "#solucoes" },
     { label: "Tecnologia", href: "#tecnologia" },
-    { label: "Preços", href: "#precos" },
+    { label: "Preços", href: "/pricing", isLink: true },
     { label: "Contato", href: "#contato" },
   ];
 
@@ -30,13 +30,23 @@ const ModernHeader = () => {
           {/* Menu Central */}
           <nav className="hidden md:flex items-center space-x-8">
             {menuItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-white/90 hover:text-white text-sm font-medium tracking-wide transition-colors duration-200 hover:scale-105 transform"
-              >
-                {item.label}
-              </a>
+              item.isLink ? (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  className="text-white/90 hover:text-white text-sm font-medium tracking-wide transition-colors duration-200 hover:scale-105 transform"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-white/90 hover:text-white text-sm font-medium tracking-wide transition-colors duration-200 hover:scale-105 transform"
+                >
+                  {item.label}
+                </a>
+              )
             ))}
           </nav>
 

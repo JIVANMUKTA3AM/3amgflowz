@@ -42,6 +42,7 @@ import NotFound from "@/pages/NotFound";
 import TenantDashboard from "@/pages/TenantDashboard";
 import WidgetDemo from "@/pages/WidgetDemo";
 import NotasFiscais from "@/pages/NotasFiscais";
+import Pricing from "@/pages/Pricing";
 import { Loader2 } from "lucide-react";
 
 const RoleBasedRouter = () => {
@@ -118,6 +119,7 @@ const RoleBasedRouter = () => {
       <Route path="/monitoramento-snmp" element={<MonitoramentoSNMP />} />
       <Route path="/dashboard-olt" element={<DashboardOLT />} />
       <Route path="/notas-fiscais" element={<NotasFiscais />} />
+      <Route path="/pricing" element={<Pricing />} />
       
       {/* Cliente específico */}
       <Route path="/client-webhook" element={<ClientWebhook />} />
