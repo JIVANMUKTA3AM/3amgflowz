@@ -39,6 +39,20 @@ const Pricing = () => {
 
   const discountRate = 0.17; // 17% de desconto no anual
 
+  const whatsappNumber = "5511999999999"; // TODO: Substituir pelo número real da 3AMG
+
+  const whatsappMessages: Record<string, string> = {
+    starter: "Olá! Vim pelo site da 3AMG e tenho interesse no plano Starter Pro para meu provedor. Gostaria de mais informações.",
+    growth: "Olá! Vim pelo site da 3AMG e tenho interesse no plano Growth ISP para meu provedor. Quero entender valores, onboarding e próximos passos.",
+    professional: "Olá! Vim pelo site da 3AMG e tenho interesse no plano Professional ISP para minha operação. Gostaria de uma apresentação mais detalhada.",
+    enterprise: "Olá! Vim pelo site da 3AMG e gostaria de falar com um especialista sobre o plano Enterprise para minha empresa.",
+  };
+
+  const getWhatsAppLink = (planId: string) => {
+    const message = encodeURIComponent(whatsappMessages[planId] || "");
+    return `https://wa.me/${whatsappNumber}?text=${message}`;
+  };
+
   const plans = [
     {
       id: "starter",
@@ -433,22 +447,25 @@ const Pricing = () => {
                           ? 'bg-transparent border-2 border-amber-500/50 text-amber-400 hover:bg-amber-500/10 hover:border-amber-400'
                           : 'bg-gray-700/50 hover:bg-gray-700 text-white border border-gray-600/50'
                       }`}
-                      onClick={() => plan.monthlyPrice === null 
-                        ? window.open("https://wa.me/5511999999999", "_blank") 
-                        : navigate("/auth")
-                      }
+                      asChild
                     >
-                      {plan.monthlyPrice === null ? (
-                        <>
-                          <Phone className="w-4 h-4 mr-2" />
-                          Falar com Vendas
-                        </>
-                      ) : (
-                        <>
-                          Começar Agora
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </>
-                      )}
+                      <a 
+                        href={getWhatsAppLink(plan.id)} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        {plan.monthlyPrice === null ? (
+                          <>
+                            <Phone className="w-4 h-4 mr-2" />
+                            Falar com Vendas
+                          </>
+                        ) : (
+                          <>
+                            Começar Agora
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </>
+                        )}
+                      </a>
                     </Button>
                   </div>
                 </motion.div>
