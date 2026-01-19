@@ -14,21 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      Agendamentos: {
-        Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
-      }
       agent_configurations: {
         Row: {
           agent_type: string
@@ -126,13 +111,16 @@ export type Database = {
           agent_configuration_id: string
           api_credentials: Json | null
           created_at: string
+          erp_config: Json | null
           id: string
           integration_name: string
           integration_type: string
           is_active: boolean
           last_sync_at: string | null
+          provider_config: Json | null
           settings: Json | null
           telegram_config: Json | null
+          tenant_id: string | null
           updated_at: string
           webhook_endpoints: Json | null
         }
@@ -140,13 +128,16 @@ export type Database = {
           agent_configuration_id: string
           api_credentials?: Json | null
           created_at?: string
+          erp_config?: Json | null
           id?: string
           integration_name: string
           integration_type: string
           is_active?: boolean
           last_sync_at?: string | null
+          provider_config?: Json | null
           settings?: Json | null
           telegram_config?: Json | null
+          tenant_id?: string | null
           updated_at?: string
           webhook_endpoints?: Json | null
         }
@@ -154,13 +145,16 @@ export type Database = {
           agent_configuration_id?: string
           api_credentials?: Json | null
           created_at?: string
+          erp_config?: Json | null
           id?: string
           integration_name?: string
           integration_type?: string
           is_active?: boolean
           last_sync_at?: string | null
+          provider_config?: Json | null
           settings?: Json | null
           telegram_config?: Json | null
+          tenant_id?: string | null
           updated_at?: string
           webhook_endpoints?: Json | null
         }
@@ -170,6 +164,13 @@ export type Database = {
             columns: ["agent_configuration_id"]
             isOneToOne: false
             referencedRelation: "agent_configurations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_integrations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -904,11 +905,11 @@ export type Database = {
           is_active: boolean | null
           natureza_operacao: string | null
           nome_fantasia: string | null
-          organization_id: string | null
           provider: string
           razao_social: string | null
           regime_tributario: string | null
           serie_nota: string | null
+          tenant_id: string | null
           tipo_nota: string | null
           updated_at: string | null
           user_id: string
@@ -933,11 +934,11 @@ export type Database = {
           is_active?: boolean | null
           natureza_operacao?: string | null
           nome_fantasia?: string | null
-          organization_id?: string | null
           provider: string
           razao_social?: string | null
           regime_tributario?: string | null
           serie_nota?: string | null
+          tenant_id?: string | null
           tipo_nota?: string | null
           updated_at?: string | null
           user_id: string
@@ -962,21 +963,21 @@ export type Database = {
           is_active?: boolean | null
           natureza_operacao?: string | null
           nome_fantasia?: string | null
-          organization_id?: string | null
           provider?: string
           razao_social?: string | null
           regime_tributario?: string | null
           serie_nota?: string | null
+          tenant_id?: string | null
           tipo_nota?: string | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "fiscal_api_configs_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: "fiscal_api_configs_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: "organizations"
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -994,11 +995,11 @@ export type Database = {
           metadata: Json | null
           note_key: string | null
           note_number: string | null
-          organization_id: string | null
           pdf_url: string | null
           provider: string
           serie: string | null
           status: string
+          tenant_id: string | null
           updated_at: string | null
           user_id: string
           xml_url: string | null
@@ -1015,11 +1016,11 @@ export type Database = {
           metadata?: Json | null
           note_key?: string | null
           note_number?: string | null
-          organization_id?: string | null
           pdf_url?: string | null
           provider: string
           serie?: string | null
           status?: string
+          tenant_id?: string | null
           updated_at?: string | null
           user_id: string
           xml_url?: string | null
@@ -1036,11 +1037,11 @@ export type Database = {
           metadata?: Json | null
           note_key?: string | null
           note_number?: string | null
-          organization_id?: string | null
           pdf_url?: string | null
           provider?: string
           serie?: string | null
           status?: string
+          tenant_id?: string | null
           updated_at?: string | null
           user_id?: string
           xml_url?: string | null
@@ -1054,64 +1055,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "fiscal_notes_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: "fiscal_notes_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: "organizations"
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
-      }
-      historico_financeiro: {
-        Row: {
-          agent_id: string | null
-          created_at: string
-          dados_extras: Json | null
-          data_processamento: string | null
-          data_transacao: string
-          descricao: string
-          id: string
-          metodo_pagamento: string | null
-          referencia_id: string | null
-          referencia_tipo: string | null
-          status: string
-          tipo_transacao: string
-          user_id: string
-          valor: number
-        }
-        Insert: {
-          agent_id?: string | null
-          created_at?: string
-          dados_extras?: Json | null
-          data_processamento?: string | null
-          data_transacao?: string
-          descricao: string
-          id?: string
-          metodo_pagamento?: string | null
-          referencia_id?: string | null
-          referencia_tipo?: string | null
-          status?: string
-          tipo_transacao: string
-          user_id: string
-          valor: number
-        }
-        Update: {
-          agent_id?: string | null
-          created_at?: string
-          dados_extras?: Json | null
-          data_processamento?: string | null
-          data_transacao?: string
-          descricao?: string
-          id?: string
-          metodo_pagamento?: string | null
-          referencia_id?: string | null
-          referencia_tipo?: string | null
-          status?: string
-          tipo_transacao?: string
-          user_id?: string
-          valor?: number
-        }
-        Relationships: []
       }
       integracoes_n8n: {
         Row: {
@@ -1163,7 +1113,6 @@ export type Database = {
           description: string
           due_date: string
           id: string
-          organization_id: string | null
           payment_data: Json | null
           payment_date: string | null
           payment_id: string | null
@@ -1171,6 +1120,7 @@ export type Database = {
           payment_url: string | null
           servico_tipo: string | null
           status: string
+          tenant_id: string | null
           updated_at: string
           user_id: string
         }
@@ -1184,7 +1134,6 @@ export type Database = {
           description: string
           due_date: string
           id?: string
-          organization_id?: string | null
           payment_data?: Json | null
           payment_date?: string | null
           payment_id?: string | null
@@ -1192,6 +1141,7 @@ export type Database = {
           payment_url?: string | null
           servico_tipo?: string | null
           status?: string
+          tenant_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -1205,7 +1155,6 @@ export type Database = {
           description?: string
           due_date?: string
           id?: string
-          organization_id?: string | null
           payment_data?: Json | null
           payment_date?: string | null
           payment_id?: string | null
@@ -1213,143 +1162,19 @@ export type Database = {
           payment_url?: string | null
           servico_tipo?: string | null
           status?: string
+          tenant_id?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "invoices_organization_id_fkey"
-            columns: ["organization_id"]
+            foreignKeyName: "invoices_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: "organizations"
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
-      }
-      memberships: {
-        Row: {
-          created_at: string
-          id: string
-          organization_id: string
-          role: Database["public"]["Enums"]["membership_role"]
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          organization_id: string
-          role?: Database["public"]["Enums"]["membership_role"]
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          organization_id?: string
-          role?: Database["public"]["Enums"]["membership_role"]
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "memberships_organization_id_fkey"
-            columns: ["organization_id"]
-            isOneToOne: false
-            referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      mensalidades: {
-        Row: {
-          agent_id: string | null
-          cliente_email: string | null
-          cliente_nome: string
-          cliente_telefone: string | null
-          created_at: string
-          data_pagamento: string | null
-          data_vencimento: string
-          id: string
-          metodo_pagamento: string | null
-          observacoes: string | null
-          plano_tipo: string
-          status: string
-          updated_at: string
-          user_id: string
-          valor_mensal: number
-        }
-        Insert: {
-          agent_id?: string | null
-          cliente_email?: string | null
-          cliente_nome: string
-          cliente_telefone?: string | null
-          created_at?: string
-          data_pagamento?: string | null
-          data_vencimento: string
-          id?: string
-          metodo_pagamento?: string | null
-          observacoes?: string | null
-          plano_tipo: string
-          status?: string
-          updated_at?: string
-          user_id: string
-          valor_mensal: number
-        }
-        Update: {
-          agent_id?: string | null
-          cliente_email?: string | null
-          cliente_nome?: string
-          cliente_telefone?: string | null
-          created_at?: string
-          data_pagamento?: string | null
-          data_vencimento?: string
-          id?: string
-          metodo_pagamento?: string | null
-          observacoes?: string | null
-          plano_tipo?: string
-          status?: string
-          updated_at?: string
-          user_id?: string
-          valor_mensal?: number
-        }
-        Relationships: []
-      }
-      messages: {
-        Row: {
-          channel: string | null
-          confidence: number | null
-          context: string | null
-          created_at: string | null
-          id: number
-          intent: string | null
-          message_text: string | null
-          sender_id: string | null
-          tenant_id: string | null
-        }
-        Insert: {
-          channel?: string | null
-          confidence?: number | null
-          context?: string | null
-          created_at?: string | null
-          id?: number
-          intent?: string | null
-          message_text?: string | null
-          sender_id?: string | null
-          tenant_id?: string | null
-        }
-        Update: {
-          channel?: string | null
-          confidence?: number | null
-          context?: string | null
-          created_at?: string | null
-          id?: number
-          intent?: string | null
-          message_text?: string | null
-          sender_id?: string | null
-          tenant_id?: string | null
-        }
-        Relationships: []
       }
       monitoring_adapters: {
         Row: {
@@ -1429,15 +1254,7 @@ export type Database = {
           timestamp_execucao?: string | null
           tipo_execucao?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "n8n_execution_logs_integracao_id_fkey"
-            columns: ["integracao_id"]
-            isOneToOne: false
-            referencedRelation: "integracoes_n8n"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       notification_settings: {
         Row: {
@@ -1725,30 +1542,6 @@ export type Database = {
           },
         ]
       }
-      organizations: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-          owner_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-          owner_id: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-          owner_id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       payment_methods: {
         Row: {
           configuration: Json | null
@@ -1787,45 +1580,57 @@ export type Database = {
       }
       payment_transactions: {
         Row: {
+          agent_id: string | null
           amount: number
           created_at: string
           currency: string | null
+          dados_extras: Json | null
           description: string | null
           external_transaction_id: string | null
           id: string
           metadata: Json | null
           payment_method_id: string | null
           processed_at: string | null
+          referencia_id: string | null
+          referencia_tipo: string | null
           status: string
           transaction_type: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          agent_id?: string | null
           amount: number
           created_at?: string
           currency?: string | null
+          dados_extras?: Json | null
           description?: string | null
           external_transaction_id?: string | null
           id?: string
           metadata?: Json | null
           payment_method_id?: string | null
           processed_at?: string | null
+          referencia_id?: string | null
+          referencia_tipo?: string | null
           status?: string
           transaction_type: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          agent_id?: string | null
           amount?: number
           created_at?: string
           currency?: string | null
+          dados_extras?: Json | null
           description?: string | null
           external_transaction_id?: string | null
           id?: string
           metadata?: Json | null
           payment_method_id?: string | null
           processed_at?: string | null
+          referencia_id?: string | null
+          referencia_tipo?: string | null
           status?: string
           transaction_type?: string
           updated_at?: string
@@ -1875,15 +1680,7 @@ export type Database = {
           provedor_id?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "planos_provedores_provedor_id_fkey"
-            columns: ["provedor_id"]
-            isOneToOne: false
-            referencedRelation: "providers"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -1963,134 +1760,6 @@ export type Database = {
           status?: Database["public"]["Enums"]["atividade_status"] | null
           updated_at?: string | null
           valor_proposto?: number | null
-        }
-        Relationships: []
-      }
-      provider_agents: {
-        Row: {
-          agent_configuration_id: string | null
-          agent_type: string
-          created_at: string
-          id: string
-          is_active: boolean | null
-          provider_id: string
-          updated_at: string
-        }
-        Insert: {
-          agent_configuration_id?: string | null
-          agent_type: string
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          provider_id: string
-          updated_at?: string
-        }
-        Update: {
-          agent_configuration_id?: string | null
-          agent_type?: string
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          provider_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "provider_agents_agent_configuration_id_fkey"
-            columns: ["agent_configuration_id"]
-            isOneToOne: false
-            referencedRelation: "agent_configurations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "provider_agents_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "providers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      provider_integrations: {
-        Row: {
-          created_at: string
-          credentials: Json
-          id: string
-          integration_type: string
-          is_active: boolean | null
-          last_test_at: string | null
-          last_test_result: Json | null
-          last_test_status: string | null
-          mode: string
-          polling_interval_secs: number | null
-          provider_id: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          credentials?: Json
-          id?: string
-          integration_type: string
-          is_active?: boolean | null
-          last_test_at?: string | null
-          last_test_result?: Json | null
-          last_test_status?: string | null
-          mode: string
-          polling_interval_secs?: number | null
-          provider_id: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          credentials?: Json
-          id?: string
-          integration_type?: string
-          is_active?: boolean | null
-          last_test_at?: string | null
-          last_test_result?: Json | null
-          last_test_status?: string | null
-          mode?: string
-          polling_interval_secs?: number | null
-          provider_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "provider_integrations_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "providers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      providers: {
-        Row: {
-          cnpj_id: string
-          contact: string
-          created_at: string
-          id: string
-          name: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          cnpj_id: string
-          contact: string
-          created_at?: string
-          id?: string
-          name: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          cnpj_id?: string
-          contact?: string
-          created_at?: string
-          id?: string
-          name?: string
-          updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }
@@ -2289,53 +1958,6 @@ export type Database = {
           },
         ]
       }
-      subscribers: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          stripe_customer_id: string | null
-          subscribed: boolean
-          subscription_end: string | null
-          subscription_id: string | null
-          subscription_tier: string | null
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          stripe_customer_id?: string | null
-          subscribed?: boolean
-          subscription_end?: string | null
-          subscription_id?: string | null
-          subscription_tier?: string | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          stripe_customer_id?: string | null
-          subscribed?: boolean
-          subscription_end?: string | null
-          subscription_id?: string | null
-          subscription_tier?: string | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "subscribers_subscription_id_fkey"
-            columns: ["subscription_id"]
-            isOneToOne: false
-            referencedRelation: "subscriptions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       subscription_history: {
         Row: {
           created_at: string
@@ -2395,49 +2017,66 @@ export type Database = {
         Row: {
           billing_interval: string
           created_at: string
+          custom_features: Json | null
           description: string | null
           features: Json
           id: string
           is_active: boolean | null
+          is_custom: boolean | null
           name: string
           plan_type: Database["public"]["Enums"]["subscription_plan_type"]
           price_amount: number
           price_currency: string
           sort_order: number | null
           stripe_price_id: string | null
+          tenant_id: string | null
           updated_at: string
         }
         Insert: {
           billing_interval?: string
           created_at?: string
+          custom_features?: Json | null
           description?: string | null
           features?: Json
           id?: string
           is_active?: boolean | null
+          is_custom?: boolean | null
           name: string
           plan_type: Database["public"]["Enums"]["subscription_plan_type"]
           price_amount: number
           price_currency?: string
           sort_order?: number | null
           stripe_price_id?: string | null
+          tenant_id?: string | null
           updated_at?: string
         }
         Update: {
           billing_interval?: string
           created_at?: string
+          custom_features?: Json | null
           description?: string | null
           features?: Json
           id?: string
           is_active?: boolean | null
+          is_custom?: boolean | null
           name?: string
           plan_type?: Database["public"]["Enums"]["subscription_plan_type"]
           price_amount?: number
           price_currency?: string
           sort_order?: number | null
           stripe_price_id?: string | null
+          tenant_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "subscription_plans_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
@@ -2558,6 +2197,9 @@ export type Database = {
       }
       tenant_memberships: {
         Row: {
+          agent_permissions: Json | null
+          assigned_agents: string[] | null
+          can_manage_agents: boolean | null
           created_at: string
           id: string
           role: string
@@ -2565,6 +2207,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          agent_permissions?: Json | null
+          assigned_agents?: string[] | null
+          can_manage_agents?: boolean | null
           created_at?: string
           id?: string
           role?: string
@@ -2572,6 +2217,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          agent_permissions?: Json | null
+          assigned_agents?: string[] | null
+          can_manage_agents?: boolean | null
           created_at?: string
           id?: string
           role?: string
@@ -2581,53 +2229,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "tenant_memberships_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "tenants"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tenant_plans: {
-        Row: {
-          ativo: boolean
-          condicoes: string | null
-          created_at: string
-          features: Json
-          id: string
-          nome_plano: string
-          preco: number
-          promocao: string | null
-          tenant_id: string
-          updated_at: string
-        }
-        Insert: {
-          ativo?: boolean
-          condicoes?: string | null
-          created_at?: string
-          features?: Json
-          id?: string
-          nome_plano: string
-          preco: number
-          promocao?: string | null
-          tenant_id: string
-          updated_at?: string
-        }
-        Update: {
-          ativo?: boolean
-          condicoes?: string | null
-          created_at?: string
-          features?: Json
-          id?: string
-          nome_plano?: string
-          preco?: number
-          promocao?: string | null
-          tenant_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tenant_plans_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -2690,34 +2291,61 @@ export type Database = {
           ativo: boolean
           cnpj: string
           configuracoes: Json
+          configuracoes_provedor: Json | null
           contato: Json
           created_at: string
+          email_contato: string | null
+          endereco: Json | null
           id: string
+          logo_url: string | null
           nome: string
+          nome_fantasia: string | null
+          numero_assinantes: number | null
           owner_id: string
+          razao_social: string | null
+          telefone_contato: string | null
           updated_at: string
+          website: string | null
         }
         Insert: {
           ativo?: boolean
           cnpj: string
           configuracoes?: Json
+          configuracoes_provedor?: Json | null
           contato?: Json
           created_at?: string
+          email_contato?: string | null
+          endereco?: Json | null
           id?: string
+          logo_url?: string | null
           nome: string
+          nome_fantasia?: string | null
+          numero_assinantes?: number | null
           owner_id: string
+          razao_social?: string | null
+          telefone_contato?: string | null
           updated_at?: string
+          website?: string | null
         }
         Update: {
           ativo?: boolean
           cnpj?: string
           configuracoes?: Json
+          configuracoes_provedor?: Json | null
           contato?: Json
           created_at?: string
+          email_contato?: string | null
+          endereco?: Json | null
           id?: string
+          logo_url?: string | null
           nome?: string
+          nome_fantasia?: string | null
+          numero_assinantes?: number | null
           owner_id?: string
+          razao_social?: string | null
+          telefone_contato?: string | null
           updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -2769,33 +2397,6 @@ export type Database = {
           status?: Database["public"]["Enums"]["atividade_status"] | null
           tipo_servico?: string
           updated_at?: string | null
-        }
-        Relationships: []
-      }
-      user_agents: {
-        Row: {
-          agent_type: Database["public"]["Enums"]["agent_type"]
-          created_at: string
-          id: string
-          is_active: boolean
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          agent_type: Database["public"]["Enums"]["agent_type"]
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          agent_type?: Database["public"]["Enums"]["agent_type"]
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }
