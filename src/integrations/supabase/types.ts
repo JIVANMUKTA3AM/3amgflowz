@@ -2505,6 +2505,63 @@ export type Database = {
         }
         Relationships: []
       }
+      usage_aggregates: {
+        Row: {
+          agent_id: string | null
+          created_at: string | null
+          id: string
+          period_end: string
+          period_start: string
+          tenant_id: string
+          total_cost_estimate: number | null
+          total_duration_ms: number | null
+          total_events: number | null
+          total_sessions: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          created_at?: string | null
+          id?: string
+          period_end: string
+          period_start: string
+          tenant_id: string
+          total_cost_estimate?: number | null
+          total_duration_ms?: number | null
+          total_events?: number | null
+          total_sessions?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          created_at?: string | null
+          id?: string
+          period_end?: string
+          period_start?: string
+          tenant_id?: string
+          total_cost_estimate?: number | null
+          total_duration_ms?: number | null
+          total_events?: number | null
+          total_sessions?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_aggregates_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "usage_aggregates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -2698,7 +2755,63 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      agent_usage_summary: {
+        Row: {
+          agent_id: string | null
+          agent_name: string | null
+          agent_type: Database["public"]["Enums"]["agent_type"] | null
+          avg_duration_per_session_ms: number | null
+          avg_events_per_session: number | null
+          period_end: string | null
+          period_start: string | null
+          tenant_id: string | null
+          tenant_name: string | null
+          total_cost_estimate: number | null
+          total_duration_ms: number | null
+          total_events: number | null
+          total_hours: number | null
+          total_sessions: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_aggregates_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "usage_aggregates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenant_usage_summary: {
+        Row: {
+          agents_used: number | null
+          period_end: string | null
+          period_start: string | null
+          tenant_id: string | null
+          tenant_name: string | null
+          total_cost_estimate: number | null
+          total_duration_ms: number | null
+          total_events: number | null
+          total_hours: number | null
+          total_sessions: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "usage_aggregates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       decrypt_credential: { Args: { encrypted_text: string }; Returns: string }
@@ -2733,6 +2846,10 @@ export type Database = {
           p_payment_method: string
         }
         Returns: boolean
+      }
+      refresh_usage_aggregates: {
+        Args: { p_period_end: string; p_period_start: string }
+        Returns: number
       }
     }
     Enums: {
