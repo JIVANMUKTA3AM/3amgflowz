@@ -1861,6 +1861,111 @@ export type Database = {
           },
         ]
       }
+      service_events: {
+        Row: {
+          cost_estimate: number | null
+          created_at: string
+          duration_ms: number | null
+          event_type: string
+          id: string
+          payload: Json | null
+          service_session_id: string
+        }
+        Insert: {
+          cost_estimate?: number | null
+          created_at?: string
+          duration_ms?: number | null
+          event_type: string
+          id?: string
+          payload?: Json | null
+          service_session_id: string
+        }
+        Update: {
+          cost_estimate?: number | null
+          created_at?: string
+          duration_ms?: number | null
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          service_session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_events_service_session_id_fkey"
+            columns: ["service_session_id"]
+            isOneToOne: false
+            referencedRelation: "service_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_sessions: {
+        Row: {
+          agent_id: string
+          category: Database["public"]["Enums"]["service_category"]
+          channel: Database["public"]["Enums"]["service_channel"]
+          created_at: string
+          ended_at: string | null
+          id: string
+          metadata: Json | null
+          resolution_type: Database["public"]["Enums"]["resolution_type"] | null
+          satisfaction_score: number | null
+          started_at: string
+          status: Database["public"]["Enums"]["service_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          agent_id: string
+          category: Database["public"]["Enums"]["service_category"]
+          channel: Database["public"]["Enums"]["service_channel"]
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          metadata?: Json | null
+          resolution_type?:
+            | Database["public"]["Enums"]["resolution_type"]
+            | null
+          satisfaction_score?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["service_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          agent_id?: string
+          category?: Database["public"]["Enums"]["service_category"]
+          channel?: Database["public"]["Enums"]["service_channel"]
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          metadata?: Json | null
+          resolution_type?:
+            | Database["public"]["Enums"]["resolution_type"]
+            | null
+          satisfaction_score?: number | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["service_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_sessions_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_sessions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       snmp_data: {
         Row: {
           created_at: string
@@ -2651,6 +2756,10 @@ export type Database = {
       membership_role: "owner" | "admin" | "member" | "viewer"
       monitoring_type: "snmp" | "vendor_api"
       prioridade_level: "baixa" | "media" | "alta" | "urgente"
+      resolution_type: "auto" | "humano" | "hibrido"
+      service_category: "tecnico" | "comercial" | "financeiro"
+      service_channel: "whatsapp" | "telegram" | "web"
+      service_status: "open" | "in_progress" | "resolved" | "escalated"
       subscription_plan: "free" | "pro" | "enterprise"
       subscription_plan_type: "free" | "basic" | "premium" | "enterprise"
       subscription_status:
@@ -2811,6 +2920,10 @@ export const Constants = {
       membership_role: ["owner", "admin", "member", "viewer"],
       monitoring_type: ["snmp", "vendor_api"],
       prioridade_level: ["baixa", "media", "alta", "urgente"],
+      resolution_type: ["auto", "humano", "hibrido"],
+      service_category: ["tecnico", "comercial", "financeiro"],
+      service_channel: ["whatsapp", "telegram", "web"],
+      service_status: ["open", "in_progress", "resolved", "escalated"],
       subscription_plan: ["free", "pro", "enterprise"],
       subscription_plan_type: ["free", "basic", "premium", "enterprise"],
       subscription_status: [
