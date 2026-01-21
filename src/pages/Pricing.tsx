@@ -27,7 +27,17 @@ import {
   Clock,
   ChevronDown,
   ChevronUp,
-  Phone
+  Phone,
+  AlertTriangle,
+  DollarSign,
+  BarChart3,
+  Settings,
+  Layers,
+  FileText,
+  Lock,
+  Gauge,
+  Wrench,
+  CreditCard
 } from "lucide-react";
 import ModernHeader from "@/components/3amg/ModernHeader";
 import Footer from "@/components/Footer";
@@ -37,183 +47,336 @@ const Pricing = () => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const navigate = useNavigate();
 
-  const discountRate = 0.17; // 17% de desconto no anual
-
-  const whatsappNumber = "5511999999999"; // TODO: Substituir pelo número real da 3AMG
+  const discountRate = 0.17;
+  const whatsappNumber = "5515997668073";
 
   const whatsappMessages: Record<string, string> = {
-    starter: "Olá! Vim pelo site da 3AMG e tenho interesse no plano Starter Pro para meu provedor. Gostaria de mais informações.",
-    growth: "Olá! Vim pelo site da 3AMG e tenho interesse no plano Growth ISP para meu provedor. Quero entender valores, onboarding e próximos passos.",
-    professional: "Olá! Vim pelo site da 3AMG e tenho interesse no plano Professional ISP para minha operação. Gostaria de uma apresentação mais detalhada.",
-    enterprise: "Olá! Vim pelo site da 3AMG e gostaria de falar com um especialista sobre o plano Enterprise para minha empresa.",
+    demo: "Olá! Vim pelo site da 3AMG e gostaria de agendar uma demonstração da plataforma para meu provedor.",
+    starter: "Olá! Tenho interesse no plano Essencial para meu provedor. Gostaria de entender os próximos passos.",
+    growth: "Olá! Tenho interesse no plano Operação para meu provedor. Podemos agendar uma conversa?",
+    professional: "Olá! Tenho interesse no plano Escala para minha operação. Gostaria de uma apresentação detalhada.",
+    enterprise: "Olá! Preciso de uma solução Enterprise para minha operação. Podemos agendar uma reunião?",
   };
 
   const getWhatsAppLink = (planId: string) => {
-    const message = encodeURIComponent(whatsappMessages[planId] || "");
+    const message = encodeURIComponent(whatsappMessages[planId] || whatsappMessages.demo);
     return `https://wa.me/${whatsappNumber}?text=${message}`;
   };
 
+  // ============================================
+  // SEÇÃO 2: PROBLEMA - Dores reais de provedores
+  // ============================================
+  const problems = [
+    {
+      icon: Headphones,
+      title: "Atendimento sobrecarregado",
+      description: "Equipe esgotada com alto volume de chamados repetitivos que poderiam ser automatizados.",
+    },
+    {
+      icon: AlertTriangle,
+      title: "Falta de padronização",
+      description: "Cada atendente resolve de um jeito. Sem scripts, sem processos, sem qualidade consistente.",
+    },
+    {
+      icon: DollarSign,
+      title: "Custos operacionais altos",
+      description: "Folha de pagamento crescente, turnover alto e dificuldade de escalar sem contratar.",
+    },
+    {
+      icon: BarChart3,
+      title: "Pouca visibilidade de métricas",
+      description: "Sem dados claros sobre performance, tempo de resolução e satisfação do cliente.",
+    },
+    {
+      icon: Clock,
+      title: "Processos manuais e lentos",
+      description: "Diagnósticos demorados, retrabalho constante e integração fraca entre sistemas.",
+    },
+  ];
+
+  // ============================================
+  // SEÇÃO 3: SOLUÇÃO 3AMG
+  // ============================================
+  const solutions = [
+    {
+      icon: Bot,
+      title: "Agentes inteligentes 24/7",
+      description: "Atendimento automatizado que opera sem parar, com qualidade constante.",
+    },
+    {
+      icon: MessageSquare,
+      title: "Atendimento via WhatsApp",
+      description: "Canal preferido dos seus clientes, integrado nativamente à plataforma.",
+    },
+    {
+      icon: Settings,
+      title: "Integração com seus sistemas",
+      description: "Conexão direta com SGP, ERP, sistemas de billing e monitoramento.",
+    },
+    {
+      icon: Zap,
+      title: "Automação de fluxos",
+      description: "Processos técnicos, comerciais e financeiros automatizados de ponta a ponta.",
+    },
+    {
+      icon: BarChart3,
+      title: "Relatórios em tempo real",
+      description: "Dashboards operacionais com métricas que importam para sua gestão.",
+    },
+  ];
+
+  // ============================================
+  // SEÇÃO 4: OS AGENTES
+  // ============================================
+  const agents = [
+    {
+      icon: Wrench,
+      name: "Agente Técnico",
+      tagline: "Diagnóstico e suporte automatizado",
+      capabilities: [
+        "Diagnóstico de conexão via SNMP/TR-069",
+        "Reset remoto de ONT/ONU",
+        "Verificação de status de link",
+        "Escalonamento inteligente para NOC",
+        "Histórico completo de atendimentos",
+      ],
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: TrendingUp,
+      name: "Agente Comercial",
+      tagline: "Vendas e retenção automatizadas",
+      capabilities: [
+        "Cotação de planos e serviços",
+        "Upsell e cross-sell inteligente",
+        "Negociação de débitos",
+        "Campanhas de retenção",
+        "Qualificação de leads",
+      ],
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      icon: CreditCard,
+      name: "Agente Financeiro",
+      tagline: "Cobrança e billing automatizados",
+      capabilities: [
+        "Envio de segunda via de boleto",
+        "Negociação de inadimplência",
+        "Consulta de faturas e pagamentos",
+        "Emissão de NF-e automatizada",
+        "Integração com gateways de pagamento",
+      ],
+      color: "from-green-500 to-emerald-500",
+    },
+  ];
+
+  // ============================================
+  // SEÇÃO 5: PLATAFORMA E TECNOLOGIA
+  // ============================================
+  const techFeatures = [
+    {
+      icon: Layers,
+      title: "Arquitetura multi-tenant",
+      description: "Cada provedor isolado com dados seguros e performance garantida.",
+    },
+    {
+      icon: Settings,
+      title: "Orquestração via n8n",
+      description: "Workflows visuais para criar automações sem código.",
+    },
+    {
+      icon: Network,
+      title: "Integrações API / SNMP",
+      description: "Conexão nativa com equipamentos e sistemas do mercado.",
+    },
+    {
+      icon: FileText,
+      title: "Logs e auditoria",
+      description: "Rastreabilidade completa de todas as operações e conversas.",
+    },
+    {
+      icon: Lock,
+      title: "Segurança enterprise",
+      description: "Criptografia, backups automáticos e conformidade LGPD.",
+    },
+    {
+      icon: Server,
+      title: "Escalabilidade",
+      description: "Infraestrutura que cresce com você, sem gargalos.",
+    },
+  ];
+
+  // ============================================
+  // SEÇÃO 6: RELATÓRIOS E INTELIGÊNCIA
+  // ============================================
+  const reportFeatures = [
+    {
+      icon: Gauge,
+      title: "Dashboards operacionais",
+      description: "Visão em tempo real da operação, atendimentos e agentes.",
+    },
+    {
+      icon: BarChart3,
+      title: "Métricas de atendimento",
+      description: "Tempo de resposta, resolução, satisfação e volume por período.",
+    },
+    {
+      icon: DollarSign,
+      title: "Custos e consumo",
+      description: "Controle de gastos por agente, por cliente e por período.",
+    },
+    {
+      icon: Activity,
+      title: "Performance por agente",
+      description: "Comparativo de eficiência entre agentes e tipos de atendimento.",
+    },
+  ];
+
+  // ============================================
+  // SEÇÃO 7: MODELO DE PREÇO
+  // ============================================
   const plans = [
     {
       id: "starter",
-      name: "Starter Pro",
-      description: "Ideal para provedores em crescimento",
+      name: "Essencial",
+      description: "Para provedores começando a automatizar",
       icon: Zap,
       iconBg: "bg-gradient-to-br from-slate-500 to-slate-700",
-      monthlyPrice: 499,
+      monthlyPrice: 497,
+      baseDescription: "Base mensal fixa",
+      usage: "+ R$ 0,15 por interação",
       maxClients: "500",
-      interactions: "10.000/mês",
-      storage: "5 GB",
-      infrastructure: "Compartilhada",
-      sla: "99.5%",
-      support: "Email + Chat",
-      responseTime: "24h",
+      features: [
+        "3 Agentes ativos",
+        "10.000 interações/mês inclusas",
+        "Integrações básicas",
+        "Suporte por email",
+        "Relatórios padrão",
+      ],
       popular: false,
     },
     {
       id: "growth",
-      name: "Growth ISP",
-      description: "O plano mais escolhido pelos provedores",
+      name: "Operação",
+      description: "Para provedores em crescimento",
       icon: TrendingUp,
       iconBg: "bg-gradient-to-br from-purple-500 to-purple-700",
-      monthlyPrice: 1190,
+      monthlyPrice: 997,
+      baseDescription: "Base mensal fixa",
+      usage: "+ R$ 0,12 por interação",
       maxClients: "2.000",
-      interactions: "50.000/mês",
-      storage: "25 GB",
-      infrastructure: "Dedicada",
-      sla: "99.9%",
-      support: "Email + Chat + Telefone",
-      responseTime: "4h",
+      features: [
+        "Agentes ilimitados",
+        "30.000 interações/mês inclusas",
+        "Todas as integrações",
+        "Suporte prioritário",
+        "Dashboards avançados",
+        "Automações customizadas",
+      ],
       popular: true,
     },
     {
       id: "professional",
-      name: "Professional ISP",
-      description: "Para operações de alta escala",
+      name: "Escala",
+      description: "Para operações de alta performance",
       icon: Crown,
       iconBg: "bg-gradient-to-br from-violet-600 to-purple-800",
-      monthlyPrice: 2490,
+      monthlyPrice: 1997,
+      baseDescription: "Base mensal fixa",
+      usage: "+ R$ 0,08 por interação",
       maxClients: "10.000",
-      interactions: "200.000/mês",
-      storage: "100 GB",
-      infrastructure: "Dedicada Premium",
-      sla: "99.95%",
-      support: "Suporte Prioritário 24/7",
-      responseTime: "1h",
+      features: [
+        "Agentes ilimitados",
+        "100.000 interações/mês inclusas",
+        "Infraestrutura dedicada",
+        "Suporte 24/7",
+        "SLA 99.9%",
+        "API completa",
+        "Onboarding dedicado",
+      ],
       popular: false,
     },
     {
       id: "enterprise",
       name: "Enterprise",
-      description: "Soluções customizadas para grandes operações",
+      description: "Para grandes operações",
       icon: Building2,
       iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
       monthlyPrice: null,
-      customPrice: "A partir de R$4.000",
+      customPrice: "Sob consulta",
       maxClients: "Ilimitado",
-      interactions: "Ilimitadas",
-      storage: "Ilimitado",
-      infrastructure: "Infraestrutura Exclusiva",
-      sla: "99.99%",
-      support: "Account Manager Dedicado",
-      responseTime: "30min",
+      features: [
+        "Tudo do Escala",
+        "Infraestrutura exclusiva",
+        "SLA customizado",
+        "Account Manager dedicado",
+        "Integrações sob demanda",
+        "Contrato personalizado",
+      ],
       popular: false,
     },
   ];
 
-  const allAgents = [
-    { name: "Agente Técnico", icon: Network, description: "Diagnóstico e suporte técnico automatizado" },
-    { name: "Agente de Atendimento", icon: Headphones, description: "SAC inteligente 24/7" },
-    { name: "Agente NOC", icon: Activity, description: "Monitoramento proativo de rede" },
-    { name: "Agente Comercial", icon: TrendingUp, description: "Vendas e retenção automatizadas" },
-    { name: "Agentes Customizáveis", icon: Bot, description: "Crie agentes para suas necessidades" },
-  ];
-
-  const pricingFactors = [
+  // ============================================
+  // SEÇÃO 8: PROVA DE VALOR
+  // ============================================
+  const proofPoints = [
     {
-      icon: Database,
-      title: "Banco de Dados",
-      description: "Armazenamento de conversas, logs e dados operacionais do seu provedor.",
+      title: "Engenharia especializada",
+      description: "Equipe com background em telecomunicações, infraestrutura e desenvolvimento de sistemas para ISPs.",
     },
     {
-      icon: Cpu,
-      title: "Processamento IA",
-      description: "Poder computacional para análise em tempo real e respostas inteligentes.",
+      title: "Arquitetura robusta",
+      description: "Stack moderna com Supabase, Edge Functions, n8n e integrações nativas com os principais SGPs do mercado.",
     },
     {
-      icon: Zap,
-      title: "Automações",
-      description: "Execuções de workflows, integrações com SGP e ações automatizadas.",
-    },
-    {
-      icon: Server,
-      title: "Tráfego de API",
-      description: "Chamadas de API para integrações, webhooks e comunicação entre sistemas.",
-    },
-  ];
-
-  const benefits = [
-    {
-      icon: Zap,
-      title: "Automação Operacional",
-      description: "Reduza até 70% do tempo gasto em tarefas repetitivas com agentes inteligentes trabalhando 24/7.",
-    },
-    {
-      icon: TrendingUp,
-      title: "Redução de Custos",
-      description: "Economia média de R$15.000/mês em operação para provedores com +1.000 clientes.",
-    },
-    {
-      icon: Server,
-      title: "Escalabilidade Infinita",
-      description: "Infraestrutura que cresce com você. Sem gargalos, sem surpresas, sem downtime.",
-    },
-    {
-      icon: Shield,
-      title: "Segurança Enterprise",
-      description: "Criptografia de ponta, backup automático e conformidade com LGPD.",
+      title: "Foco em operação real",
+      description: "Desenvolvido com base em demandas reais de provedores, não em suposições de mercado.",
     },
   ];
 
   const stats = [
-    { value: "+500", label: "Provedores Ativos" },
-    { value: "+2M", label: "Conversas Processadas" },
-    { value: "99.9%", label: "Uptime Garantido" },
-    { value: "4.9/5", label: "Satisfação dos Clientes" },
+    { value: "70%", label: "Redução em tempo de atendimento" },
+    { value: "24/7", label: "Operação contínua" },
+    { value: "< 2h", label: "Setup inicial" },
+    { value: "99.9%", label: "Uptime da plataforma" },
   ];
 
+  // ============================================
+  // FAQs
+  // ============================================
   const faqs = [
     {
-      question: "Por que o preço varia conforme o número de clientes?",
-      answer: "Nosso modelo de precificação é baseado em consumo real de infraestrutura. Quanto mais clientes você atende, maior o uso de banco de dados, processamento de IA, automações simultâneas e tráfego de API. Isso garante que você pague apenas pelo que realmente usa, sem surpresas.",
+      question: "Como funciona o modelo de preço base + consumo?",
+      answer: "Você paga uma mensalidade fixa que inclui uma quantidade de interações. Acima disso, paga por interação adicional. Isso garante previsibilidade e escala sem surpresas.",
     },
     {
-      question: "Todos os agentes estão incluídos em todos os planos?",
-      answer: "Sim! Diferente de outros SaaS, não limitamos funcionalidades por plano. Todos os 5 tipos de agentes (Técnico, Atendimento, NOC, Comercial e Customizáveis) estão disponíveis desde o plano Starter. A diferença está apenas na capacidade de processamento e infraestrutura.",
+      question: "O que conta como uma interação?",
+      answer: "Uma interação é uma troca de mensagem entre o cliente e o agente. Uma conversa com 10 mensagens conta como 10 interações. Você acompanha tudo em tempo real no painel.",
     },
     {
-      question: "O que acontece se eu ultrapassar o limite de clientes?",
-      answer: "Você será notificado automaticamente quando atingir 80% da capacidade. Oferecemos upgrade transparente para o próximo plano ou podemos criar um plano intermediário personalizado. Nunca cortamos seu serviço abruptamente.",
+      question: "Posso começar pequeno e escalar depois?",
+      answer: "Sim. Você pode começar no plano Essencial e migrar para Operação ou Escala conforme sua operação cresce. A migração é imediata e sem downtime.",
     },
     {
-      question: "Qual a diferença entre infraestrutura Compartilhada e Dedicada?",
-      answer: "Na infraestrutura Compartilhada (Starter), os recursos são distribuídos entre múltiplos clientes. Na Dedicada (Growth+), você tem recursos exclusivos garantindo performance consistente. Na Dedicada Premium (Professional+), há ainda mais poder de processamento e prioridade de execução.",
+      question: "Quais sistemas vocês integram?",
+      answer: "Integramos com os principais SGPs (IXC, MK-Auth, Hubsoft, Voalle), gateways de pagamento, sistemas de NF-e e equipamentos via SNMP/TR-069. Novas integrações sob demanda.",
     },
     {
-      question: "Vocês oferecem período de teste?",
-      answer: "Sim! Oferecemos 14 dias de teste gratuito no plano Growth ISP para você avaliar a plataforma com dados reais do seu provedor. Sem necessidade de cartão de crédito para começar.",
+      question: "Quanto tempo leva para começar a operar?",
+      answer: "O setup inicial leva em média 2 horas. Isso inclui configuração dos agentes, integração com WhatsApp e conexão com seu SGP. Nosso time acompanha todo o processo.",
     },
     {
-      question: "Como funciona a integração com meu sistema de gestão (SGP)?",
-      answer: "Temos integrações nativas com os principais SGPs do mercado (IXC, MK-Auth, Hubsoft, Voalle, entre outros). A configuração leva em média 2 horas e nossa equipe acompanha todo o processo de onboarding.",
+      question: "Existe período de teste?",
+      answer: "Oferecemos uma demonstração guiada gratuita onde você pode ver a plataforma funcionando com dados simulados do seu provedor. Fale com nosso time para agendar.",
     },
     {
-      question: "Qual o SLA garantido?",
-      answer: "Nosso SLA varia de 99.5% (Starter) a 99.99% (Enterprise). Em caso de indisponibilidade além do SLA contratado, oferecemos créditos proporcionais automaticamente aplicados na próxima fatura.",
+      question: "Como funciona o suporte?",
+      answer: "Suporte por email no plano Essencial, prioritário no Operação e 24/7 no Escala e Enterprise. Todos os planos incluem documentação completa e onboarding assistido.",
     },
     {
-      question: "Posso cancelar a qualquer momento?",
-      answer: "Sim, não há fidelidade. No plano mensal você pode cancelar a qualquer momento. No anual, respeitamos o período contratado mas oferecemos reembolso proporcional em casos específicos.",
+      question: "Meus dados ficam seguros?",
+      answer: "Sim. Usamos criptografia em trânsito e em repouso, backups automáticos diários, isolamento multi-tenant e conformidade com LGPD. Cada provedor vê apenas seus próprios dados.",
     },
   ];
 
@@ -237,9 +400,10 @@ const Pricing = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#0D1B3E] via-[#1A1F3A] to-[#0D1B3E]">
       <ModernHeader />
       
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-16 overflow-hidden">
-        {/* Background Effects */}
+      {/* ============================================ */}
+      {/* SEÇÃO 1: HERO */}
+      {/* ============================================ */}
+      <section className="relative pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[150px]"></div>
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-600/20 rounded-full blur-[150px]"></div>
@@ -253,20 +417,320 @@ const Pricing = () => {
             transition={{ duration: 0.6 }}
           >
             <Badge className="mb-6 bg-purple-500/20 text-purple-300 border-purple-500/30 px-4 py-2">
-              <Building2 className="w-4 h-4 mr-2" />
-              Precificação por Volume de Clientes
+              <Bot className="w-4 h-4 mr-2" />
+              Plataforma de Agentes Inteligentes para ISPs
             </Badge>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Pague pelo que{" "}
+              Automatize sua operação.{" "}
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                realmente usa
+                Escale sem contratar.
               </span>
             </h1>
             
-            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-              Todos os agentes incluídos em todos os planos. Sem limitação de funcionalidades, 
-              apenas capacidade que escala com o crescimento do seu provedor.
+            <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+              3AMG é uma plataforma de agentes inteligentes que automatizam atendimento, 
+              operações técnicas e processos financeiros do seu provedor via WhatsApp — 
+              com gestão, relatórios e billing integrados.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-8 py-6 rounded-xl shadow-lg shadow-purple-500/30"
+                asChild
+              >
+                <a href={getWhatsAppLink("demo")} target="_blank" rel="noopener noreferrer">
+                  <Phone className="w-5 h-5 mr-2" />
+                  Solicitar Demonstração
+                </a>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent border-2 border-gray-500 text-white hover:bg-gray-800 hover:border-gray-400 text-lg px-8 py-6 rounded-xl"
+                onClick={() => document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Ver Planos
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SEÇÃO 2: PROBLEMA */}
+      {/* ============================================ */}
+      <section className="py-20 px-4 border-t border-gray-800">
+        <div className="container mx-auto">
+          <motion.div 
+            className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Badge className="mb-4 bg-red-500/20 text-red-300 border-red-500/30">
+              O problema
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Sua operação está travada?
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Provedores enfrentam os mesmos desafios todos os dias. 
+              Reconhece algum deles?
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {problems.map((problem, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="h-full bg-gray-800/30 border-gray-700/50 backdrop-blur-sm p-6 hover:border-red-500/30 transition-colors">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <problem.icon className="w-6 h-6 text-red-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white mb-2">{problem.title}</h3>
+                      <p className="text-gray-400 text-sm">{problem.description}</p>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SEÇÃO 3: SOLUÇÃO 3AMG */}
+      {/* ============================================ */}
+      <section className="py-20 px-4 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent">
+        <div className="container mx-auto">
+          <motion.div 
+            className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Badge className="mb-4 bg-green-500/20 text-green-300 border-green-500/30">
+              A solução
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Automação que funciona de verdade
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Agentes inteligentes que resolvem problemas, não apenas respondem mensagens.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {solutions.map((solution, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="h-full bg-gray-800/30 border-gray-700/50 backdrop-blur-sm p-6 hover:border-green-500/30 transition-colors">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <solution.icon className="w-6 h-6 text-green-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white mb-2">{solution.title}</h3>
+                      <p className="text-gray-400 text-sm">{solution.description}</p>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SEÇÃO 4: OS AGENTES */}
+      {/* ============================================ */}
+      <section className="py-20 px-4 border-t border-gray-800">
+        <div className="container mx-auto">
+          <motion.div 
+            className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Badge className="mb-4 bg-purple-500/20 text-purple-300 border-purple-500/30">
+              Os agentes
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Três agentes. Toda a operação coberta.
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Cada agente é especializado em uma área crítica do seu provedor.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {agents.map((agent, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15 }}
+              >
+                <Card className="h-full bg-gray-800/40 border-gray-700/50 backdrop-blur-sm overflow-hidden">
+                  <div className={`h-2 bg-gradient-to-r ${agent.color}`}></div>
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${agent.color} flex items-center justify-center`}>
+                        <agent.icon className="w-7 h-7 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-white">{agent.name}</h3>
+                        <p className="text-gray-400 text-sm">{agent.tagline}</p>
+                      </div>
+                    </div>
+                    <ul className="space-y-3">
+                      {agent.capabilities.map((capability, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-300 text-sm">{capability}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SEÇÃO 5: PLATAFORMA E TECNOLOGIA */}
+      {/* ============================================ */}
+      <section className="py-20 px-4 bg-gradient-to-b from-transparent via-blue-900/10 to-transparent">
+        <div className="container mx-auto">
+          <motion.div 
+            className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Badge className="mb-4 bg-blue-500/20 text-blue-300 border-blue-500/30">
+              Tecnologia
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Infraestrutura enterprise. Setup em horas.
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Arquitetura moderna, segura e escalável para operações de qualquer tamanho.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {techFeatures.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
+              >
+                <Card className="h-full bg-gray-800/30 border-gray-700/50 backdrop-blur-sm p-5 hover:border-blue-500/30 transition-colors">
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <feature.icon className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white mb-1">{feature.title}</h3>
+                      <p className="text-gray-400 text-sm">{feature.description}</p>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SEÇÃO 6: RELATÓRIOS E INTELIGÊNCIA */}
+      {/* ============================================ */}
+      <section className="py-20 px-4 border-t border-gray-800">
+        <div className="container mx-auto">
+          <motion.div 
+            className="text-center mb-14"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Badge className="mb-4 bg-amber-500/20 text-amber-300 border-amber-500/30">
+              Inteligência
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Dados que viram decisão
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Visibilidade completa da operação em tempo real.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {reportFeatures.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="h-full bg-gray-800/30 border-gray-700/50 backdrop-blur-sm p-6 hover:border-amber-500/30 transition-colors">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <feature.icon className="w-6 h-6 text-amber-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white mb-2">{feature.title}</h3>
+                      <p className="text-gray-400 text-sm">{feature.description}</p>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
+      {/* SEÇÃO 7: MODELO DE PREÇO */}
+      {/* ============================================ */}
+      <section id="pricing-section" className="py-20 px-4 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent">
+        <div className="container mx-auto">
+          <motion.div 
+            className="text-center mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Badge className="mb-4 bg-purple-500/20 text-purple-300 border-purple-500/30">
+              Preços
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Base mensal + consumo. Simples assim.
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto mb-8">
+              Pague uma base fixa e adicional apenas pelo que usar. 
+              Sem surpresas, sem pegadinhas, sem lock-in.
             </p>
 
             {/* Toggle Annual/Monthly */}
@@ -289,40 +753,8 @@ const Pricing = () => {
               )}
             </div>
           </motion.div>
-        </div>
-      </section>
 
-      {/* All Agents Included Banner */}
-      <section className="py-8 px-4 bg-purple-900/20 border-y border-purple-500/20">
-        <div className="container mx-auto">
-          <div className="text-center mb-6">
-            <h3 className="text-lg font-semibold text-purple-300 mb-2">
-              ✨ Todos os Agentes Incluídos em Qualquer Plano
-            </h3>
-            <p className="text-gray-400 text-sm">
-              Acesso completo a toda nossa suíte de automação inteligente
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {allAgents.map((agent, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                className="flex items-center gap-2 bg-gray-800/50 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-700/50"
-              >
-                <agent.icon className="w-4 h-4 text-purple-400" />
-                <span className="text-sm font-medium text-gray-200">{agent.name}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Cards */}
-      <section className="py-16 relative z-10">
-        <div className="container mx-auto px-4">
+          {/* Pricing Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {plans.map((plan, index) => {
               const price = calculatePrice(plan.monthlyPrice);
@@ -332,7 +764,8 @@ const Pricing = () => {
                 <motion.div
                   key={plan.id}
                   initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className={`relative rounded-3xl p-[2px] ${
                     plan.popular 
@@ -344,13 +777,12 @@ const Pricing = () => {
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
                       <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white border-0 px-4 py-1.5 text-sm font-semibold shadow-lg">
                         <Crown className="w-4 h-4 mr-1" />
-                        Mais Popular
+                        Recomendado
                       </Badge>
                     </div>
                   )}
                   
                   <div className="bg-[#0D1B3E]/95 backdrop-blur-xl rounded-[22px] p-6 h-full flex flex-col">
-                    {/* Plan Header */}
                     <div className="mb-4">
                       <div className={`${plan.iconBg} w-12 h-12 rounded-xl flex items-center justify-center mb-4`}>
                         <Icon className="h-6 w-6 text-white" />
@@ -359,7 +791,6 @@ const Pricing = () => {
                       <p className="text-gray-400 text-sm">{plan.description}</p>
                     </div>
 
-                    {/* Price */}
                     <div className="mb-5">
                       {price !== null ? (
                         <>
@@ -370,8 +801,10 @@ const Pricing = () => {
                             </span>
                             <span className="text-gray-400">/mês</span>
                           </div>
+                          <p className="text-gray-500 text-sm mt-1">{plan.baseDescription}</p>
+                          <p className="text-purple-400 text-sm font-medium mt-1">{plan.usage}</p>
                           {isAnnual && plan.monthlyPrice && (
-                            <p className="text-green-400 text-sm mt-1">
+                            <p className="text-green-400 text-xs mt-2">
                               <span className="line-through text-gray-500">R$ {formatPrice(plan.monthlyPrice)}</span>
                               {" "}• Faturado anualmente
                             </p>
@@ -380,65 +813,20 @@ const Pricing = () => {
                       ) : (
                         <div>
                           <span className="text-2xl font-bold text-white">{plan.customPrice}</span>
-                          <p className="text-gray-400 text-sm mt-1">Sob consulta</p>
+                          <p className="text-gray-400 text-sm mt-1">Fale com nossa equipe</p>
                         </div>
                       )}
                     </div>
 
-                    {/* Capacity Details */}
                     <div className="space-y-3 mb-6 flex-1">
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700/50">
-                        <span className="text-gray-400 flex items-center gap-2 text-sm">
-                          <Users className="w-4 h-4" />
-                          Clientes
-                        </span>
-                        <span className="font-semibold text-white text-sm">até {plan.maxClients}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700/50">
-                        <span className="text-gray-400 flex items-center gap-2 text-sm">
-                          <MessageSquare className="w-4 h-4" />
-                          Interações
-                        </span>
-                        <span className="font-semibold text-white text-sm">{plan.interactions}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700/50">
-                        <span className="text-gray-400 flex items-center gap-2 text-sm">
-                          <Database className="w-4 h-4" />
-                          Storage
-                        </span>
-                        <span className="font-semibold text-white text-sm">{plan.storage}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700/50">
-                        <span className="text-gray-400 flex items-center gap-2 text-sm">
-                          <Cpu className="w-4 h-4" />
-                          Infra
-                        </span>
-                        <span className="font-semibold text-white text-right text-xs">{plan.infrastructure}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700/50">
-                        <span className="text-gray-400 flex items-center gap-2 text-sm">
-                          <Shield className="w-4 h-4" />
-                          SLA
-                        </span>
-                        <span className="font-semibold text-green-400 text-sm">{plan.sla}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2 border-b border-gray-700/50">
-                        <span className="text-gray-400 flex items-center gap-2 text-sm">
-                          <Clock className="w-4 h-4" />
-                          Resposta
-                        </span>
-                        <span className="font-semibold text-white text-sm">{plan.responseTime}</span>
-                      </div>
-                      <div className="flex items-center justify-between py-2">
-                        <span className="text-gray-400 flex items-center gap-2 text-sm">
-                          <Headphones className="w-4 h-4" />
-                          Suporte
-                        </span>
-                        <span className="font-semibold text-white text-right text-xs">{plan.support}</span>
-                      </div>
+                      {plan.features.map((feature, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-300 text-sm">{feature}</span>
+                        </div>
+                      ))}
                     </div>
 
-                    {/* CTA */}
                     <Button 
                       className={`w-full py-6 text-base font-semibold rounded-xl transition-all duration-300 ${
                         plan.popular 
@@ -461,7 +849,7 @@ const Pricing = () => {
                           </>
                         ) : (
                           <>
-                            Começar Agora
+                            Contratar Agora
                             <ArrowRight className="w-4 h-4 ml-2" />
                           </>
                         )}
@@ -475,86 +863,44 @@ const Pricing = () => {
         </div>
       </section>
 
-      {/* Pricing Transparency */}
-      <section className="py-16 px-4">
+      {/* ============================================ */}
+      {/* SEÇÃO 8: PROVA DE VALOR */}
+      {/* ============================================ */}
+      <section className="py-20 px-4 border-t border-gray-800">
         <div className="container mx-auto">
           <motion.div 
-            className="text-center mb-12"
+            className="text-center mb-14"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl font-bold text-white mb-4">Precificação Transparente</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Entenda exatamente o que influencia o custo da plataforma conforme seu provedor cresce
-            </p>
+            <Badge className="mb-4 bg-cyan-500/20 text-cyan-300 border-cyan-500/30">
+              Por que 3AMG
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Construído por quem entende operação de ISP
+            </h2>
           </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {pricingFactors.map((item, index) => (
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
+            {proofPoints.map((point, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ delay: index * 0.1 }}
               >
-                <Card className="h-full text-center p-6 bg-gray-800/30 border-gray-700/50 backdrop-blur-sm">
-                  <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <item.icon className="w-6 h-6 text-purple-400" />
-                  </div>
-                  <h3 className="font-semibold mb-2 text-white">{item.title}</h3>
-                  <p className="text-sm text-gray-400">{item.description}</p>
+                <Card className="h-full bg-gray-800/30 border-gray-700/50 backdrop-blur-sm p-6 text-center">
+                  <h3 className="font-semibold text-white mb-2">{point.title}</h3>
+                  <p className="text-gray-400 text-sm">{point.description}</p>
                 </Card>
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Benefits */}
-      <section className="py-16 px-4 border-t border-gray-800">
-        <div className="container mx-auto">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-bold text-white mb-4">Por que provedores escolhem a 3AM Flowz?</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Resultados tangíveis que impactam diretamente o seu negócio
-            </p>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            {benefits.map((benefit, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="h-full p-6 bg-gray-800/30 border-gray-700/50 backdrop-blur-sm hover:border-purple-500/50 transition-colors">
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <benefit.icon className="w-6 h-6 text-purple-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2 text-white">{benefit.title}</h3>
-                      <p className="text-gray-400 text-sm">{benefit.description}</p>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Social Proof */}
-      <section className="py-16 px-4 bg-purple-900/10 border-y border-purple-500/10">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
@@ -564,7 +910,7 @@ const Pricing = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
                   {stat.value}
                 </div>
                 <div className="text-gray-400 text-sm">{stat.label}</div>
@@ -574,7 +920,9 @@ const Pricing = () => {
         </div>
       </section>
 
+      {/* ============================================ */}
       {/* FAQ */}
+      {/* ============================================ */}
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-3xl">
           <motion.div 
@@ -585,7 +933,7 @@ const Pricing = () => {
           >
             <h2 className="text-3xl font-bold text-white mb-4">Perguntas Frequentes</h2>
             <p className="text-gray-400">
-              Tire suas dúvidas sobre nossa plataforma e planos
+              Dúvidas sobre a plataforma, preços e implementação
             </p>
           </motion.div>
           <div className="space-y-3">
@@ -629,7 +977,9 @@ const Pricing = () => {
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* ============================================ */}
+      {/* SEÇÃO 9: CTA FINAL */}
+      {/* ============================================ */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
           <motion.div 
@@ -640,29 +990,33 @@ const Pricing = () => {
           >
             <Rocket className="w-14 h-14 text-purple-400 mx-auto mb-6" />
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Pronto para Automatizar seu Provedor?
+              Pronto para automatizar sua operação?
             </h2>
             <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-              Teste gratuitamente por 14 dias. Sem cartão de crédito. 
-              Configuração em menos de 2 horas com acompanhamento da nossa equipe.
+              Agende uma demonstração gratuita e veja os agentes funcionando 
+              com dados reais do seu provedor. Setup em menos de 2 horas.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-8 py-6"
-                onClick={() => navigate("/auth")}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-8 py-6 rounded-xl shadow-lg shadow-purple-500/30"
+                asChild
               >
-                Começar Teste Gratuito
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <a href={getWhatsAppLink("demo")} target="_blank" rel="noopener noreferrer">
+                  <Phone className="w-5 h-5 mr-2" />
+                  Agendar Demonstração
+                </a>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-transparent border-2 border-gray-600 text-white hover:bg-gray-800 hover:border-gray-500 text-lg px-8 py-6"
-                onClick={() => window.open("https://wa.me/5511999999999", "_blank")}
+                className="bg-transparent border-2 border-gray-600 text-white hover:bg-gray-800 hover:border-gray-500 text-lg px-8 py-6 rounded-xl"
+                asChild
               >
-                <Phone className="w-5 h-5 mr-2" />
-                Falar com Especialista
+                <a href={getWhatsAppLink("demo")} target="_blank" rel="noopener noreferrer">
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  Falar com Especialista
+                </a>
               </Button>
             </div>
           </motion.div>

@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Sparkles, Bot, Workflow, Clock } from "lucide-react";
+import { ArrowRight, Phone, Bot, Zap, BarChart3, MessageSquare } from "lucide-react";
 
 const HeroSection = () => {
+  const whatsappNumber = "5515997668073";
+  const demoMessage = encodeURIComponent("Olá! Vim pelo site da 3AMG e gostaria de agendar uma demonstração da plataforma para meu provedor.");
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0D1B3E] via-[#1A1F3A] to-[#0D1B3E]">
       {/* Subtle Grid Background */}
@@ -48,66 +51,59 @@ const HeroSection = () => {
         >
           <div className="inline-flex items-center gap-3 bg-blue-950/40 backdrop-blur-lg border border-blue-500/20 rounded-full px-6 py-3">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-blue-200 text-sm font-medium tracking-wide">API-First • Enterprise Ready • 99.9% Uptime</span>
+            <span className="text-blue-200 text-sm font-medium tracking-wide">
+              Plataforma de Agentes Inteligentes para ISPs
+            </span>
           </div>
         </motion.div>
 
         {/* Hero Title */}
         <motion.h1 
-          className="text-6xl md:text-8xl font-bold mb-6 text-white leading-tight"
+          className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-white leading-tight"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Plataforma de Agentes IA
+          Automatize sua operação.
           <br />
-          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            para ISPs e Empresas Tech
+          <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+            Escale sem contratar.
           </span>
         </motion.h1>
 
-        {/* Subtitle */}
+        {/* Subtitle - Clear value proposition */}
         <motion.p 
           className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          Automação completa para atendimento, operações e gestão técnica. 
-          Agentes IA que atuam nas camadas B2B e B2C integradas ao seu ecossistema.
+          Agentes inteligentes que atendem seus clientes via WhatsApp, 
+          resolvem problemas técnicos, fazem cobranças e geram relatórios — 
+          tudo automatizado, 24 horas por dia.
         </motion.p>
 
-        {/* Modern CTAs */}
+        {/* CTAs */}
         <motion.div 
           className="flex flex-col sm:flex-row gap-5 justify-center mb-20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.8 }}
         >
-          <Link to="/auth">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Button size="lg" className="group relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-10 py-6 text-base rounded-2xl overflow-hidden transition-all duration-300 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50">
-                <motion.div 
-                  className="absolute inset-0 bg-white/20"
-                  animate={{
-                    opacity: [0.2, 0.4, 0.2],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                  }}
-                ></motion.div>
-                <div className="relative flex items-center gap-2">
-                  <Sparkles className="h-5 w-5" />
-                  Começar Agora - Login
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Button>
-            </motion.div>
-          </Link>
+          <motion.a
+            href={`https://wa.me/${whatsappNumber}?text=${demoMessage}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Button size="lg" className="group relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-10 py-6 text-base rounded-2xl overflow-hidden transition-all duration-300 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50">
+              <div className="relative flex items-center gap-2">
+                <Phone className="h-5 w-5" />
+                Solicitar Demonstração
+              </div>
+            </Button>
+          </motion.a>
           
           <Link to="/pricing">
             <motion.div
@@ -118,7 +114,10 @@ const HeroSection = () => {
                 size="lg" 
                 className="group relative border-2 border-blue-400/50 bg-blue-950/30 backdrop-blur-md text-blue-200 hover:text-white hover:border-blue-400 px-10 py-6 text-base rounded-2xl hover:bg-blue-900/40 transition-all duration-300 shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40"
               >
-                <span className="relative">Ver Planos e Preços</span>
+                <span className="relative flex items-center gap-2">
+                  Ver Planos e Preços
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </span>
               </Button>
             </motion.div>
           </Link>
@@ -134,23 +133,20 @@ const HeroSection = () => {
           {[
             {
               icon: Bot,
-              title: "Atendimento Automatizado",
-              description: "Agentes IA disponíveis 24/7 para seus clientes",
-              gradient: "from-blue-500 to-blue-600",
+              title: "Atendimento 24/7",
+              description: "Agentes respondem e resolvem via WhatsApp, sem pausa",
               iconBg: "icon-box-blue"
             },
             {
-              icon: Workflow,
-              title: "Automação n8n + APIs REST",
-              description: "Integração completa com seus sistemas",
-              gradient: "from-purple-500 to-purple-600",
+              icon: Zap,
+              title: "Automação Completa",
+              description: "Técnico, comercial e financeiro integrados ao seu SGP",
               iconBg: "icon-box-purple"
             },
             {
-              icon: Clock,
-              title: "Alta Disponibilidade 24/7",
-              description: "99.9% de uptime garantido por SLA",
-              gradient: "from-pink-500 to-pink-600",
+              icon: BarChart3,
+              title: "Métricas em Tempo Real",
+              description: "Dashboards de operação, custos e performance",
               iconBg: "icon-box-pink"
             }
           ].map((benefit, index) => (
@@ -179,4 +175,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-
