@@ -1,18 +1,18 @@
-import { Target, Users, Rocket, Award, Sparkles } from "lucide-react";
+import { Server, Shield, Cpu, Activity, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
 const AboutSection = () => {
   const stats = [
-    { icon: <Target className="h-6 w-6" />, number: "100+", label: "Projetos Entregues", color: "blue" },
-    { icon: <Users className="h-6 w-6" />, number: "50+", label: "Clientes Ativos", color: "purple" },
-    { icon: <Rocket className="h-6 w-6" />, number: "3+", label: "Anos de Experiência", color: "pink" },
-    { icon: <Award className="h-6 w-6" />, number: "99%", label: "Satisfação dos Clientes", color: "turquoise" }
+    { icon: <Server className="h-6 w-6" />, number: "99.9%", label: "Uptime da Plataforma", color: "blue" },
+    { icon: <Cpu className="h-6 w-6" />, number: "< 200ms", label: "Latência Média", color: "purple" },
+    { icon: <Shield className="h-6 w-6" />, number: "LGPD", label: "Conformidade", color: "pink" },
+    { icon: <Activity className="h-6 w-6" />, number: "24/7", label: "Operação Contínua", color: "turquoise" }
   ];
 
   const highlights = [
-    "Especialistas em IA e Automação",
-    "Soluções Personalizadas",
-    "Suporte Técnico Especializado"
+    "Arquitetura multi-tenant isolada",
+    "Orquestração via n8n + Edge Functions",
+    "Integrações nativas com SGPs de mercado"
   ];
 
   return (
@@ -41,15 +41,15 @@ const AboutSection = () => {
             </div>
             
             <p className="text-gray-300 text-lg leading-relaxed mb-6">
-              Somos uma empresa especializada em automação e inteligência artificial, 
-              focada em transformar a forma como as empresas operam e se relacionam 
-              com seus clientes.
+              Plataforma de infraestrutura e orquestração de agentes autônomos, 
+              projetada para escala operacional de provedores de internet 
+              e empresas de tecnologia.
             </p>
             
             <p className="text-gray-300 text-lg leading-relaxed mb-10">
-              Nossa missão é democratizar o acesso a tecnologias avançadas, 
-              oferecendo soluções que antes eram exclusivas de grandes corporações 
-              para empresas de todos os tamanhos.
+              Desenvolvida com foco em resiliência, observabilidade e 
+              automação de processos críticos — conectando operação técnica, 
+              comercial e financeira via WhatsApp.
             </p>
             
             <div className="space-y-4">

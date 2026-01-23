@@ -1,42 +1,42 @@
-import { Bot, Workflow, Smartphone, Database, Code, Zap } from "lucide-react";
+import { Server, Workflow, Network, Database, Cpu, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 
 const ServicesSection = () => {
   const services = [
     {
-      icon: <Bot className="h-6 w-6" />,
-      title: "Agentes de IA Especializados",
-      description: "Agentes inteligentes para atendimento, suporte técnico e vendas, personalizados para seu negócio.",
+      icon: <Server className="h-6 w-6" />,
+      title: "Agentes Autônomos",
+      description: "Execução contínua de processos técnicos, comerciais e financeiros sem intervenção manual.",
       color: "pink"
     },
     {
       icon: <Workflow className="h-6 w-6" />,
-      title: "Automação de Processos",
-      description: "Fluxos automatizados que eliminam tarefas repetitivas e aumentam a eficiência operacional.",
+      title: "Orquestração de Processos",
+      description: "Fluxos automatizados via n8n com controle de execução, retry e fallback configuráveis.",
       color: "purple"
     },
     {
-      icon: <Smartphone className="h-6 w-6" />,
-      title: "Integrações Multi-Canal",
-      description: "WhatsApp, Telegram, sites e CRMs integrados em uma única plataforma unificada.",
+      icon: <Network className="h-6 w-6" />,
+      title: "Integrações Nativas",
+      description: "SNMP, TR-069, APIs REST e webhooks com os principais SGPs do mercado.",
       color: "blue"
     },
     {
       icon: <Database className="h-6 w-6" />,
-      title: "Gestão de Dados",
-      description: "Centralização e análise inteligente de dados para tomada de decisões estratégicas.",
+      title: "Persistência Multi-Tenant",
+      description: "Isolamento de dados por provedor com criptografia e backups automáticos.",
       color: "turquoise"
     },
     {
-      icon: <Code className="h-6 w-6" />,
-      title: "Desenvolvimento Custom",
-      description: "Soluções personalizadas desenvolvidas especificamente para suas necessidades únicas.",
+      icon: <Cpu className="h-6 w-6" />,
+      title: "Processamento Inteligente",
+      description: "Modelos de linguagem para análise de contexto e tomada de decisão automatizada.",
       color: "pink"
     },
     {
       icon: <Zap className="h-6 w-6" />,
-      title: "N8N & Webhooks",
-      description: "Integrações avançadas usando N8N e webhooks para conectar qualquer sistema.",
+      title: "Event-Driven Architecture",
+      description: "Webhooks e eventos em tempo real para integrações reativas e escaláveis.",
       color: "purple"
     }
   ];
@@ -68,10 +68,10 @@ const ServicesSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-5xl font-bold text-white mb-4">
-            Nossas <span className="text-modern-purple-vibrant">Soluções</span>
+            <span className="text-modern-purple-vibrant">Capacidades</span> da Plataforma
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Tecnologias de ponta para automatizar, integrar e revolucionar seu negócio
+            Infraestrutura de agentes com orquestração, observabilidade e escala operacional
           </p>
         </motion.div>
 

@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowRight, Phone, Bot, Zap, BarChart3, MessageSquare } from "lucide-react";
+import { ArrowRight, MessageSquare, Server, Activity, Cpu, Network } from "lucide-react";
 
 const HeroSection = () => {
   const whatsappNumber = "5515997668073";
-  const demoMessage = encodeURIComponent("Olá! Vim pelo site da 3AMG e gostaria de agendar uma demonstração da plataforma para meu provedor.");
+  const demoMessage = encodeURIComponent("Olá! Gostaria de agendar uma demonstração técnica da plataforma 3AMG para minha operação.");
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#0D1B3E] via-[#1A1F3A] to-[#0D1B3E]">
@@ -52,7 +52,7 @@ const HeroSection = () => {
           <div className="inline-flex items-center gap-3 bg-blue-950/40 backdrop-blur-lg border border-blue-500/20 rounded-full px-6 py-3">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
             <span className="text-blue-200 text-sm font-medium tracking-wide">
-              Plataforma de Agentes Inteligentes para ISPs
+              Infraestrutura de Agentes Autônomos
             </span>
           </div>
         </motion.div>
@@ -64,23 +64,23 @@ const HeroSection = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Automatize sua operação.
+          Orquestração de Agentes
           <br />
           <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-            Escale sem contratar.
+            para Operação de ISPs
           </span>
         </motion.h1>
 
-        {/* Subtitle - Clear value proposition */}
+        {/* Subtitle - Technical value proposition */}
         <motion.p 
           className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          Agentes inteligentes que atendem seus clientes via WhatsApp, 
-          resolvem problemas técnicos, fazem cobranças e geram relatórios — 
-          tudo automatizado, 24 horas por dia.
+          Plataforma de agentes conectados via WhatsApp com execução autônoma 
+          de processos técnicos, comerciais e financeiros — 
+          telemetria, billing e observabilidade integrados.
         </motion.p>
 
         {/* CTAs */}
@@ -99,8 +99,8 @@ const HeroSection = () => {
           >
             <Button size="lg" className="group relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold px-10 py-6 text-base rounded-2xl overflow-hidden transition-all duration-300 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50">
               <div className="relative flex items-center gap-2">
-                <Phone className="h-5 w-5" />
-                Solicitar Demonstração
+                <MessageSquare className="h-5 w-5" />
+                Solicitar Demo Técnica
               </div>
             </Button>
           </motion.a>
@@ -115,7 +115,7 @@ const HeroSection = () => {
                 className="group relative border-2 border-blue-400/50 bg-blue-950/30 backdrop-blur-md text-blue-200 hover:text-white hover:border-blue-400 px-10 py-6 text-base rounded-2xl hover:bg-blue-900/40 transition-all duration-300 shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40"
               >
                 <span className="relative flex items-center gap-2">
-                  Ver Planos e Preços
+                  Ver Arquitetura
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Button>
@@ -123,7 +123,7 @@ const HeroSection = () => {
           </Link>
         </motion.div>
 
-        {/* Quick Benefits Cards */}
+        {/* Quick Benefits Cards - Technical focus */}
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
@@ -132,21 +132,21 @@ const HeroSection = () => {
         >
           {[
             {
-              icon: Bot,
-              title: "Atendimento 24/7",
-              description: "Agentes respondem e resolvem via WhatsApp, sem pausa",
+              icon: Server,
+              title: "Execução Autônoma 24/7",
+              description: "Agentes operam sem intervenção, com resiliência e auto-recovery",
               iconBg: "icon-box-blue"
             },
             {
-              icon: Zap,
-              title: "Automação Completa",
-              description: "Técnico, comercial e financeiro integrados ao seu SGP",
+              icon: Network,
+              title: "Integrações Nativas",
+              description: "SNMP, TR-069, APIs REST e webhooks com SGPs do mercado",
               iconBg: "icon-box-purple"
             },
             {
-              icon: BarChart3,
-              title: "Métricas em Tempo Real",
-              description: "Dashboards de operação, custos e performance",
+              icon: Activity,
+              title: "Observabilidade Total",
+              description: "Telemetria, logs estruturados e métricas em tempo real",
               iconBg: "icon-box-pink"
             }
           ].map((benefit, index) => (

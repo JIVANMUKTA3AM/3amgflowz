@@ -51,11 +51,11 @@ const Pricing = () => {
   const whatsappNumber = "5515997668073";
 
   const whatsappMessages: Record<string, string> = {
-    demo: "Olá! Vim pelo site da 3AMG e gostaria de agendar uma demonstração da plataforma para meu provedor.",
-    starter: "Olá! Tenho interesse no plano Essencial para meu provedor. Gostaria de entender os próximos passos.",
-    growth: "Olá! Tenho interesse no plano Operação para meu provedor. Podemos agendar uma conversa?",
-    professional: "Olá! Tenho interesse no plano Escala para minha operação. Gostaria de uma apresentação detalhada.",
-    enterprise: "Olá! Preciso de uma solução Enterprise para minha operação. Podemos agendar uma reunião?",
+    demo: "Olá! Gostaria de agendar uma demonstração técnica da plataforma 3AMG.",
+    starter: "Olá! Tenho interesse no plano Essencial. Gostaria de entender a arquitetura e próximos passos.",
+    growth: "Olá! Tenho interesse no plano Operação. Podemos agendar uma call técnica?",
+    professional: "Olá! Tenho interesse no plano Escala para minha infraestrutura. Gostaria de uma apresentação técnica.",
+    enterprise: "Olá! Preciso de uma solução Enterprise para minha operação. Podemos agendar uma reunião técnica?",
   };
 
   const getWhatsAppLink = (planId: string) => {
@@ -69,28 +69,28 @@ const Pricing = () => {
   const problems = [
     {
       icon: Headphones,
-      title: "Atendimento sobrecarregado",
-      description: "Equipe esgotada com alto volume de chamados repetitivos que poderiam ser automatizados.",
+      title: "Operação sem escala",
+      description: "Volume de chamados cresce, mas a equipe não acompanha. Processos manuais travam a operação.",
     },
     {
       icon: AlertTriangle,
       title: "Falta de padronização",
-      description: "Cada atendente resolve de um jeito. Sem scripts, sem processos, sem qualidade consistente.",
+      description: "Execução inconsistente. Sem fluxos definidos, sem automação, sem resiliência.",
     },
     {
       icon: DollarSign,
-      title: "Custos operacionais altos",
-      description: "Folha de pagamento crescente, turnover alto e dificuldade de escalar sem contratar.",
+      title: "Custo operacional crescente",
+      description: "Escalar significa contratar. Infraestrutura de atendimento não acompanha o crescimento.",
     },
     {
       icon: BarChart3,
-      title: "Pouca visibilidade de métricas",
-      description: "Sem dados claros sobre performance, tempo de resolução e satisfação do cliente.",
+      title: "Baixa observabilidade",
+      description: "Sem telemetria, logs estruturados ou métricas em tempo real para tomada de decisão.",
     },
     {
       icon: Clock,
-      title: "Processos manuais e lentos",
-      description: "Diagnósticos demorados, retrabalho constante e integração fraca entre sistemas.",
+      title: "Latência em processos críticos",
+      description: "Diagnósticos demorados, integrações frágeis e tempo de resposta fora do SLA.",
     },
   ];
 
@@ -100,28 +100,28 @@ const Pricing = () => {
   const solutions = [
     {
       icon: Bot,
-      title: "Agentes inteligentes 24/7",
-      description: "Atendimento automatizado que opera sem parar, com qualidade constante.",
+      title: "Agentes autônomos 24/7",
+      description: "Execução contínua de processos com auto-recovery e resiliência operacional.",
     },
     {
       icon: MessageSquare,
-      title: "Atendimento via WhatsApp",
-      description: "Canal preferido dos seus clientes, integrado nativamente à plataforma.",
+      title: "Interface via WhatsApp",
+      description: "Camada de interação conectada à infraestrutura de agentes.",
     },
     {
       icon: Settings,
-      title: "Integração com seus sistemas",
-      description: "Conexão direta com SGP, ERP, sistemas de billing e monitoramento.",
+      title: "Integrações nativas",
+      description: "SNMP, TR-069, APIs REST e webhooks com SGPs do mercado.",
     },
     {
       icon: Zap,
-      title: "Automação de fluxos",
-      description: "Processos técnicos, comerciais e financeiros automatizados de ponta a ponta.",
+      title: "Orquestração de processos",
+      description: "Fluxos automatizados via n8n com controle de execução e fallback.",
     },
     {
       icon: BarChart3,
-      title: "Relatórios em tempo real",
-      description: "Dashboards operacionais com métricas que importam para sua gestão.",
+      title: "Observabilidade total",
+      description: "Telemetria, logs estruturados e métricas em tempo real.",
     },
   ];
 
@@ -132,35 +132,35 @@ const Pricing = () => {
     {
       icon: Wrench,
       name: "Agente Técnico",
-      tagline: "Diagnóstico e suporte automatizado",
+      tagline: "Automação de diagnóstico e suporte",
       capabilities: [
-        "Diagnóstico de conexão via SNMP/TR-069",
+        "Diagnóstico via SNMP/TR-069",
         "Reset remoto de ONT/ONU",
         "Verificação de status de link",
         "Escalonamento inteligente para NOC",
-        "Histórico completo de atendimentos",
+        "Logs e histórico de execução",
       ],
       color: "from-blue-500 to-cyan-500",
     },
     {
       icon: TrendingUp,
       name: "Agente Comercial",
-      tagline: "Vendas e retenção automatizadas",
+      tagline: "Automação de processos comerciais",
       capabilities: [
-        "Cotação de planos e serviços",
-        "Upsell e cross-sell inteligente",
+        "Cotação automatizada de planos",
+        "Fluxos de upsell e cross-sell",
         "Negociação de débitos",
         "Campanhas de retenção",
-        "Qualificação de leads",
+        "Qualificação automatizada",
       ],
       color: "from-purple-500 to-pink-500",
     },
     {
       icon: CreditCard,
       name: "Agente Financeiro",
-      tagline: "Cobrança e billing automatizados",
+      tagline: "Automação de billing e cobrança",
       capabilities: [
-        "Envio de segunda via de boleto",
+        "Envio automatizado de boletos",
         "Negociação de inadimplência",
         "Consulta de faturas e pagamentos",
         "Emissão de NF-e automatizada",
@@ -177,32 +177,32 @@ const Pricing = () => {
     {
       icon: Layers,
       title: "Arquitetura multi-tenant",
-      description: "Cada provedor isolado com dados seguros e performance garantida.",
+      description: "Isolamento de dados por provedor com criptografia e performance garantida.",
     },
     {
       icon: Settings,
       title: "Orquestração via n8n",
-      description: "Workflows visuais para criar automações sem código.",
+      description: "Workflows visuais com controle de execução, retry e fallback configuráveis.",
     },
     {
       icon: Network,
-      title: "Integrações API / SNMP",
-      description: "Conexão nativa com equipamentos e sistemas do mercado.",
+      title: "Protocolos nativos",
+      description: "SNMP, TR-069, APIs REST e webhooks com os principais SGPs do mercado.",
     },
     {
       icon: FileText,
       title: "Logs e auditoria",
-      description: "Rastreabilidade completa de todas as operações e conversas.",
+      description: "Rastreabilidade completa de execuções e conversas com retenção configurável.",
     },
     {
       icon: Lock,
       title: "Segurança enterprise",
-      description: "Criptografia, backups automáticos e conformidade LGPD.",
+      description: "Criptografia em trânsito e repouso, backups automáticos e conformidade LGPD.",
     },
     {
       icon: Server,
-      title: "Escalabilidade",
-      description: "Infraestrutura que cresce com você, sem gargalos.",
+      title: "Escalabilidade horizontal",
+      description: "Infraestrutura elástica que escala com a operação sem gargalos.",
     },
   ];
 
@@ -213,22 +213,22 @@ const Pricing = () => {
     {
       icon: Gauge,
       title: "Dashboards operacionais",
-      description: "Visão em tempo real da operação, atendimentos e agentes.",
+      description: "Visão em tempo real de execuções, agentes e processos.",
     },
     {
       icon: BarChart3,
-      title: "Métricas de atendimento",
-      description: "Tempo de resposta, resolução, satisfação e volume por período.",
+      title: "Telemetria de processos",
+      description: "Latência, throughput, taxa de sucesso e erros por agente.",
     },
     {
       icon: DollarSign,
-      title: "Custos e consumo",
-      description: "Controle de gastos por agente, por cliente e por período.",
+      title: "Billing e consumo",
+      description: "Controle de custos por agente, por provedor e por período.",
     },
     {
       icon: Activity,
-      title: "Performance por agente",
-      description: "Comparativo de eficiência entre agentes e tipos de atendimento.",
+      title: "Performance comparativa",
+      description: "Métricas de eficiência entre agentes e tipos de execução.",
     },
   ];
 
@@ -323,11 +323,11 @@ const Pricing = () => {
   const proofPoints = [
     {
       title: "Engenharia especializada",
-      description: "Equipe com background em telecomunicações, infraestrutura e desenvolvimento de sistemas para ISPs.",
+      description: "Time com background em telecomunicações, infraestrutura distribuída e automação de sistemas.",
     },
     {
-      title: "Arquitetura robusta",
-      description: "Stack moderna com Supabase, Edge Functions, n8n e integrações nativas com os principais SGPs do mercado.",
+      title: "Arquitetura resiliente",
+      description: "Stack moderna com Supabase, Edge Functions, n8n e integrações nativas com SGPs do mercado.",
     },
     {
       title: "Foco em operação real",
@@ -336,9 +336,9 @@ const Pricing = () => {
   ];
 
   const stats = [
-    { value: "70%", label: "Redução em tempo de atendimento" },
+    { value: "70%", label: "Redução em tempo de execução" },
     { value: "24/7", label: "Operação contínua" },
-    { value: "< 2h", label: "Setup inicial" },
+    { value: "< 2h", label: "Setup técnico" },
     { value: "99.9%", label: "Uptime da plataforma" },
   ];
 
@@ -347,36 +347,36 @@ const Pricing = () => {
   // ============================================
   const faqs = [
     {
-      question: "Como funciona o modelo de preço base + consumo?",
-      answer: "Você paga uma mensalidade fixa que inclui uma quantidade de interações. Acima disso, paga por interação adicional. Isso garante previsibilidade e escala sem surpresas.",
+      question: "Como funciona o modelo base + consumo?",
+      answer: "Mensalidade fixa com interações inclusas. Acima disso, paga por interação adicional. Previsibilidade e escala sem surpresas.",
     },
     {
       question: "O que conta como uma interação?",
-      answer: "Uma interação é uma troca de mensagem entre o cliente e o agente. Uma conversa com 10 mensagens conta como 10 interações. Você acompanha tudo em tempo real no painel.",
+      answer: "Uma troca de mensagem entre o agente e o endpoint. Uma conversa com 10 mensagens = 10 interações. Telemetria em tempo real no painel.",
     },
     {
       question: "Posso começar pequeno e escalar depois?",
-      answer: "Sim. Você pode começar no plano Essencial e migrar para Operação ou Escala conforme sua operação cresce. A migração é imediata e sem downtime.",
+      answer: "Sim. Migração entre planos é imediata e sem downtime. A infraestrutura se adapta à sua operação.",
     },
     {
       question: "Quais sistemas vocês integram?",
-      answer: "Integramos com os principais SGPs (IXC, MK-Auth, Hubsoft, Voalle), gateways de pagamento, sistemas de NF-e e equipamentos via SNMP/TR-069. Novas integrações sob demanda.",
+      answer: "SGPs (IXC, MK-Auth, Hubsoft, Voalle), gateways de pagamento, NF-e, equipamentos via SNMP/TR-069. Novas integrações sob demanda.",
     },
     {
       question: "Quanto tempo leva para começar a operar?",
-      answer: "O setup inicial leva em média 2 horas. Isso inclui configuração dos agentes, integração com WhatsApp e conexão com seu SGP. Nosso time acompanha todo o processo.",
+      answer: "Setup técnico em média 2 horas. Inclui configuração de agentes, integração com WhatsApp e conexão com SGP.",
     },
     {
       question: "Existe período de teste?",
-      answer: "Oferecemos uma demonstração guiada gratuita onde você pode ver a plataforma funcionando com dados simulados do seu provedor. Fale com nosso time para agendar.",
+      answer: "Oferecemos demonstração técnica guiada com dados simulados da sua operação. Fale com nossa engenharia para agendar.",
     },
     {
       question: "Como funciona o suporte?",
-      answer: "Suporte por email no plano Essencial, prioritário no Operação e 24/7 no Escala e Enterprise. Todos os planos incluem documentação completa e onboarding assistido.",
+      answer: "Email no Essencial, prioritário no Operação, 24/7 no Escala e Enterprise. Documentação técnica completa em todos os planos.",
     },
     {
-      question: "Meus dados ficam seguros?",
-      answer: "Sim. Usamos criptografia em trânsito e em repouso, backups automáticos diários, isolamento multi-tenant e conformidade com LGPD. Cada provedor vê apenas seus próprios dados.",
+      question: "Como é a segurança dos dados?",
+      answer: "Criptografia em trânsito e repouso, backups automáticos, isolamento multi-tenant e conformidade LGPD. Cada provedor vê apenas seus dados.",
     },
   ];
 
@@ -418,20 +418,20 @@ const Pricing = () => {
           >
             <Badge className="mb-6 bg-purple-500/20 text-purple-300 border-purple-500/30 px-4 py-2">
               <Bot className="w-4 h-4 mr-2" />
-              Plataforma de Agentes Inteligentes para ISPs
+              Infraestrutura de Agentes Autônomos
             </Badge>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Automatize sua operação.{" "}
+              Orquestração de Agentes{" "}
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                Escale sem contratar.
+                para Operação de ISPs
               </span>
             </h1>
             
             <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-              3AMG é uma plataforma de agentes inteligentes que automatizam atendimento, 
-              operações técnicas e processos financeiros do seu provedor via WhatsApp — 
-              com gestão, relatórios e billing integrados.
+              Plataforma de agentes conectados via WhatsApp com execução autônoma 
+              de processos técnicos, comerciais e financeiros — 
+              telemetria, billing e observabilidade integrados.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -441,8 +441,8 @@ const Pricing = () => {
                 asChild
               >
                 <a href={getWhatsAppLink("demo")} target="_blank" rel="noopener noreferrer">
-                  <Phone className="w-5 h-5 mr-2" />
-                  Solicitar Demonstração
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  Solicitar Demo Técnica
                 </a>
               </Button>
               <Button
@@ -451,7 +451,7 @@ const Pricing = () => {
                 className="bg-transparent border-2 border-gray-500 text-white hover:bg-gray-800 hover:border-gray-400 text-lg px-8 py-6 rounded-xl"
                 onClick={() => document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Ver Planos
+                Ver Arquitetura
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
@@ -474,10 +474,10 @@ const Pricing = () => {
               O problema
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Sua operação está travada?
+              Sua infraestrutura está travada?
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Provedores enfrentam os mesmos desafios todos os dias. 
+              Operações enfrentam os mesmos gargalos todos os dias. 
               Reconhece algum deles?
             </p>
           </motion.div>
@@ -523,10 +523,10 @@ const Pricing = () => {
               A solução
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Automação que funciona de verdade
+              Automação operacional em tempo real
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Agentes inteligentes que resolvem problemas, não apenas respondem mensagens.
+              Agentes autônomos que executam processos, não apenas respondem mensagens.
             </p>
           </motion.div>
 
@@ -571,10 +571,10 @@ const Pricing = () => {
               Os agentes
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Três agentes. Toda a operação coberta.
+              Três agentes. Toda a operação automatizada.
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Cada agente é especializado em uma área crítica do seu provedor.
+              Cada agente é especializado em uma camada crítica da operação.
             </p>
           </motion.div>
 
@@ -844,12 +844,12 @@ const Pricing = () => {
                       >
                         {plan.monthlyPrice === null ? (
                           <>
-                            <Phone className="w-4 h-4 mr-2" />
-                            Falar com Vendas
+                            <MessageSquare className="w-4 h-4 mr-2" />
+                            Falar com Engenharia
                           </>
                         ) : (
                           <>
-                            Contratar Agora
+                            Iniciar Setup
                             <ArrowRight className="w-4 h-4 ml-2" />
                           </>
                         )}
@@ -990,11 +990,11 @@ const Pricing = () => {
           >
             <Rocket className="w-14 h-14 text-purple-400 mx-auto mb-6" />
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Pronto para automatizar sua operação?
+              Pronto para escalar sua operação?
             </h2>
             <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-              Agende uma demonstração gratuita e veja os agentes funcionando 
-              com dados reais do seu provedor. Setup em menos de 2 horas.
+              Agende uma demonstração técnica e veja os agentes em execução. 
+              Setup em menos de 2 horas.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -1003,8 +1003,8 @@ const Pricing = () => {
                 asChild
               >
                 <a href={getWhatsAppLink("demo")} target="_blank" rel="noopener noreferrer">
-                  <Phone className="w-5 h-5 mr-2" />
-                  Agendar Demonstração
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  Solicitar Demo Técnica
                 </a>
               </Button>
               <Button
@@ -1015,7 +1015,7 @@ const Pricing = () => {
               >
                 <a href={getWhatsAppLink("demo")} target="_blank" rel="noopener noreferrer">
                   <MessageSquare className="w-5 h-5 mr-2" />
-                  Falar com Especialista
+                  Falar com Engenharia
                 </a>
               </Button>
             </div>
