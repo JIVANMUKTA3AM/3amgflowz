@@ -1,13 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { MessageSquare } from "lucide-react";
 
 const ModernHeader = () => {
+  const whatsappNumber = "5515997668073";
+  const contactMessage = encodeURIComponent("Olá! Gostaria de falar com a equipe técnica da 3AMG.");
+
   const menuItems = [
-    { label: "Soluções", href: "#solucoes" },
-    { label: "Tecnologia", href: "#tecnologia" },
-    { label: "Preços", href: "/pricing", isLink: true },
-    { label: "Contato", href: "#contato" },
+    { label: "Arquitetura", href: "#tecnologia" },
+    { label: "Agentes", href: "#solucoes" },
+    { label: "Planos", href: "/pricing", isLink: true },
   ];
 
   return (
@@ -60,11 +63,16 @@ const ModernHeader = () => {
                 Entrar
               </Button>
             </Link>
-            <Link to="/auth">
+            <a 
+              href={`https://wa.me/${whatsappNumber}?text=${contactMessage}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Button className="bg-modern-turquoise hover:bg-modern-turquoise/90 text-white font-medium px-6 rounded-full shadow-lg hover:shadow-modern-turquoise/50 transition-all duration-300">
-                Começar Grátis
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Falar com Engenharia
               </Button>
-            </Link>
+            </a>
           </div>
         </div>
       </div>
