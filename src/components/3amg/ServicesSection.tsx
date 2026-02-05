@@ -1,59 +1,70 @@
-import { Server, Workflow, Network, Database, Cpu, Zap } from "lucide-react";
+import { Cpu, Network, Activity, Server, Workflow, Database, Zap, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
 const ServicesSection = () => {
   const services = [
     {
-      icon: <Server className="h-6 w-6" />,
-      title: "Agentes Autônomos",
-      description: "Execução contínua de processos técnicos, comerciais e financeiros sem intervenção manual.",
-      color: "pink"
-    },
-    {
-      icon: <Workflow className="h-6 w-6" />,
-      title: "Orquestração de Processos",
-      description: "Fluxos automatizados via n8n com controle de execução, retry e fallback configuráveis.",
-      color: "purple"
+      icon: <Cpu className="h-6 w-6" />,
+      title: "Full-Stack Automation",
+      description: "Execução autônoma 24/7 de fluxos de rede e faturamento com resiliência e auto-recovery.",
+      gradient: "from-purple-500 to-pink-500"
     },
     {
       icon: <Network className="h-6 w-6" />,
-      title: "Integrações Nativas",
-      description: "SNMP, TR-069, APIs REST e webhooks com os principais SGPs do mercado.",
-      color: "blue"
+      title: "Ecossistema de APIs",
+      description: "Conexão nativa com MikroTik, Huawei, ZTE e principais ERPs de billing do mercado.",
+      gradient: "from-blue-500 to-purple-500"
+    },
+    {
+      icon: <Activity className="h-6 w-6" />,
+      title: "Observabilidade Preditiva",
+      description: "Dashboards de telemetria em tempo real integrados aos agentes de resposta automática.",
+      gradient: "from-cyan-500 to-blue-500"
     },
     {
       icon: <Database className="h-6 w-6" />,
       title: "Persistência Multi-Tenant",
-      description: "Isolamento de dados por provedor com criptografia e backups automáticos.",
-      color: "turquoise"
+      description: "Isolamento total de dados por provedor com criptografia AES-256 e backups automáticos.",
+      gradient: "from-emerald-500 to-teal-500"
     },
     {
-      icon: <Cpu className="h-6 w-6" />,
-      title: "Processamento Inteligente",
-      description: "Modelos de linguagem para análise de contexto e tomada de decisão automatizada.",
-      color: "pink"
+      icon: <Workflow className="h-6 w-6" />,
+      title: "Orquestração n8n",
+      description: "Fluxos automatizados via n8n com controle de execução, retry inteligente e fallback.",
+      gradient: "from-orange-500 to-red-500"
     },
     {
-      icon: <Zap className="h-6 w-6" />,
-      title: "Event-Driven Architecture",
-      description: "Webhooks e eventos em tempo real para integrações reativas e escaláveis.",
-      color: "purple"
+      icon: <Shield className="h-6 w-6" />,
+      title: "Segurança Enterprise",
+      description: "Auditoria completa, logs estruturados e compliance com LGPD e segurança de dados.",
+      gradient: "from-indigo-500 to-purple-500"
     }
   ];
 
   return (
-    <section id="solucoes" className="py-24 bg-modern-blue-deep relative overflow-hidden">
-      {/* Animated background particles */}
+    <section id="solucoes" className="py-24 bg-gradient-to-b from-[#030712] via-[#0f172a] to-[#030712] relative overflow-hidden">
+      {/* Background Grid */}
       <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(139, 92, 246, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139, 92, 246, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '80px 80px'
+        }}></div>
+      </div>
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none">
         {[...Array(15)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-modern-purple-vibrant rounded-full animate-float-particle"
+            className="absolute w-1 h-1 bg-purple-500 rounded-full animate-float-particle"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDelay: `${i * 0.3}s`,
-              animationDuration: `${4 + Math.random() * 3}s`
+              animationDelay: `${i * 0.5}s`,
+              animationDuration: `${6 + Math.random() * 4}s`
             }}
           />
         ))}
@@ -67,17 +78,26 @@ const ServicesSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-5xl font-bold text-white mb-4">
-            <span className="text-modern-purple-vibrant">Capacidades</span> da Plataforma
+          <div className="inline-flex items-center gap-2 bg-purple-950/50 backdrop-blur-xl border border-purple-500/30 rounded-full px-5 py-2 mb-6">
+            <Zap className="w-4 h-4 text-yellow-400" />
+            <span className="text-purple-200 text-sm font-medium">Capacidades Core</span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Infraestrutura de{" "}
+            <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">
+              Alta Performance
+            </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Infraestrutura de agentes com orquestração, observabilidade e escala operacional
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            Stack técnico projetado para operações críticas com 
+            orquestração, observabilidade e escala operacional
           </p>
         </motion.div>
 
         {/* Neon divider */}
         <div className="flex items-center justify-center mb-16">
-          <div className="h-px w-32 bg-gradient-to-r from-transparent via-modern-purple-vibrant to-transparent shadow-[0_0_10px_rgba(155,92,255,0.6)]"></div>
+          <div className="h-px w-32 bg-gradient-to-r from-transparent via-purple-500 to-transparent shadow-[0_0_15px_rgba(139,92,246,0.6)]"></div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -88,13 +108,13 @@ const ServicesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="modern-card group cursor-pointer"
+              whileHover={{ scale: 1.03, y: -5 }}
+              className="cyber-glass-card group cursor-pointer"
             >
-              <div className={`icon-box-${service.color} mb-6`}>
+              <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 shadow-lg group-hover:shadow-xl transition-shadow`}>
                 {service.icon}
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-modern-purple-vibrant transition-colors">
+              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-purple-300 transition-colors">
                 {service.title}
               </h3>
               <p className="text-gray-400 leading-relaxed">
