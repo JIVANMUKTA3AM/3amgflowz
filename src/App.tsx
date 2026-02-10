@@ -2,16 +2,16 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import RoleBasedRouter from "@/components/RoleBasedRouter";
-import CodeRainBackground from "@/components/CodeRainBackground";
+import CyberBackground from "@/components/CyberBackground";
 
 function App() {
   console.log('App component rendered');
   
   return (
     <Router>
-      <div className="relative min-h-screen bg-gray-900">
-        {/* Background de códigos escorrendo em todas as páginas */}
-        <CodeRainBackground />
+      <div className="relative min-h-screen bg-[#030712]">
+        {/* Cyber-SaaS background global */}
+        <CyberBackground />
         
         {/* Conteúdo principal */}
         <div className="relative z-10">
