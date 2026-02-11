@@ -17,7 +17,7 @@ const LayersFlowSection = () => {
   ];
 
   return (
-    <section className="py-24 bg-modern-blue-deep relative overflow-hidden">
+    <section className="py-24 relative overflow-hidden">
       {/* Animated connection lines background */}
       <div className="absolute inset-0 opacity-20">
         <svg className="w-full h-full" viewBox="0 0 1000 600">

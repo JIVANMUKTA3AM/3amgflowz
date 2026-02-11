@@ -42,7 +42,7 @@ const ServicesSection = () => {
   ];
 
   return (
-    <section id="solucoes" className="py-24 bg-gradient-to-b from-[#030712] via-[#0f172a] to-[#030712] relative overflow-hidden">
+    <section id="solucoes" className="py-24 relative overflow-hidden">
       {/* Background Grid */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0" style={{

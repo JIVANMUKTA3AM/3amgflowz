@@ -30,7 +30,7 @@ const ArchitectureSection = () => {
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-b from-modern-blue-deep to-modern-blue-dark relative overflow-hidden">
+    <section className="py-24 relative overflow-hidden">
       {/* Futuristic circuit background */}
       <div className="absolute inset-0 opacity-10">
         <svg className="w-full h-full" viewBox="0 0 1000 600">

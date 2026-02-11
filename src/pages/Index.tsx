@@ -49,7 +49,7 @@ const Index = () => {
 
   if (profileLoading || roleLoading) {
     return (
-      <div className="min-h-screen bg-3amg-dark flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-3amg-orange mx-auto mb-4"></div>
           <p className="text-gray-300">Carregando...</p>
@@ -60,7 +60,7 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-modern-blue-deep via-modern-blue-dark to-modern-blue-deep">
+      <div className="min-h-screen">
         <ModernHeader />
         
         <main className="pt-16">
@@ -80,7 +80,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-3amg-dark">
+    <div className="min-h-screen">
       <header className="bg-gray-900/95 backdrop-blur-sm shadow-sm border-b border-gray-700">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
