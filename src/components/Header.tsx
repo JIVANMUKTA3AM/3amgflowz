@@ -45,15 +45,15 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
 
   if (profileLoading) {
     return (
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-gray-900/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-white">
                 Dashboard Admin
               </h1>
             </div>
-            <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
+            <div className="h-8 w-8 bg-gray-700 rounded-full animate-pulse"></div>
           </div>
         </div>
       </header>
@@ -61,11 +61,11 @@ const Header = ({ handleWorkflowTrigger, isLoading }: HeaderProps) => {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-gray-900/80 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center space-x-4">
-            <h1 className="text-xl font-semibold text-gray-900">
+            <h1 className="text-xl font-semibold text-white">
               Dashboard Admin
             </h1>
             

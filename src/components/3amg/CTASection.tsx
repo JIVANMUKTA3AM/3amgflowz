@@ -8,7 +8,7 @@ const CTASection = () => {
   const diagMessage = encodeURIComponent("Olá! Gostaria de iniciar um diagnóstico técnico para minha operação com a 3AMG.");
 
   return (
-    <section id="contato" className="py-24 bg-gradient-to-b from-modern-blue-deep to-modern-blue-dark relative overflow-hidden">
+    <section id="contato" className="py-24 relative overflow-hidden">
       {/* Animated background effect */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0" style={{

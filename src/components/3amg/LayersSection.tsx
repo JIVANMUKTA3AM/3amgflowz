@@ -17,7 +17,7 @@ const LayersSection = () => {
   ];
 
   return (
-    <section className="relative py-32 overflow-hidden bg-gradient-to-b from-[#0D1B3E] via-[#1A1F3A] to-[#0D1B3E]">
+    <section className="relative py-32 overflow-hidden">
       {/* Subtle Grid Background */}
       <div className="absolute inset-0 z-0 opacity-10">
         <div className="absolute inset-0" style={{

@@ -54,7 +54,7 @@ const TechSection = () => {
   ];
 
   return (
-    <section id="tecnologia" className="py-24 bg-modern-blue-deep relative overflow-hidden">
+    <section id="tecnologia" className="py-24 relative overflow-hidden">
       {/* Animated network lines */}
       <div className="absolute inset-0 opacity-10">
         {[...Array(5)].map((_, i) => (

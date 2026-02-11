@@ -16,7 +16,7 @@ const AboutSection = () => {
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-b from-modern-blue-dark to-modern-blue-deep relative overflow-hidden">
+    <section className="py-24 relative overflow-hidden">
       {/* Subtle grid background */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
