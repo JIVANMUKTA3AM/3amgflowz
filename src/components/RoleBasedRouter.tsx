@@ -43,6 +43,7 @@ import TenantDashboard from "@/pages/TenantDashboard";
 import WidgetDemo from "@/pages/WidgetDemo";
 import NotasFiscais from "@/pages/NotasFiscais";
 import Pricing from "@/pages/Pricing";
+import Conhecimento from "@/pages/Conhecimento";
 import { Loader2 } from "lucide-react";
 
 const RoleBasedRouter = () => {
@@ -120,6 +121,7 @@ const RoleBasedRouter = () => {
       <Route path="/dashboard-olt" element={<DashboardOLT />} />
       <Route path="/notas-fiscais" element={<NotasFiscais />} />
       <Route path="/pricing" element={<Pricing />} />
+      <Route path="/conhecimento" element={<Conhecimento />} />
       
       {/* Cliente específico */}
       <Route path="/client-webhook" element={<ClientWebhook />} />
