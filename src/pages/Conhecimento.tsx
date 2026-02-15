@@ -452,12 +452,12 @@ const Conhecimento = () => {
                 <div className="sticky top-28 space-y-2">
                   <button
                     onClick={() => setSelectedArticle(null)}
-                    className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+                    className="flex items-center gap-2 text-sm text-blue-300/70 hover:text-white transition-colors mb-6"
                   >
                     <ArrowLeft className="h-4 w-4" />
                     Voltar aos artigos
                   </button>
-                  <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3 font-semibold">
+                  <p className="text-xs uppercase tracking-wider text-blue-300/60 mb-3 font-semibold">
                     Índice
                   </p>
                   {selectedArticle.sections.map((sec, i) => (
@@ -467,7 +467,7 @@ const Conhecimento = () => {
                       className={`block w-full text-left text-sm px-3 py-2 rounded-lg transition-colors ${
                         activeSection === i
                           ? "bg-primary/20 text-primary border border-primary/30"
-                          : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                          : "text-blue-200/60 hover:text-white hover:bg-white/5"
                       }`}
                     >
                       {sec.title}
@@ -488,19 +488,19 @@ const Conhecimento = () => {
                     <Badge className={difficultyColors[selectedArticle.difficulty]}>
                       {selectedArticle.difficulty}
                     </Badge>
-                    <span className="text-sm text-muted-foreground flex items-center gap-1">
+                    <span className="text-sm text-blue-200/70 flex items-center gap-1">
                       <Clock className="h-3 w-3" /> {selectedArticle.readTime}
                     </span>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-blue-200/60">
                       Atualizado em{" "}
                       {new Date(selectedArticle.updatedAt).toLocaleDateString("pt-BR")}
                     </span>
                   </div>
 
-                  <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+                  <h1 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ textShadow: '0 0 20px rgba(139, 92, 246, 0.3)' }}>
                     {selectedArticle.title}
                   </h1>
-                  <p className="text-lg text-muted-foreground mb-6">
+                  <p className="text-lg text-blue-200/80 mb-6">
                     {selectedArticle.description}
                   </p>
 
@@ -509,7 +509,7 @@ const Conhecimento = () => {
                     {selectedArticle.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-muted-foreground"
+                        className="text-xs px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-blue-200/70"
                       >
                         {tag}
                       </span>
@@ -519,7 +519,7 @@ const Conhecimento = () => {
                   {/* Mobile back */}
                   <button
                     onClick={() => setSelectedArticle(null)}
-                    className="lg:hidden flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+                    className="lg:hidden flex items-center gap-2 text-sm text-blue-300/70 hover:text-white transition-colors mb-6"
                   >
                     <ArrowLeft className="h-4 w-4" />
                     Voltar
@@ -535,11 +535,11 @@ const Conhecimento = () => {
                         transition={{ delay: i * 0.1 }}
                         className="scroll-mt-28"
                       >
-                        <h2 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+                        <h2 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
                           <div className="w-1 h-6 rounded-full bg-primary" />
                           {sec.title}
                         </h2>
-                        <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                        <p className="text-blue-100/80 leading-relaxed whitespace-pre-line">
                           {sec.content}
                         </p>
                         {sec.code && (
@@ -585,25 +585,25 @@ const Conhecimento = () => {
                 Centro de Conhecimento
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4" style={{ textShadow: '0 0 30px rgba(139, 92, 246, 0.4), 0 0 60px rgba(139, 92, 246, 0.15)' }}>
               Centro de Conhecimento{" "}
               <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
                 Técnico
               </span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+            <p className="text-lg md:text-xl text-blue-200/80 max-w-2xl mx-auto mb-10">
               Explore a arquitetura, segurança e tecnologias que sustentam a
               plataforma 3AMG Flowz.
             </p>
 
             {/* Search */}
             <div className="max-w-xl mx-auto relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-300/60" />
               <Input
                 placeholder="Buscar por tecnologia, segurança, arquitetura..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-12 h-12 bg-white/5 border-white/10 text-foreground placeholder:text-muted-foreground rounded-xl text-base"
+                className="pl-12 h-12 bg-white/5 border-white/15 text-white placeholder:text-blue-300/50 rounded-xl text-base focus-visible:ring-primary/50 focus-visible:border-primary/40"
               />
             </div>
           </motion.div>
@@ -614,7 +614,7 @@ const Conhecimento = () => {
         {/* Categories */}
         {!search && !selectedCategory && (
           <section>
-            <h2 className="text-2xl font-bold text-foreground mb-6">
+            <h2 className="text-2xl font-bold text-white mb-6">
               Categorias
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -636,14 +636,14 @@ const Conhecimento = () => {
                       <div className={`p-2.5 rounded-xl bg-white/5 ${cat.iconColor}`}>
                         <Icon className="h-5 w-5" />
                       </div>
-                      <Badge variant="secondary" className="bg-white/5 text-xs">
+                      <Badge variant="secondary" className="bg-white/10 text-blue-200/90 border-white/10 text-xs">
                         {count} artigos
                       </Badge>
                     </div>
-                    <h3 className="font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-white mb-1 group-hover:text-primary transition-colors">
                       {cat.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-blue-200/70">
                       {cat.description}
                     </p>
                   </motion.button>
@@ -658,12 +658,12 @@ const Conhecimento = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSelectedCategory(null)}
-              className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+              className="text-sm text-blue-300/70 hover:text-white flex items-center gap-1 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" /> Todas as categorias
             </button>
-            <span className="text-muted-foreground">/</span>
-            <span className="text-foreground font-medium">
+            <span className="text-blue-300/40">/</span>
+            <span className="text-white font-medium">
               {categories.find((c) => c.id === selectedCategory)?.title}
             </span>
           </div>
@@ -672,7 +672,7 @@ const Conhecimento = () => {
         {/* Featured */}
         {!search && !selectedCategory && (
           <section>
-            <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <Star className="h-5 w-5 text-yellow-400" />
               Artigos em Destaque
             </h2>
@@ -693,17 +693,17 @@ const Conhecimento = () => {
                   >
                     <div className="flex items-center gap-2 mb-3">
                       <CatIcon className="h-4 w-4 text-primary" />
-                      <span className="text-xs text-muted-foreground uppercase tracking-wider">
+                      <span className="text-xs text-blue-300/60 uppercase tracking-wider">
                         {categories.find((c) => c.id === article.category)?.title}
                       </span>
                     </div>
-                    <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                    <h3 className="font-semibold text-white mb-2 group-hover:text-primary transition-colors">
                       {article.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                    <p className="text-sm text-blue-200/70 mb-3 line-clamp-2">
                       {article.description}
                     </p>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-3 text-xs text-blue-200/60">
                       <Badge className={`text-[10px] ${difficultyColors[article.difficulty]}`}>
                         {article.difficulty}
                       </Badge>
@@ -721,7 +721,7 @@ const Conhecimento = () => {
         {/* Article List */}
         {(search || selectedCategory) && (
           <section>
-            <p className="text-sm text-muted-foreground mb-4">
+            <p className="text-sm text-blue-200/60 mb-4">
               {filteredArticles.length} artigo{filteredArticles.length !== 1 ? "s" : ""} encontrado{filteredArticles.length !== 1 ? "s" : ""}
             </p>
             <div className="space-y-3">
@@ -746,10 +746,10 @@ const Conhecimento = () => {
                         <CatIcon className="h-5 w-5" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-foreground group-hover:text-primary transition-colors truncate">
+                        <h3 className="font-medium text-white group-hover:text-primary transition-colors truncate">
                           {article.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground truncate">
+                        <p className="text-sm text-blue-200/70 truncate">
                           {article.description}
                         </p>
                       </div>
@@ -757,17 +757,17 @@ const Conhecimento = () => {
                         <Badge className={`text-[10px] ${difficultyColors[article.difficulty]}`}>
                           {article.difficulty}
                         </Badge>
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <Clock className="h-3 w-3" /> {article.readTime}
-                        </span>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="text-xs text-blue-200/60 flex items-center gap-1">
+                        <Clock className="h-3 w-3" /> {article.readTime}
+                      </span>
+                      <ChevronRight className="h-4 w-4 text-blue-200/50 group-hover:text-primary transition-colors" />
                       </div>
                     </motion.button>
                   );
                 })}
               </AnimatePresence>
               {filteredArticles.length === 0 && (
-                <p className="text-center text-muted-foreground py-12">
+                <p className="text-center text-blue-200/60 py-12">
                   Nenhum artigo encontrado para "{search}".
                 </p>
               )}
@@ -778,7 +778,7 @@ const Conhecimento = () => {
         {/* All articles by category (default view) */}
         {!search && !selectedCategory && (
           <section>
-            <h2 className="text-2xl font-bold text-foreground mb-6">
+            <h2 className="text-2xl font-bold text-white mb-6">
               Todos os Artigos
             </h2>
             <div className="space-y-3">
@@ -800,7 +800,7 @@ const Conhecimento = () => {
                       <CatIcon className="h-4 w-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-foreground group-hover:text-primary transition-colors text-sm truncate">
+                      <h3 className="font-medium text-white group-hover:text-primary transition-colors text-sm truncate">
                         {article.title}
                       </h3>
                     </div>
@@ -808,7 +808,7 @@ const Conhecimento = () => {
                       <Badge className={`text-[10px] ${difficultyColors[article.difficulty]}`}>
                         {article.difficulty}
                       </Badge>
-                      <span className="text-xs text-muted-foreground">{article.readTime}</span>
+                      <span className="text-xs text-blue-200/60">{article.readTime}</span>
                     </div>
                   </motion.button>
                 );
