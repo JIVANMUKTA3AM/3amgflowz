@@ -10,6 +10,7 @@ const ModernHeader = () => {
   const menuItems = [
     { label: "Arquitetura", href: "#tecnologia" },
     { label: "Agentes", href: "#solucoes" },
+    { label: "Conhecimento", href: "/conhecimento", isLink: true },
     { label: "Planos", href: "/pricing", isLink: true },
   ];
 
