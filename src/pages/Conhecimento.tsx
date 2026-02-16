@@ -582,13 +582,13 @@ const Conhecimento = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
               <BookOpen className="h-4 w-4 text-primary" />
               <span className="text-sm text-primary font-medium">
-                Centro de Conhecimento
+                Artigos Técnicos
               </span>
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4" style={{ textShadow: '0 0 30px rgba(139, 92, 246, 0.4), 0 0 60px rgba(139, 92, 246, 0.15)' }}>
-              Centro de Conhecimento{" "}
+              Artigos{" "}
               <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
-                Técnico
+                Técnicos
               </span>
             </h1>
             <p className="text-lg md:text-xl text-blue-200/80 max-w-2xl mx-auto mb-10">
