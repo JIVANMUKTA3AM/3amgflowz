@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, Menu, X } from "lucide-react";
+import logo from "@/assets/3amg-logo.png";
 
 const ModernHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -31,10 +32,12 @@ const ModernHeader = () => {
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-modern-blue-primary to-modern-turquoise rounded-lg flex items-center justify-center">
-                <div className="w-4 h-4 bg-white rounded transform rotate-45"></div>
-              </div>
+            <Link to="/" className="flex items-center space-x-2 group">
+              <img
+                src={logo}
+                alt="3AMG Logo"
+                className="h-10 md:h-12 w-auto transition-transform duration-200 group-hover:scale-[1.03]"
+              />
               <span className="font-bold text-xl text-white tracking-wide">3AMG</span>
             </Link>
 
