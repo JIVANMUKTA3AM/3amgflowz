@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 
 const CTASection = () => {
   const whatsappNumber = "5515997668073";
-  const demoMessage = encodeURIComponent("Olá! Gostaria de agendar uma demonstração técnica da plataforma 3AMG.");
-  const diagMessage = encodeURIComponent("Olá! Gostaria de iniciar um diagnóstico técnico para minha operação com a 3AMG.");
+  const demoMessage = encodeURIComponent("Olá! Gostaria de conhecer a plataforma 3AMG para automatizar o atendimento do meu provedor.");
+  const diagMessage = encodeURIComponent("Olá! Gostaria de agendar uma demonstração da plataforma 3AMG para minha operação.");
 
   return (
     <section id="contato" className="py-24 relative overflow-hidden">
@@ -38,12 +38,12 @@ const CTASection = () => {
             </motion.div>
             
             <h2 className="text-5xl font-bold text-white mb-4">
-              Pronto para <span className="text-modern-purple-vibrant">Escalar</span>?
+              Pronto para <span className="text-modern-purple-vibrant">Automatizar</span>?
             </h2>
             
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Implante agentes autônomos na sua operação. 
-              Setup técnico em menos de 2 horas.
+              Conheça a plataforma, veja os agentes em ação e 
+              comece a escalar sua operação sem aumentar a equipe.
             </p>
           </div>
 
@@ -59,7 +59,7 @@ const CTASection = () => {
                 size="lg" 
                 className="bg-gradient-to-r from-modern-purple-vibrant to-modern-pink hover:opacity-90 text-white font-semibold px-8 py-6 text-lg rounded-full shadow-[0_0_20px_rgba(155,92,255,0.6)] hover:shadow-[0_0_30px_rgba(155,92,255,0.8)] transition-all"
               >
-                Solicitar Demo Técnica
+                Falar com a Engenharia
                 <MessageSquare className="ml-2 h-5 w-5" />
               </Button>
             </motion.a>
@@ -77,7 +77,7 @@ const CTASection = () => {
                 className="border-2 border-modern-turquoise text-modern-turquoise hover:bg-modern-turquoise hover:text-white px-8 py-6 text-lg rounded-full transition-all"
               >
                 <Terminal className="mr-2 h-5 w-5" />
-                Iniciar Diagnóstico
+                Agendar Demonstração
               </Button>
             </motion.a>
           </div>
@@ -89,11 +89,11 @@ const CTASection = () => {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-modern-purple-vibrant rounded-full shadow-[0_0_8px_rgba(155,92,255,0.8)]"></div>
-              <span>Suporte Técnico Dedicado</span>
+              <span>Assinatura Mensal Previsível</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-modern-pink rounded-full shadow-[0_0_8px_rgba(255,71,179,0.8)]"></div>
-              <span>SLA 99.9% Uptime</span>
+              <span>Todos os Agentes Inclusos</span>
             </div>
           </div>
         </motion.div>

@@ -10,9 +10,10 @@ const AboutSection = () => {
   ];
 
   const highlights = [
-    "Arquitetura multi-tenant isolada",
-    "Orquestração via n8n + Edge Functions",
-    "Integrações nativas com SGPs de mercado"
+    "Triagem inteligente com encaminhamento automático",
+    "Agentes especializados: Técnico NOC, Comercial e Financeiro",
+    "Integrações nativas com SGPs de mercado",
+    "Assinatura mensal previsível por número de clientes"
   ];
 
   return (
@@ -41,15 +42,15 @@ const AboutSection = () => {
             </div>
             
             <p className="text-gray-300 text-lg leading-relaxed mb-6">
-              Plataforma de infraestrutura e orquestração de agentes autônomos, 
-              projetada para escala operacional de provedores de internet 
-              e empresas de tecnologia.
+              Centro de operações automatizado para provedores de internet, 
+              com triagem inteligente e agentes especializados que organizam 
+              e executam todo o atendimento ao assinante.
             </p>
             
             <p className="text-gray-300 text-lg leading-relaxed mb-10">
-              Desenvolvida com foco em resiliência, observabilidade e 
-              automação de processos críticos — conectando operação técnica, 
-              comercial e financeira via WhatsApp.
+              Seus clientes são atendidos via WhatsApp com inteligência 
+              artificial, enquanto sua equipe foca no que realmente importa: 
+              crescer a operação.
             </p>
             
             <div className="space-y-4">

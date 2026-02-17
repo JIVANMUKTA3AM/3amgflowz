@@ -16,19 +16,14 @@ import {
   Headphones,
   Shield,
   ArrowRight,
-  Sparkles,
   Building2,
   TrendingUp,
   Network,
   Activity,
-  Database,
-  Cpu,
   Server,
   Clock,
   ChevronDown,
   ChevronUp,
-  Phone,
-  AlertTriangle,
   DollarSign,
   BarChart3,
   Settings,
@@ -73,7 +68,7 @@ const Pricing = () => {
       description: "Volume de chamados cresce, mas a equipe não acompanha. Processos manuais travam a operação.",
     },
     {
-      icon: AlertTriangle,
+      icon: Clock,
       title: "Falta de padronização",
       description: "Execução inconsistente. Sem fluxos definidos, sem automação, sem resiliência.",
     },
@@ -85,10 +80,10 @@ const Pricing = () => {
     {
       icon: BarChart3,
       title: "Baixa observabilidade",
-      description: "Sem telemetria, logs estruturados ou métricas em tempo real para tomada de decisão.",
+      description: "Sem métricas em tempo real para tomada de decisão.",
     },
     {
-      icon: Clock,
+      icon: Users,
       title: "Latência em processos críticos",
       description: "Diagnósticos demorados, integrações frágeis e tempo de resposta fora do SLA.",
     },
@@ -130,27 +125,37 @@ const Pricing = () => {
   // ============================================
   const agents = [
     {
-      icon: Wrench,
-      name: "Agente Técnico",
-      tagline: "Automação de diagnóstico e suporte",
+      icon: Headphones,
+      name: "Agente de Triagem",
+      tagline: "Classificação e encaminhamento inteligente",
       capabilities: [
-        "Diagnóstico via SNMP/TR-069",
-        "Reset remoto de ONT/ONU",
-        "Verificação de status de link",
-        "Escalonamento inteligente para NOC",
-        "Logs e histórico de execução",
+        "Entendimento automático da solicitação",
+        "Encaminhamento para o setor correto",
+        "Atendimento 24/7 via WhatsApp",
+        "Respostas instantâneas e contextuais",
+      ],
+      color: "from-cyan-500 to-blue-500",
+    },
+    {
+      icon: Wrench,
+      name: "Agente Técnico NOC",
+      tagline: "Diagnóstico e suporte de rede",
+      capabilities: [
+        "Verificação de sinais e qualidade da conexão",
+        "Diagnóstico automático de falhas",
+        "Monitoramento da rede",
+        "Agendamento de atendimentos técnicos",
       ],
       color: "from-blue-500 to-cyan-500",
     },
     {
       icon: TrendingUp,
       name: "Agente Comercial",
-      tagline: "Automação de processos comerciais",
+      tagline: "Gestão comercial automatizada",
       capabilities: [
-        "Cotação automatizada de planos",
-        "Fluxos de upsell e cross-sell",
-        "Negociação de débitos",
-        "Campanhas de retenção",
+        "Informações sobre planos",
+        "Alterações de serviços",
+        "Ofertas e retenção",
         "Qualificação automatizada",
       ],
       color: "from-purple-500 to-pink-500",
@@ -158,13 +163,12 @@ const Pricing = () => {
     {
       icon: CreditCard,
       name: "Agente Financeiro",
-      tagline: "Automação de billing e cobrança",
+      tagline: "Automação financeira completa",
       capabilities: [
-        "Envio automatizado de boletos",
-        "Negociação de inadimplência",
-        "Consulta de faturas e pagamentos",
-        "Emissão de NF-e automatizada",
-        "Integração com gateways de pagamento",
+        "Boletos e pagamentos",
+        "Segunda via",
+        "Negociações",
+        "Status financeiro do cliente",
       ],
       color: "from-green-500 to-emerald-500",
     },
@@ -238,17 +242,18 @@ const Pricing = () => {
   const plans = [
     {
       id: "starter",
-      name: "Essencial",
-      description: "Para provedores começando a automatizar",
+      name: "Starter",
+      description: "Até 500 clientes",
       icon: Zap,
       iconBg: "bg-gradient-to-br from-slate-500 to-slate-700",
-      monthlyPrice: 497,
-      baseDescription: "Base mensal fixa",
-      usage: "+ R$ 0,15 por interação",
+      monthlyPrice: 499,
+      baseDescription: "Assinatura mensal fixa",
+      usage: null,
       maxClients: "500",
       features: [
-        "3 Agentes ativos",
-        "10.000 interações/mês inclusas",
+        "Todos os agentes inclusos",
+        "Triagem + Técnico + Comercial + Financeiro",
+        "WhatsApp integrado",
         "Integrações básicas",
         "Suporte por email",
         "Relatórios padrão",
@@ -258,36 +263,35 @@ const Pricing = () => {
     {
       id: "growth",
       name: "Operação",
-      description: "Para provedores em crescimento",
+      description: "501 a 2.000 clientes",
       icon: TrendingUp,
       iconBg: "bg-gradient-to-br from-purple-500 to-purple-700",
-      monthlyPrice: 997,
-      baseDescription: "Base mensal fixa",
-      usage: "+ R$ 0,12 por interação",
+      monthlyPrice: 999,
+      baseDescription: "Assinatura mensal fixa",
+      usage: null,
       maxClients: "2.000",
       features: [
-        "Agentes ilimitados",
-        "30.000 interações/mês inclusas",
+        "Todos os agentes inclusos",
         "Todas as integrações",
         "Suporte prioritário",
         "Dashboards avançados",
         "Automações customizadas",
+        "Onboarding assistido",
       ],
       popular: true,
     },
     {
       id: "professional",
       name: "Escala",
-      description: "Para operações de alta performance",
+      description: "2.001 a 10.000 clientes",
       icon: Crown,
       iconBg: "bg-gradient-to-br from-violet-600 to-purple-800",
       monthlyPrice: 1997,
-      baseDescription: "Base mensal fixa",
-      usage: "+ R$ 0,08 por interação",
+      baseDescription: "Assinatura mensal fixa",
+      usage: null,
       maxClients: "10.000",
       features: [
-        "Agentes ilimitados",
-        "100.000 interações/mês inclusas",
+        "Todos os agentes inclusos",
         "Infraestrutura dedicada",
         "Suporte 24/7",
         "SLA 99.9%",
@@ -299,7 +303,7 @@ const Pricing = () => {
     {
       id: "enterprise",
       name: "Enterprise",
-      description: "Para grandes operações",
+      description: "Acima de 10.000 clientes",
       icon: Building2,
       iconBg: "bg-gradient-to-br from-amber-500 to-orange-600",
       monthlyPrice: null,
@@ -347,16 +351,16 @@ const Pricing = () => {
   // ============================================
   const faqs = [
     {
-      question: "Como funciona o modelo base + consumo?",
-      answer: "Mensalidade fixa com interações inclusas. Acima disso, paga por interação adicional. Previsibilidade e escala sem surpresas.",
+      question: "Como funciona a cobrança?",
+      answer: "Assinatura mensal fixa baseada no número de clientes do seu provedor. Sem cobranças por uso, sem variáveis. Previsibilidade total de custos.",
     },
     {
-      question: "O que conta como uma interação?",
-      answer: "Uma troca de mensagem entre o agente e o endpoint. Uma conversa com 10 mensagens = 10 interações. Telemetria em tempo real no painel.",
+      question: "Todos os agentes estão inclusos em todos os planos?",
+      answer: "Sim. Todos os planos incluem acesso a todos os agentes: Triagem, Técnico NOC, Comercial e Financeiro. O que muda entre os planos é a capacidade de clientes e o nível de suporte.",
     },
     {
       question: "Posso começar pequeno e escalar depois?",
-      answer: "Sim. Migração entre planos é imediata e sem downtime. A infraestrutura se adapta à sua operação.",
+      answer: "Sim. Migração entre planos é imediata e sem downtime. O valor acompanha o crescimento da sua base de assinantes.",
     },
     {
       question: "Quais sistemas vocês integram?",
@@ -372,11 +376,11 @@ const Pricing = () => {
     },
     {
       question: "Como funciona o suporte?",
-      answer: "Email no Essencial, prioritário no Operação, 24/7 no Escala e Enterprise. Documentação técnica completa em todos os planos.",
+      answer: "Email no Starter, prioritário no Operação, 24/7 no Escala e Enterprise. Documentação técnica completa em todos os planos.",
     },
     {
       question: "Como é a segurança dos dados?",
-      answer: "Criptografia em trânsito e repouso, backups automáticos, isolamento multi-tenant e conformidade LGPD. Cada provedor vê apenas seus dados.",
+      answer: "Criptografia em trânsito e repouso, backups automáticos, isolamento por provedor e conformidade LGPD. Cada provedor acessa exclusivamente seus dados.",
     },
   ];
 
@@ -422,16 +426,16 @@ const Pricing = () => {
             </Badge>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Orquestração de Agentes{" "}
+              Atendimento automatizado{" "}
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                para Operação de ISPs
+                para seu provedor
               </span>
             </h1>
             
             <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Plataforma de agentes conectados via WhatsApp com execução autônoma 
-              de processos técnicos, comerciais e financeiros — 
-              telemetria, billing e observabilidade integrados.
+              Agentes inteligentes que atendem seus clientes via WhatsApp, 
+              diagnosticam problemas técnicos e organizam sua operação — 
+              com assinatura mensal previsível.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -571,14 +575,14 @@ const Pricing = () => {
               Os agentes
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Três agentes. Toda a operação automatizada.
+              Quatro agentes. Toda a operação automatizada.
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Cada agente é especializado em uma camada crítica da operação.
+              Triagem inteligente + agentes especializados em cada área da operação.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {agents.map((agent, index) => (
               <motion.div
                 key={index}
@@ -726,11 +730,11 @@ const Pricing = () => {
               Preços
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Base mensal + consumo. Simples assim.
+              Assinatura mensal previsível
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto mb-8">
-              Pague uma base fixa e adicional apenas pelo que usar. 
-              Sem surpresas, sem pegadinhas, sem lock-in.
+              Preço proporcional ao tamanho da sua operação. 
+              Sem cobrança por uso, sem variáveis, sem surpresas.
             </p>
 
             {/* Toggle Annual/Monthly */}
@@ -802,7 +806,7 @@ const Pricing = () => {
                             <span className="text-gray-400">/mês</span>
                           </div>
                           <p className="text-gray-500 text-sm mt-1">{plan.baseDescription}</p>
-                          <p className="text-purple-400 text-sm font-medium mt-1">{plan.usage}</p>
+                          {plan.usage && <p className="text-purple-400 text-sm font-medium mt-1">{plan.usage}</p>}
                           {isAnnual && plan.monthlyPrice && (
                             <p className="text-green-400 text-xs mt-2">
                               <span className="line-through text-gray-500">R$ {formatPrice(plan.monthlyPrice)}</span>

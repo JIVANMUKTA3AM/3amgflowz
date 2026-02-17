@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Zap, Code, Server, Network, Activity, Cpu } from "lucide-react";
+import { Zap, Headphones, Wrench, TrendingUp, DollarSign } from "lucide-react";
 
 const HeroSection = () => {
   const whatsappNumber = "5515997668073";
-  const demoMessage = encodeURIComponent("Olá! Gostaria de explorar a infraestrutura da plataforma 3AMG para minha operação.");
+  const demoMessage = encodeURIComponent("Olá! Gostaria de conhecer a plataforma 3AMG para automatizar o atendimento do meu provedor.");
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -70,7 +70,7 @@ const HeroSection = () => {
           <div className="inline-flex items-center gap-3 bg-purple-950/50 backdrop-blur-xl border border-purple-500/30 rounded-full px-6 py-3 engine-badge">
             <Zap className="w-4 h-4 text-yellow-400" />
             <span className="text-purple-200 text-sm font-medium tracking-wide">
-              Engine v2.0: Operação em Tempo Real
+              Centro de Operações Automatizado para ISPs
             </span>
           </div>
         </motion.div>
@@ -82,25 +82,36 @@ const HeroSection = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <span className="block mb-2">A Próxima Evolução na</span>
+          <span className="block mb-2">Automatize o Atendimento</span>
           <span className="block bg-gradient-to-r from-purple-400 via-blue-400 to-pink-400 bg-clip-text text-transparent cyber-text-glow">
-            Operação de ISPs
+            do Seu Provedor
           </span>
           <span className="block text-3xl md:text-4xl lg:text-5xl mt-4 text-gray-300 font-medium">
-            Orquestração de Agentes Autônomos
+            e Escale Sem Aumentar a Equipe
           </span>
         </motion.h1>
 
         {/* Subtitle */}
         <motion.p 
-          className="text-lg md:text-xl text-gray-400 max-w-4xl mx-auto mb-12 leading-relaxed"
+          className="text-lg md:text-xl text-gray-300 max-w-4xl mx-auto mb-6 leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          Automatize processos técnicos, comerciais e financeiros via WhatsApp. 
-          Integração profunda com telemetria, billing e observabilidade via API 
-          para escalar sua operação sem aumentar o headcount.
+          Agentes inteligentes que atendem seus clientes, diagnosticam problemas técnicos 
+          e organizam sua operação em tempo real.
+        </motion.p>
+
+        {/* Support Text */}
+        <motion.p 
+          className="text-base md:text-lg text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+        >
+          Uma triagem automática entende cada solicitação e encaminha instantaneamente 
+          para o agente técnico NOC, financeiro ou comercial — garantindo respostas rápidas, 
+          organização total e eficiência operacional 24 horas por dia.
         </motion.p>
 
         {/* CTAs */}
@@ -120,12 +131,12 @@ const HeroSection = () => {
             <Button size="lg" className="btn-glow group relative text-white font-semibold px-10 py-6 text-base rounded-2xl overflow-hidden transition-all duration-300">
               <div className="relative flex items-center gap-2">
                 <Zap className="h-5 w-5" />
-                Explorar Infraestrutura
+                Falar com a Engenharia
               </div>
             </Button>
           </motion.a>
           
-          <Link to="/documentacao">
+          <Link to="/pricing">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
@@ -135,39 +146,44 @@ const HeroSection = () => {
                 className="group relative border-2 border-blue-500/50 bg-blue-950/30 backdrop-blur-md text-blue-200 hover:text-white hover:border-blue-400 px-10 py-6 text-base rounded-2xl hover:bg-blue-900/40 transition-all duration-300 shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/30"
               >
                 <span className="relative flex items-center gap-2">
-                  <Code className="h-5 w-5" />
-                  Ver Documentação API
+                  Ver Planos e Preços
                 </span>
               </Button>
             </motion.div>
           </Link>
         </motion.div>
 
-        {/* Feature Cards - Cyber Glassmorphism */}
+        {/* Feature Cards - Agents Overview */}
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-4 gap-5 max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.8 }}
         >
           {[
             {
-              icon: Cpu,
-              title: "Full-Stack Automation",
-              description: "Execução autônoma 24/7 de fluxos de rede e faturamento.",
-              gradient: "from-purple-500 to-pink-500"
+              icon: Headphones,
+              title: "Triagem Inteligente",
+              description: "Entende a solicitação e encaminha para o agente certo automaticamente.",
+              gradient: "from-cyan-500 to-blue-500"
             },
             {
-              icon: Network,
-              title: "Ecossistema de APIs",
-              description: "Conexão nativa com MikroTik, Huawei e principais ERPs de billing.",
+              icon: Wrench,
+              title: "Agente Técnico NOC",
+              description: "Diagnóstico de falhas, verificação de sinais e monitoramento de rede.",
               gradient: "from-blue-500 to-purple-500"
             },
             {
-              icon: Activity,
-              title: "Observabilidade Preditiva",
-              description: "Dashboards de telemetria em tempo real integrados aos agentes de resposta.",
-              gradient: "from-cyan-500 to-blue-500"
+              icon: TrendingUp,
+              title: "Agente Comercial",
+              description: "Informações sobre planos, alterações de serviços e retenção.",
+              gradient: "from-purple-500 to-pink-500"
+            },
+            {
+              icon: DollarSign,
+              title: "Agente Financeiro",
+              description: "Boletos, segunda via, negociações e status financeiro.",
+              gradient: "from-green-500 to-emerald-500"
             }
           ].map((feature, index) => (
             <motion.div
@@ -178,10 +194,10 @@ const HeroSection = () => {
               transition={{ delay: 0.9 + index * 0.1, duration: 0.6 }}
               whileHover={{ y: -8 }}
             >
-              <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 shadow-lg`}>
-                <feature.icon className="h-7 w-7 text-white" />
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4 shadow-lg`}>
+                <feature.icon className="h-6 w-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+              <h3 className="text-lg font-bold text-white mb-2">{feature.title}</h3>
               <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}
