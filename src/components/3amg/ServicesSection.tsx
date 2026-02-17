@@ -1,42 +1,42 @@
-import { Cpu, Network, Activity, Server, Workflow, Database, Zap, Shield } from "lucide-react";
+import { Cpu, Network, Activity, Workflow, Shield, Zap, MessageSquare, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
 const ServicesSection = () => {
   const services = [
     {
+      icon: <MessageSquare className="h-6 w-6" />,
+      title: "Atendimento via WhatsApp",
+      description: "Seus clientes são atendidos pelo WhatsApp com respostas automáticas, inteligentes e humanizadas.",
+      gradient: "from-green-500 to-emerald-500"
+    },
+    {
       icon: <Cpu className="h-6 w-6" />,
-      title: "Full-Stack Automation",
-      description: "Execução autônoma 24/7 de fluxos de rede e faturamento com resiliência e auto-recovery.",
-      gradient: "from-purple-500 to-pink-500"
+      title: "Triagem Automática",
+      description: "Cada solicitação é classificada e encaminhada instantaneamente para o agente especializado certo.",
+      gradient: "from-cyan-500 to-blue-500"
     },
     {
       icon: <Network className="h-6 w-6" />,
-      title: "Ecossistema de APIs",
-      description: "Conexão nativa com MikroTik, Huawei, ZTE e principais ERPs de billing do mercado.",
+      title: "Diagnóstico Técnico",
+      description: "Verificação automática de sinais, status de link e qualidade da conexão em tempo real.",
       gradient: "from-blue-500 to-purple-500"
     },
     {
       icon: <Activity className="h-6 w-6" />,
-      title: "Observabilidade Preditiva",
-      description: "Dashboards de telemetria em tempo real integrados aos agentes de resposta automática.",
-      gradient: "from-cyan-500 to-blue-500"
-    },
-    {
-      icon: <Database className="h-6 w-6" />,
-      title: "Persistência Multi-Tenant",
-      description: "Isolamento total de dados por provedor com criptografia AES-256 e backups automáticos.",
-      gradient: "from-emerald-500 to-teal-500"
+      title: "Monitoramento 24/7",
+      description: "Operação contínua com agentes sempre disponíveis para atender e resolver demandas.",
+      gradient: "from-purple-500 to-pink-500"
     },
     {
       icon: <Workflow className="h-6 w-6" />,
-      title: "Orquestração n8n",
-      description: "Fluxos automatizados via n8n com controle de execução, retry inteligente e fallback.",
+      title: "Automação de Processos",
+      description: "Fluxos automatizados para cobrança, segunda via, negociação e gestão comercial.",
       gradient: "from-orange-500 to-red-500"
     },
     {
       icon: <Shield className="h-6 w-6" />,
-      title: "Segurança Enterprise",
-      description: "Auditoria completa, logs estruturados e compliance com LGPD e segurança de dados.",
+      title: "Segurança e Isolamento",
+      description: "Cada provedor acessa exclusivamente seus próprios dados com total segurança.",
       gradient: "from-indigo-500 to-purple-500"
     }
   ];
@@ -80,18 +80,18 @@ const ServicesSection = () => {
         >
           <div className="inline-flex items-center gap-2 bg-purple-950/50 backdrop-blur-xl border border-purple-500/30 rounded-full px-5 py-2 mb-6">
             <Zap className="w-4 h-4 text-yellow-400" />
-            <span className="text-purple-200 text-sm font-medium">Capacidades Core</span>
+            <span className="text-purple-200 text-sm font-medium">O que a plataforma faz por você</span>
           </div>
           
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Infraestrutura de{" "}
+            Automatize sua{" "}
             <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-pink-400 bg-clip-text text-transparent">
-              Alta Performance
+              Operação Completa
             </span>
           </h2>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Stack técnico projetado para operações críticas com 
-            orquestração, observabilidade e escala operacional
+            Do primeiro contato do cliente até a resolução final — 
+            tudo automatizado com inteligência e eficiência
           </p>
         </motion.div>
 
